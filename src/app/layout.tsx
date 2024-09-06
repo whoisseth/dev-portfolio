@@ -22,12 +22,12 @@ const libre_franklin = Libre_Franklin({
 });
 
 export const metadata: Metadata = {
-  title: "WDC Template",
+  title: "Dev Portfolio Builder",
   icons: [
     { rel: "icon", type: "image/png", sizes: "48x48", url: "/favicon.ico" },
   ],
-  keywords: "yolo",
-  description: "A simple next.js template including drizzle and lucia auth",
+  keywords: "Portfolio",
+  description: "Dev Portfolio Builder: A simple, customizable tool to create and showcase professional developer portfolios with ease.",
 };
 
 export default async function RootLayout({
@@ -45,8 +45,11 @@ export default async function RootLayout({
       >
         <Providers>
           <NextTopLoader />
-          <Header />
-          <div className="container mx-auto w-full py-12">{children}</div>
+
+          <div className="">
+            {/* <div className="container mx-auto w-full py-12"> */}
+            {children}
+          </div>
         </Providers>
         <Toaster />
       </body>
