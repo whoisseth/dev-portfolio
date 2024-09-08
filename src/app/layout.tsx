@@ -22,7 +22,7 @@ const libre_franklin = Libre_Franklin({
 });
 
 export const metadata: Metadata = {
-  title: "Dev Portfolio Builder",
+  title: "Portly Dev Portfolio Builder",
   icons: [
     { rel: "icon", type: "image/png", sizes: "48x48", url: "/favicon.ico" },
   ],
