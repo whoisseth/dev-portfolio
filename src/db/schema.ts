@@ -2,7 +2,8 @@ import { integer, text, sqliteTableCreator } from "drizzle-orm/sqlite-core";
 
 export const accountTypeEnum = ["email", "google", "github"] as const;
 
-const sqliteTable = sqliteTableCreator((name) => `app_${name}`);
+// const sqliteTable = sqliteTableCreator((name) => `app_${name}`);
+const sqliteTable = sqliteTableCreator((name) => `${name}`);
 
 export const users = sqliteTable("user", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),

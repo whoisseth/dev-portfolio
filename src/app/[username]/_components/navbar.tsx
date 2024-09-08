@@ -20,14 +20,14 @@ type NavLink = {
 };
 
 const navLinks: NavLink[] = [
-  { name: "About Us", href: "#about-us", icon: <User size={20} /> },
+  { name: "About Me", href: "#about-me", icon: <User size={20} /> },
   { name: "Projects", href: "#projects", icon: <Folder size={20} /> },
   {
     name: "Work Experience",
     href: "#work-experience",
     icon: <BriefcaseBusiness size={20}/>,
   },
-  { name: "Resume", href: "#resume", icon: <FileText size={20} /> },
+  { name: "Resume", href: "/resume", icon: <FileText size={20} /> },
 ];
 
 export default function Navbar() {

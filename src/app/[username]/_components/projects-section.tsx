@@ -132,14 +132,14 @@ const projects: Project[] = [
 
 export function ProjectsSection() {
   return (
-    <section className="bg-background px-4 py-8">
-      <h2 className="mb-6 text-center text-2xl font-bold">My Projects</h2>
+    <section id="projects" className="bg-background py-8">
+      <h2 className="mb-6 text-2xl font-bold">My Projects</h2>
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {projects.map((project) => (
           <ProjectCard key={project.name} project={project} />
         ))}
       </div>
-      <div className="flex items-center ">
+      <div className="flex items-center">
         <Link
           href={"#projects"}
           className={cn(buttonVariants({ variant: "link" }), "mx-auto")}

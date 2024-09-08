@@ -11,7 +11,9 @@ export default function Layout({
   return (
     <div>
       <Navbar />
-      <div className="container mx-auto w-full py-12">{children}</div>
+      <div className="container mx-auto w-full  px-4 py-12 sm:px-8">
+        {children}
+      </div>
     </div>
   );
 }
