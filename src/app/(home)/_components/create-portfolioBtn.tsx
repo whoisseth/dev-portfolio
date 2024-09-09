@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 // import { User } from "@/db/schema";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import React from "react";
 import { User } from "lucia";
 
@@ -20,6 +20,7 @@ export default function CreatePortfolioBtn({ user }: Props) {
     // then redirect - '/route-name', the route that linked with userid
 
     // if (route already exist for that user ) redirect("/route-name")
+
     if (user) {
       router.push("/create-portfolio");
     } else {

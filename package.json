@@ -13,7 +13,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.4.2",
+    "@hookform/resolvers": "^3.9.0",
     "@libsql/client": "0.6.1",
     "@lucia-auth/adapter-drizzle": "^1.0.7",
     "@radix-ui/react-avatar": "^1.1.0",
@@ -40,7 +40,7 @@
     "nextjs-toploader": "1.6.12",
     "react": "18.3.1",
     "react-dom": "18.3.1",
-    "react-hook-form": "^7.51.5",
+    "react-hook-form": "^7.53.0",
     "react-to-print": "^2.15.1",
     "resend": "3.2.0",
     "server-only": "0.0.1",

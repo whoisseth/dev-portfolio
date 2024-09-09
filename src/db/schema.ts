@@ -23,14 +23,14 @@ export const accounts = sqliteTable("accounts", {
   password: text("password"),
   salt: text("salt"),
 });
-
+// no need for this
 export const magicLinks = sqliteTable("magic_links", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   email: text("email").notNull().unique(),
   token: text("token"),
   tokenExpiresAt: integer("token_expires_at", { mode: "timestamp" }).notNull(),
 });
-
+// no need for this
 export const resetTokens = sqliteTable("reset_tokens", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   userId: integer("user_id", { mode: "number" })
@@ -40,7 +40,7 @@ export const resetTokens = sqliteTable("reset_tokens", {
   token: text("token"),
   tokenExpiresAt: integer("token_expires_at", { mode: "timestamp" }).notNull(),
 });
-
+// no need for this
 export const verifyEmailTokens = sqliteTable("verify_email_tokens", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   userId: integer("user_id", { mode: "number" })
@@ -73,5 +73,60 @@ export const sessions = sqliteTable("session", {
   expiresAt: integer("expires_at").notNull(),
 });
 
+//  my tables //
+// *********************//
+
+export const routes = sqliteTable("routes", {
+  // shoulde be unique
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  routeName: text("route_name").notNull().unique(),
+  // should be a foreign key
+  userId: integer("user_id", { mode: "number" })
+    .references(() => users.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  // should be a foreign key
+});
+
+export const aboutMe = sqliteTable("about_me", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  userId: integer("user_id", { mode: "number" })
+    .references(() => users.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  fullName: text("full_name").notNull(),
+  description: text("description").notNull(),
+  email: text("email").notNull(),
+  skills: text("skills"), // We'll store this as a JSON string
+  phoneNumber: text("phone_number"),
+  linkedIn: text("linkedin"),
+  github: text("github"),
+  routeId: integer("route_id", { mode: "number" })
+    .references(() => routes.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+});
+
+export const projects = sqliteTable("projects", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  userId: integer("user_id", { mode: "number" })
+    .references(() => users.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  title: text("title").notNull(),
+  // should be also link with routes table
+  routeId: integer("route_id", { mode: "number" })
+    .references(() => routes.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
+export type AboutMe = typeof aboutMe.$inferSelect;
+export type Projects = typeof projects.$inferSelect;
