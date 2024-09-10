@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     { rel: "icon", type: "image/png", sizes: "48x48", url: "/favicon.ico" },
   ],
   keywords: "Portfolio",
-  description: "Dev Portfolio Builder: A simple, customizable tool to create and showcase professional developer portfolios with ease.",
+  description: "Portly is Dev Portfolio Builder: A simple, customizable tool to create and showcase professional developer portfolios with ease.",
 };
 
 export default async function RootLayout({

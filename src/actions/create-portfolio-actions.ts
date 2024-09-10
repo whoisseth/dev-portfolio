@@ -31,33 +31,35 @@ export const addAboutMe = async (d: AboutMe) => {
 // };
 
 export const addRoute2 = async (d: string) => {
-    const user = await getCurrentUser();
-    if (!user) {
-      throw new Error("User not authenticated");
-    }
-    await db.insert(routes).values({
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  await db
+    .insert(routes)
+    .values({
       routeName: d,
       userId: user.id,
-    }).returning();
-    revalidatePath("/");
-  };
+    })
+    .returning();
+  revalidatePath("/");
+};
 
-  export const addRoute = async (d: string) => {
-    const user = await getCurrentUser();
-    if (!user) {
-      throw new Error("User not authenticated");
-    }
-    const route = await db
-      .insert(routes)
-      .values({
-        routeName: d,
-        userId: user.id,
-      })
-      .returning();
-    revalidatePath("/");
-    return route;
-  };
-
+export const addRoute = async (d: string) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  const route = await db
+    .insert(routes)
+    .values({
+      routeName: d,
+      userId: user.id,
+    })
+    .returning();
+  revalidatePath("/");
+  return route;
+};
 
 // check route availability
 export const checkRouteAvailability = async (routeName: string) => {
@@ -74,4 +76,17 @@ export const checkRouteAvailability = async (routeName: string) => {
 
   // If the result is undefined, the username doesn't exist
   return !route;
+};
+
+export const getUserRoute = async (userId: number) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  const route = await db
+    .select()
+    .from(routes)
+    .where(eq(routes.userId, userId))
+    .get();
+  return route?.routeName;
 };

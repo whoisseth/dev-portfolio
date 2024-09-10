@@ -54,10 +54,6 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
       routeName: "",
       description: "",
       email: "",
-      // skills: "",
-      // phone: "",
-      // linkedin: "",
-      // github: "",
     },
   });
 
