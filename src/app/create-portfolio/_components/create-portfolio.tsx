@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -18,9 +18,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
+  addAboutMe,
   addRoute,
   checkRouteAvailability,
 } from "@/actions/create-portfolio-actions";
+import { User } from "lucia";
 
 const FormSchema = z.object({
   routeName: z
@@ -40,16 +42,28 @@ const FormSchema = z.object({
   github: z.string().url({ message: "Invalid GitHub URL." }).optional(),
 });
 
-export function CreatePortfolio() {
-  // is route_name assigned
+export function CreatePortfolio({ user }: { user: User | undefined }) {
   const [routeValue, setRouteValue] = useState("");
   const [isRouteAssigned, setIsRouteAssigned] = useState(false);
-
   const [isChecking, setIsChecking] = useState(false);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {
+      fullName: "",
+      routeName: "",
+      description: "",
+      email: "",
+      // skills: "",
+      // phone: "",
+      // linkedin: "",
+      // github: "",
+    },
   });
+
+  useEffect(() => {
+    console.log("Component mounted");
+  }, []);
 
   const handleRouteAvailability = async (
     e: React.FormEvent<HTMLFormElement>,
@@ -64,61 +78,88 @@ export function CreatePortfolio() {
       return;
     }
 
-    console.log("btn clicked", routeValue);
-    console.log("routeValue", routeValue);
-
+    console.log("Check availability clicked", routeValue);
     setIsChecking(true);
 
-    const isAvailable = await checkRouteAvailability(routeValue);
-    console.log("isAvailable", isAvailable);
+    try {
+      const isAvailable = await checkRouteAvailability(routeValue);
+      console.log("isAvailable", isAvailable);
 
-    setIsChecking(false);
-    if (!isAvailable) {
+      if (!isAvailable) {
+        toast({
+          title: "Route is not available",
+          description: "Please try a different route name.",
+          variant: "destructive",
+        });
+      } else {
+        setIsRouteAssigned(true);
+        form.setValue("routeName", routeValue);
+      }
+    } catch (error) {
+      console.error("Error checking route availability:", error);
       toast({
-        title: "Route is not available",
-        description: "Please try a different route name.",
+        title: "Error",
+        description: "Failed to check route availability. Please try again.",
         variant: "destructive",
       });
-    } else {
-      await addRoute(routeValue);
-      setIsRouteAssigned(true);
+    } finally {
+      setIsChecking(false);
     }
   };
 
-  const handleRouteAvailability2 = async (
-    e: React.FormEvent<HTMLFormElement>,
-  ) => {
-    e.preventDefault();
-    if (routeValue.length < 3) {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    console.log("Form submitted", data);
+
+    try {
+      const [{ id: routeId }] = await addRoute(routeValue);
+
+      const portfolioData = {
+        ...data,
+        userId: user?.id,
+      };
+
+      // Here you would typically have an API call to create the portfolio
+
+      const aboutMeData = {
+        ...data,
+        skills: data.skills || null,
+        github: data.github || null,
+        phoneNumber: data.phone || null,
+        linkedIn: data.linkedin || null,
+        userId: user?.id || 0,
+        routeId: routeId,
+      };
+
+      await addAboutMe(aboutMeData);
+      console.log("Portfolio data prepared:", portfolioData);
+
       toast({
-        title: "Invalid route name",
-        description: "Route name must be at least 3 characters long.",
+        title: "Portfolio created!",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">
+              {JSON.stringify(portfolioData, null, 2)}
+            </code>
+          </pre>
+        ),
+      });
+    } catch (error) {
+      console.error("Error creating portfolio:", error);
+      toast({
+        title: "Error",
+        description: "Failed to create portfolio. Please try again.",
         variant: "destructive",
       });
-      return;
     }
-
-    console.log("btn clicked", routeValue);
-    console.log("routeValue", routeValue);
-
-    const isAvailable = await checkRouteAvailability(routeValue);
-    console.log("isAvailable", isAvailable);
   };
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "Portfolio created!",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+
+  console.log("Rendering component, isRouteAssigned:", isRouteAssigned);
 
   if (!isRouteAssigned) {
     return (
       <div className="mx-auto flex min-h-screen w-full max-w-2xl items-center justify-center p-6">
         <form onSubmit={handleRouteAvailability} className="w-full max-w-lg">
+          <div>user id: {user?.id}</div>
           <div className="flex w-full flex-col gap-2 sm:flex-row">
             <Input
               value={routeValue}
@@ -127,14 +168,11 @@ export function CreatePortfolio() {
               className="w-full"
             />
             <Button
-              // type="button"
-              // onClick={handleRouteAvailability}
-              // disabled={!form.getValues().routeName || isChecking}
+              type="submit"
               className="whitespace-nowrap"
-              // className="whitespace-nowrap w-36"
+              disabled={isChecking}
             >
               {isChecking ? "Checking..." : "Check Availability"}
-              {/* {isChecking ? "Checking..." : "Next"} */}
             </Button>
           </div>
         </form>
@@ -147,6 +185,7 @@ export function CreatePortfolio() {
       <h1 className="mb-6 text-2xl font-bold">Create Portfolio</h1>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* Form fields */}
           <FormField
             control={form.control}
             name="fullName"
@@ -250,7 +289,6 @@ export function CreatePortfolio() {
               </FormItem>
             )}
           />
-
           <Button type="submit" className="w-full">
             Create Portfolio
           </Button>

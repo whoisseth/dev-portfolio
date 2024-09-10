@@ -15,7 +15,7 @@ export default async function CreatePortfolioPage({}: Props) {
 
   return (
     <div>
-      <CreatePortfolio />
+      <CreatePortfolio user={user} />
     </div>
   );
 }

@@ -128,5 +128,5 @@ export const projects = sqliteTable("projects", {
 
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
-export type AboutMe = typeof aboutMe.$inferSelect;
+export type AboutMe = typeof aboutMe.$inferInsert;
 export type Projects = typeof projects.$inferSelect;

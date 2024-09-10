@@ -31,7 +31,14 @@ export default async function HomePage() {
           <Button variant={"secondary"}>Login</Button>
         )}
       </Link>
-      <CreatePortfolioBtn user={user} />
+
+      <Link
+        className={cn(buttonVariants({ variant: "default" }))}
+        href={"/create-portfolio"}
+      >
+        Create Portfolio
+      </Link>
+      {/* <CreatePortfolioBtn user={user} /> */}
     </div>
   );
 }
