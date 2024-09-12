@@ -151,149 +151,149 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
 
   console.log("Rendering component, isRouteAssigned:", isRouteAssigned);
 
-  if (!isRouteAssigned) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <div className="w-full max-w-lg">
-          <form onSubmit={handleRouteAvailability} className="space-y-4">
-            <div>user id: {user?.id}</div>
-            <div className="flex w-full flex-col gap-2 sm:flex-row">
-              <Input
-                value={routeValue}
-                onChange={(e) => setRouteValue(e.target.value)}
-                placeholder="your-unique-route"
-                className="w-full"
-              />
-              <Button
-                type="submit"
-                className="whitespace-nowrap"
-                disabled={isChecking}
-              >
-                {isChecking ? "Checking..." : "Check Availability"}
-              </Button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="flex flex-col flex-grow items-center justify-center p-4">
-      <div className="w-full max-w-2xl">
-        <h1 className="mb-6 text-2xl font-bold">Create Portfolio</h1>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            {/* Form fields */}
-            <FormField
-              control={form.control}
-              name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Full Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder="John Doe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+    <div className="flex flex-col flex-grow">
+      {!isRouteAssigned ? (
+        <div className="flex flex-col items-center justify-center flex-grow p-4">
+          <div className="w-full max-w-lg">
+            <form onSubmit={handleRouteAvailability} className="space-y-4">
+              <div>user id: {user?.id}</div>
+              <div className="flex w-full flex-col gap-2 sm:flex-row">
+                <Input
+                  value={routeValue}
+                  onChange={(e) => setRouteValue(e.target.value)}
+                  placeholder="your-unique-route"
+                  className="w-full"
+                />
+                <Button
+                  type="submit"
+                  className="whitespace-nowrap"
+                  disabled={isChecking}
+                >
+                  {isChecking ? "Checking..." : "Check Availability"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center flex-grow p-4">
+          <div className="w-full max-w-2xl">
+            <h1 className="mb-6 text-2xl font-bold">Create Portfolio</h1>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                {/* Form fields */}
+                <FormField
+                  control={form.control}
+                  name="fullName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="John Doe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="A brief description of yourself"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Description</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="A brief description of yourself"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder="john@example.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input placeholder="john@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="skills"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Skills (optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="JavaScript, React, Node.js" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="skills"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Skills (optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="JavaScript, React, Node.js" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone (optional)</FormLabel>
-                  <FormControl>
-                    <Input type="tel" placeholder="+1234567890" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone (optional)</FormLabel>
+                      <FormControl>
+                        <Input type="tel" placeholder="+1234567890" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="linkedin"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>LinkedIn URL (optional)</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="https://www.linkedin.com/in/johndoe"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                <FormField
+                  control={form.control}
+                  name="linkedin"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>LinkedIn URL (optional)</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="https://www.linkedin.com/in/johndoe"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-            <FormField
-              control={form.control}
-              name="github"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>GitHub URL (optional)</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://github.com/johndoe" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" className="w-full">
-              Create Portfolio
-            </Button>
-          </form>
-        </Form>
-      </div>
+                <FormField
+                  control={form.control}
+                  name="github"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>GitHub URL (optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://github.com/johndoe" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full">
+                  Create Portfolio
+                </Button>
+              </form>
+            </Form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
