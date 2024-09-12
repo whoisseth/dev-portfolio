@@ -41,7 +41,7 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "flex flex-col min-h-screen bg-background antialiased",
+          "flex flex-col min-h-svh bg-background antialiased",
           archivo.variable + " " + libre_franklin.variable,
         )}
       >
