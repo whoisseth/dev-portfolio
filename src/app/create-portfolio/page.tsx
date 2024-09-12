@@ -20,7 +20,7 @@ export default async function CreatePortfolioPage({}: Props) {
   }
 
   return (
-    <div>
+    <div className="flex flex-col flex-grow">
       <CreatePortfolio user={user} />
     </div>
   );

@@ -10,37 +10,35 @@ import { cn } from "@/lib/utils";
 export default async function HomePage() {
   const user = await getCurrentUser();
 
-  if (!user) redirect("/sign-in");
-
   console.log("home user", user);
 
   return (
-    <div className="container flex min-h-screen items-center justify-center gap-2">
-      <div>
+    <div className="flex flex-col flex-grow items-center justify-center gap-4">
+      <div className="w-full max-w-xs space-y-4">
         {user ? (
           <Link
             prefetch={false}
-            className={cn(buttonVariants({ variant: "secondary" }))}
+            className={cn(buttonVariants({ variant: "secondary", size: "lg" }), "w-full")}
             href={"/api/sign-out"}
           >
             Log Out
           </Link>
         ) : (
           <Link
-            className={cn(buttonVariants({ variant: "secondary" }))}
+            className={cn(buttonVariants({ variant: "secondary", size: "lg" }), "w-full")}
             href={"/sign-in"}
           >
             Log In
           </Link>
         )}
-      </div>
 
-      <Link
-        className={cn(buttonVariants({ variant: "default" }))}
-        href={"/create-portfolio"}
-      >
-        Create Portfolio
-      </Link>
+        <Link
+          className={cn(buttonVariants({ variant: "default", size: "lg" }), "w-full")}
+          href={"/create-portfolio"}
+        >
+          Create Portfolio
+        </Link>
+      </div>
     </div>
   );
 }
