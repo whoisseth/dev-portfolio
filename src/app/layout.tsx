@@ -45,7 +45,7 @@ export default async function RootLayout({
       >
         <Providers>
           <NextTopLoader />
-          <p className="absolute left-0 top-0 text-xs w-full bg-yellow-100 p-1.5 text-center  font-semibold text-yellow-800">
+          <p className="absolute left-0 top-0 text-xs w-full bg-yellow-100 p-1.5 text-center  font-semibold text-yellow-800 z-10">
             ⚠️ In development. Data may be deleted. Full access soon.
           </p>
           <div className="">
