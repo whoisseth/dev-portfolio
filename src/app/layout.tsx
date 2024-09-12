@@ -8,7 +8,6 @@ import { Archivo } from "next/font/google";
 import { Libre_Franklin } from "next/font/google";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
-import { Header } from "./_header/header";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -27,7 +26,8 @@ export const metadata: Metadata = {
     { rel: "icon", type: "image/png", sizes: "48x48", url: "/favicon.ico" },
   ],
   keywords: "Portfolio",
-  description: "Portly is Dev Portfolio Builder: A simple, customizable tool to create and showcase professional developer portfolios with ease.",
+  description:
+    "Portly is Dev Portfolio Builder: A simple, customizable tool to create and showcase professional developer portfolios with ease.",
 };
 
 export default async function RootLayout({
@@ -39,13 +39,15 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "min-h-screen bg-background antialiased",
+          "relative min-h-screen bg-background antialiased",
           archivo.variable + " " + libre_franklin.variable,
         )}
       >
         <Providers>
           <NextTopLoader />
-
+          <p className="absolute left-0 top-0 text-xs w-full bg-yellow-100 p-1.5 text-center  font-semibold text-yellow-800">
+            ⚠️ In development. Data may be deleted. Full access soon.
+          </p>
           <div className="">
             {/* <div className="container mx-auto w-full py-12"> */}
             {children}

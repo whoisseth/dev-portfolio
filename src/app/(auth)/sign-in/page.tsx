@@ -9,55 +9,68 @@ import { FaGithub } from "react-icons/fa";
 import { ModeToggle } from "@/app/_header/mode-toggle";
 
 export default function SignInPage() {
+  const navHeight = "80px";
   return (
-    <div className="mx-auto flex min-h-screen items-center justify-center border py-24">
-      <nav className="absolute right-5 top-5">
+    <div className="container mx-auto flex h-screen flex-col">
+      <nav
+        style={{
+          height: navHeight,
+        }}
+        className="flex w-full justify-end    items-end" 
+      >
         <ModeToggle />
       </nav>
-      <div className="mx-auto max-w-md space-y-6">
-        <div className="space-y-2 text-center">
-          <h1 className="text-3xl font-bold">Sign In</h1>
-          <p className="text-gray-500 dark:text-gray-400">
-            Sign in to your account using one of the options below.
-          </p>
-        </div>
-        <div className="space-y-4">
-          <Link
-            href="/api/login/google"
-            className={cn(
-              buttonVariants({
-                variant: "default",
-              }),
-              "w-full",
-            )}
-          >
-            <FcGoogle size={24} className="mr-2" />
-            Sign in with Google
-          </Link>
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
+      <section
+        style={{
+          height: "calc(100vh - 48px)",
+        }}
+        className="flex flex-col items-center justify-center "
+      >
+        <div className="mx-auto max-w-md space-y-6">
+          <div className="space-y-2 text-center">
+            <h1 className="text-3xl font-bold">Sign In</h1>
+            <p className="text-gray-500 dark:text-gray-400">
+              Sign in to your account using one of the options below.
+            </p>
           </div>
-          <Link
-            href="/api/login/github"
-            className={cn(
-              buttonVariants({
-                variant: "secondary",
-              }),
-              "w-full",
-            )}
-          >
-            <FaGithub size={24} className="mr-2" />
-            Sign in with GitHub
-          </Link>
+          <div className="space-y-4">
+            <Link
+              href="/api/login/google"
+              className={cn(
+                buttonVariants({
+                  variant: "default",
+                }),
+                "w-full",
+              )}
+            >
+              <FcGoogle size={24} className="mr-2" />
+              Sign in with Google
+            </Link>
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <Link
+              href="/api/login/github"
+              className={cn(
+                buttonVariants({
+                  variant: "secondary",
+                }),
+                "w-full",
+              )}
+            >
+              <FaGithub size={24} className="mr-2" />
+              Sign in with GitHub
+            </Link>
+          </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 }
