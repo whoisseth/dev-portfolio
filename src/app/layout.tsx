@@ -8,6 +8,8 @@ import { Archivo } from "next/font/google";
 import { Libre_Franklin } from "next/font/google";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
+import Warning from "@/components/warning";
+import { FooterComponent } from "@/components/footer";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -39,19 +41,15 @@ export default async function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "relative min-h-screen bg-background antialiased",
+          "flex min-h-svh flex-col bg-background antialiased",
           archivo.variable + " " + libre_franklin.variable,
         )}
       >
         <Providers>
-          <NextTopLoader />
-          <p className="absolute left-0 top-0 z-10 w-full bg-yellow-100 p-1.5 text-center text-xs font-semibold text-yellow-800">
-            ⚠️ In development. Data may be deleted. Full access soon.
-          </p>
-          <div className="">
-            {/* <div className="container mx-auto w-full py-12"> */}
-            {children}
-          </div>
+          <NextTopLoader showSpinner={false} />
+          <Warning />
+          <main className="flex flex-grow flex-col">{children}</main>
+          <FooterComponent />
         </Providers>
         <Toaster />
       </body>
