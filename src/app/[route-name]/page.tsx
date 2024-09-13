@@ -9,7 +9,7 @@ type Props = {};
 export default function UserPage({}: Props) {
   return (
     <div className="relative">
-      <ModeToggleComponent className="fixed top-28 right-5 z-50" />
+      {/* <ModeToggleComponent className="fixed top-28 right-5 z-50" /> */}
       <Hero />
       <ProjectsSection />
       <WorkExperienceDisplay />
