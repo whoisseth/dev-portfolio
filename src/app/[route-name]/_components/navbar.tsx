@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { ModeToggleComponent } from "@/components/mode-toggle";
 
 type NavLink = {
   name: string;
@@ -25,7 +26,7 @@ const navLinks: NavLink[] = [
   {
     name: "Work Experience",
     href: "#work-experience",
-    icon: <BriefcaseBusiness size={20}/>,
+    icon: <BriefcaseBusiness size={20} />,
   },
   { name: "Resume", href: "/resume", icon: <FileText size={20} /> },
 ];
@@ -44,7 +45,7 @@ export default function Navbar() {
           className="flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-primary"
           onClick={() => setIsOpen(false)}
         >
-          <div className="text-sm ">{link.icon}</div>
+          <div className="text-sm">{link.icon}</div>
           <p>{link.name}</p>
         </Link>
       ))}

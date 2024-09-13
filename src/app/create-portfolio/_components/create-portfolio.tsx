@@ -1,33 +1,39 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { z } from "zod";
-
-import { Button } from "@/components/ui/button";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+
 import {
   addAboutMe,
   addRoute,
   checkRouteAvailability,
 } from "@/actions/create-portfolio-actions";
 import { User } from "lucia";
+import { Textarea } from "@/components/ui/textarea";
 
-const FormSchema = z.object({
+const RouteFormSchema = z.object({
   routeName: z
     .string()
-    .min(2, { message: "Route name must be at least 2 characters." }),
+    .min(3, { message: "Route name must be at least 3 characters." })
+    .max(30, { message: "Route name must not exceed 30 characters." })
+    .regex(/^[a-zA-Z][a-zA-Z0-9-]*$/, {
+      message: "Route name must start with a letter and can only contain letters, numbers, and hyphens.",
+    })
+    .refine((value) => !value.includes(" "), {
+      message: "Route name cannot contain spaces.",
+    })
+    .refine((value) => /^[a-z0-9-]+$/.test(value), {
+      message: "Route name can only contain lowercase letters, numbers, and hyphens.",
+    }),
+});
+
+const FormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name is required." }),
   description: z
     .string()
@@ -43,43 +49,34 @@ const FormSchema = z.object({
 });
 
 export function CreatePortfolio({ user }: { user: User | undefined }) {
-  const [routeValue, setRouteValue] = useState("");
   const [isRouteAssigned, setIsRouteAssigned] = useState(false);
   const [isChecking, setIsChecking] = useState(false);
+
+  const routeForm = useForm<z.infer<typeof RouteFormSchema>>({
+    resolver: zodResolver(RouteFormSchema),
+    defaultValues: {
+      routeName: "",
+    },
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       fullName: "",
-      routeName: "",
       description: "",
       email: "",
     },
   });
 
-  useEffect(() => {
-    console.log("Component mounted");
-  }, []);
+  // useEffect(() => {
+  //   console.log("Component mounted");
+  // }, []);
 
-  const handleRouteAvailability = async (
-    e: React.FormEvent<HTMLFormElement>,
-  ) => {
-    e.preventDefault();
-    if (routeValue.length < 3) {
-      toast({
-        title: "Invalid route name",
-        description: "Route name must be at least 3 characters long.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    console.log("Check availability clicked", routeValue);
+  const handleRouteAvailability = async (data: z.infer<typeof RouteFormSchema>) => {
     setIsChecking(true);
 
     try {
-      const isAvailable = await checkRouteAvailability(routeValue);
-      console.log("isAvailable", isAvailable);
+      const isAvailable = await checkRouteAvailability(data.routeName);
 
       if (!isAvailable) {
         toast({
@@ -89,7 +86,6 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
         });
       } else {
         setIsRouteAssigned(true);
-        form.setValue("routeName", routeValue);
       }
     } catch (error) {
       console.error("Error checking route availability:", error);
@@ -107,7 +103,8 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
     console.log("Form submitted", data);
 
     try {
-      const [{ id: routeId }] = await addRoute(routeValue);
+      const routeName = routeForm.getValues("routeName");
+      const [{ id: routeId }] = await addRoute(routeName);
 
       const portfolioData = {
         ...data,
@@ -156,24 +153,37 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
       {!isRouteAssigned ? (
         <div className="flex flex-col items-center justify-center flex-grow p-4">
           <div className="w-full max-w-lg">
-            <form onSubmit={handleRouteAvailability} className="space-y-4">
-              <div>user id: {user?.id}</div>
-              <div className="flex w-full flex-col gap-2 sm:flex-row">
-                <Input
-                  value={routeValue}
-                  onChange={(e) => setRouteValue(e.target.value)}
-                  placeholder="your-unique-route"
-                  className="w-full"
+            <Form {...routeForm}>
+              <form onSubmit={routeForm.handleSubmit(handleRouteAvailability)} className="space-y-4">
+                <div>user id: {user?.id}</div>
+                <FormField
+                  control={routeForm.control}
+                  name="routeName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Route Name</FormLabel>
+                      <div className="flex w-full flex-col gap-2 sm:flex-row">
+                        <FormControl>
+                          <Input
+                            placeholder="your-unique-route"
+                            className="w-full"
+                            {...field}
+                          />
+                        </FormControl>
+                        <Button
+                          type="submit"
+                          className="whitespace-nowrap"
+                          disabled={isChecking}
+                        >
+                          {isChecking ? "Checking..." : "Check Availability"}
+                        </Button>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-                <Button
-                  type="submit"
-                  className="whitespace-nowrap"
-                  disabled={isChecking}
-                >
-                  {isChecking ? "Checking..." : "Check Availability"}
-                </Button>
-              </div>
-            </form>
+              </form>
+            </Form>
           </div>
         </div>
       ) : (
@@ -297,3 +307,5 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
     </div>
   );
 }
+
+

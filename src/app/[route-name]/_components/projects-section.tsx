@@ -145,7 +145,7 @@ export function ProjectsSection() {
           className={cn(buttonVariants({ variant: "link" }), "mx-auto")}
         >
           <Folder size={20} className="mr-2" />
-          View Projects
+          View All Projects
         </Link>
       </div>
     </section>
