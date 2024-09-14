@@ -91,6 +91,8 @@ export const routes = sqliteTable("routes", {
 
 export const aboutMe = sqliteTable("about_me", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  tagline: text("tagline"),
   userId: integer("user_id", { mode: "number" })
     .references(() => users.id, {
       onDelete: "cascade",

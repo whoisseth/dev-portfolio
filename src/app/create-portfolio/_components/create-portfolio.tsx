@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+
 import {
   Form,
   FormField,
@@ -14,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/use-toast";
+// import { toast } from "@/components/ui/use-toast";
 
 import {
   addAboutMe,
@@ -46,7 +48,7 @@ const RouteFormSchema = z.object({
 const FormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name is required." }),
   title: z.string().min(2, { message: "Title is required." }),
-  tagline: z.string().min(5, { message: "Tagline is required." }),
+  tagline: z.string().min(5, { message: "Tagline is required." }).optional(),
   description: z
     .string()
     .min(10, { message: "Description must be at least 10 characters." })
@@ -67,6 +69,7 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [isGeneratingTagline, setIsGeneratingTagline] = useState(false);
   const [isGeneratingAltTagline, setIsGeneratingAltTagline] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   const routeForm = useForm<z.infer<typeof RouteFormSchema>>({
     resolver: zodResolver(RouteFormSchema),
@@ -93,21 +96,15 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
       const isAvailable = await checkRouteAvailability(data.routeName);
 
       if (!isAvailable) {
-        toast({
-          title: "Route is not available",
-          description: "Please try a different route name.",
-          variant: "destructive",
-        });
+        toast.error(
+          "Route is not available. Please try a different route name.",
+        );
       } else {
         setIsRouteAssigned(true);
       }
     } catch (error) {
       console.error("Error checking route availability:", error);
-      toast({
-        title: "Error",
-        description: "Failed to check route availability. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Failed to check route availability. Please try again.");
     } finally {
       setIsChecking(false);
     }
@@ -147,19 +144,11 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
         const truncatedDescription = data.output.slice(0, 250);
         form.setValue("description", truncatedDescription);
       } else {
-        toast({
-          title: "Error",
-          description: "Failed to generate description. Please try again.",
-          variant: "destructive",
-        });
+        toast.error("Failed to generate description. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsGeneratingDescription(false);
     }
@@ -201,19 +190,11 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
         const truncatedTagline = data.output.slice(0, 50);
         form.setValue("tagline", truncatedTagline);
       } else {
-        toast({
-          title: "Error",
-          description: "Failed to generate tagline. Please try again.",
-          variant: "destructive",
-        });
+        toast.error("Failed to generate tagline. Please try again.");
       }
     } catch (error) {
       console.error("Error:", error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setGenerating(false);
     }
@@ -223,50 +204,38 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
     console.log("Form submitted", data);
 
     try {
-      const routeName = routeForm.getValues("routeName");
-      const [{ id: routeId }] = await addRoute(routeName);
+      startTransition(async () => {
+        const routeName = routeForm.getValues("routeName");
+        const [{ id: routeId }] = await addRoute(routeName);
 
-      const portfolioData = {
-        ...data,
-        userId: user?.id,
-      };
+        const portfolioData = {
+          ...data,
+          userId: user?.id,
+        };
 
-      // Here you would typically have an API call to create the portfolio
+        // Here you would typically have an API call to create the portfolio
 
-      const aboutMeData = {
-        ...data,
-        skills: data.skills || null,
-        github: data.github || null,
-        phoneNumber: data.phone || null,
-        linkedIn: data.linkedin || null,
-        userId: user?.id || 0,
-        routeId: routeId,
-      };
+        const aboutMeData = {
+          ...data,
+          tagline: data.tagline || null,
+          skills: data.skills || null,
+          github: data.github || null,
+          phoneNumber: data.phone || null,
+          linkedIn: data.linkedin || null,
+          userId: user?.id || 0,
+          routeId: routeId,
+        };
 
-      await addAboutMe(aboutMeData);
-      console.log("Portfolio data prepared:", portfolioData);
+        await addAboutMe(aboutMeData);
+        console.log("Portfolio data prepared:", portfolioData);
 
-      toast({
-        title: "Portfolio created!",
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">
-              {JSON.stringify(portfolioData, null, 2)}
-            </code>
-          </pre>
-        ),
+        toast.success("Portfolio created successfully.");
       });
     } catch (error) {
       console.error("Error creating portfolio:", error);
-      toast({
-        title: "Error",
-        description: "Failed to create portfolio. Please try again.",
-        variant: "destructive",
-      });
+      toast.error("Error creating portfolio. Please try again.");
     }
   };
-
-  console.log("Rendering component, isRouteAssigned:", isRouteAssigned);
 
   return (
     <div className="flex flex-grow flex-col">
@@ -278,7 +247,7 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
                 onSubmit={routeForm.handleSubmit(handleRouteAvailability)}
                 className="space-y-4"
               >
-                <div>user id: {user?.id}</div>
+                {/* <div>user id: {user?.id}</div> */}
                 <FormField
                   control={routeForm.control}
                   name="routeName"
@@ -352,7 +321,9 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
                   name="tagline"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Tagline (max 50 characters)</FormLabel>
+                      <FormLabel>
+                        Tagline (max 50 characters) (optional)
+                      </FormLabel>
                       <FormControl>
                         <div className="space-y-2">
                           <Input
@@ -365,38 +336,43 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
                             }}
                           />
                           <div className="flex items-center justify-between space-x-2">
-                            <Button
-                              type="button"
-                              onClick={() => generateTagline()}
-                              disabled={
-                                isGeneratingTagline || isGeneratingAltTagline
-                              }
-                            >
-                              {isGeneratingTagline ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  Generating...
-                                </>
-                              ) : (
-                                "Generate Tagline"
-                              )}
-                            </Button>
-                            <Button
-                              type="button"
-                              onClick={() => generateTagline(true)}
-                              disabled={
-                                isGeneratingTagline || isGeneratingAltTagline
-                              }
-                            >
-                              {isGeneratingAltTagline ? (
-                                <>
-                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                  Generating...
-                                </>
-                              ) : (
-                                "Alternative Tagline"
-                              )}
-                            </Button>
+                            <section className="flex items-center gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() => generateTagline()}
+                                disabled={
+                                  isGeneratingTagline || isGeneratingAltTagline
+                                }
+                              >
+                                {isGeneratingTagline ? (
+                                  <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Generating...
+                                  </>
+                                ) : (
+                                  "Generate With AI"
+                                )}
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => generateTagline(true)}
+                                disabled={
+                                  isGeneratingTagline || isGeneratingAltTagline
+                                }
+                              >
+                                {isGeneratingAltTagline ? (
+                                  <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Generating...
+                                  </>
+                                ) : (
+                                  "Alternative Tagline"
+                                )}
+                              </Button>
+                            </section>
                             <span className="text-sm text-gray-500">
                               {field?.value?.length}/50
                             </span>
@@ -427,6 +403,7 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
                             />
                             <div className="flex items-center justify-between">
                               <Button
+                                size="sm"
                                 type="button"
                                 onClick={generateDescription}
                                 disabled={isGeneratingDescription}
@@ -534,8 +511,15 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full">
-                  Create Portfolio
+                <Button type="submit" className="w-full" disabled={isPending}>
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating...
+                    </>
+                  ) : (
+                    "Create Portfolio"
+                  )}
                 </Button>
               </form>
             </Form>

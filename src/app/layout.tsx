@@ -8,6 +8,7 @@ import { Archivo } from "next/font/google";
 import { Libre_Franklin } from "next/font/google";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import Warning from "@/components/warning";
 import { FooterComponent } from "@/components/footer";
 
@@ -52,6 +53,7 @@ export default async function RootLayout({
           <FooterComponent />
         </Providers>
         <Toaster />
+        <SonnerToaster />
       </body>
     </html>
   );

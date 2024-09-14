@@ -90,3 +90,14 @@ export const getUserRoute = async (userId: number) => {
     .get();
   return route?.routeName;
 };
+
+// create a function to get the aboutMe data with the help of routeName
+export const getAboutMeWithRouteName = async (routeName: string) => {
+  const aboutMeData = await db
+    .select()
+    .from(aboutMe)
+    .innerJoin(routes, eq(aboutMe.routeId, routes.id))
+    .where(eq(routes.routeName, routeName))
+    .get();
+  return aboutMeData;
+};
