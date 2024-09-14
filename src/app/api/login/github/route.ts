@@ -2,9 +2,12 @@ import { github } from "@/lib/auth";
 import { generateState } from "arctic";
 import { cookies } from "next/headers";
 
-export async function GET(): Promise<Response> {
+export async function GET(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  const returnTo = url.searchParams.get("returnTo") || "/";
+
   const state = generateState();
-  const url = await github.createAuthorizationURL(state, {
+  const authorizationURL = await github.createAuthorizationURL(state, {
     scopes: ["user:email"],
   });
 
@@ -16,5 +19,12 @@ export async function GET(): Promise<Response> {
     sameSite: "lax",
   });
 
-  return Response.redirect(url);
+  cookies().set("returnTo", returnTo, {
+    secure: true,
+    path: "/",
+    httpOnly: true,
+    maxAge: 60 * 10,
+  });
+
+  return Response.redirect(authorizationURL);
 }

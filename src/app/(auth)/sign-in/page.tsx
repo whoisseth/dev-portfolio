@@ -6,7 +6,12 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
+import { useSearchParams } from "next/navigation";
+
 export default function SignInPage() {
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo") || "/";
+
   return (
     <div className="flex flex-col flex-grow items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
@@ -18,7 +23,7 @@ export default function SignInPage() {
         </div>
         <div className="space-y-4">
           <Link
-            href="/api/login/google"
+            href={`/api/login/google?returnTo=${encodeURIComponent(returnTo)}`}
             className={cn(buttonVariants({ variant: "default" }), "w-full")}
           >
             <FcGoogle size={24} className="mr-2" />
@@ -35,7 +40,7 @@ export default function SignInPage() {
             </div>
           </div>
           <Link
-            href="/api/login/github"
+            href={`/api/login/github?returnTo=${encodeURIComponent(returnTo)}`}
             className={cn(buttonVariants({ variant: "secondary" }), "w-full")}
           >
             <FaGithub size={24} className="mr-2" />

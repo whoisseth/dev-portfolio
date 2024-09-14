@@ -12,6 +12,7 @@ export async function GET(request: Request): Promise<Response> {
   const state = url.searchParams.get("state");
   const storedState = cookies().get("google_oauth_state")?.value ?? null;
   const codeVerifier = cookies().get("google_code_verifier")?.value ?? null;
+  const returnTo = cookies().get("returnTo")?.value ?? afterLoginUrl;
 
   if (
     !code ||
@@ -47,7 +48,7 @@ export async function GET(request: Request): Promise<Response> {
       return new Response(null, {
         status: 302,
         headers: {
-          Location: afterLoginUrl,
+          Location: returnTo,
         },
       });
     }
@@ -57,7 +58,7 @@ export async function GET(request: Request): Promise<Response> {
     return new Response(null, {
       status: 302,
       headers: {
-        Location: afterLoginUrl,
+        Location: returnTo,
       },
     });
   } catch (e) {

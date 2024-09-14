@@ -2,10 +2,13 @@ import { googleAuth } from "@/lib/auth";
 import { cookies } from "next/headers";
 import { generateCodeVerifier, generateState } from "arctic";
 
-export async function GET(): Promise<Response> {
+export async function GET(request: Request): Promise<Response> {
+  const url = new URL(request.url);
+  const returnTo = url.searchParams.get("returnTo") || "/";
+
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
-  const url = await googleAuth.createAuthorizationURL(state, codeVerifier, {
+  const authorizationURL = await googleAuth.createAuthorizationURL(state, codeVerifier, {
     scopes: ["profile", "email"],
   });
 
@@ -23,5 +26,12 @@ export async function GET(): Promise<Response> {
     maxAge: 60 * 10,
   });
 
-  return Response.redirect(url);
+  cookies().set("returnTo", returnTo, {
+    secure: true,
+    path: "/",
+    httpOnly: true,
+    maxAge: 60 * 10,
+  });
+
+  return Response.redirect(authorizationURL);
 }

@@ -4,7 +4,6 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/session";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import CreatePortfolioBtn from "./_components/create-portfolioBtn";
 import { cn } from "@/lib/utils";
 
 export default async function HomePage() {
@@ -26,7 +25,7 @@ export default async function HomePage() {
         ) : (
           <Link
             className={cn(buttonVariants({ variant: "secondary", size: "lg" }), "w-full")}
-            href={"/sign-in"}
+            href={`/sign-in?returnTo=${encodeURIComponent("/create-portfolio")}`}
           >
             Log In
           </Link>

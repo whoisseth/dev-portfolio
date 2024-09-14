@@ -12,7 +12,7 @@ type Props = {};
 export default async function CreatePortfolioPage({}: Props) {
   const user = await getCurrentUser();
   if (!user) {
-    redirect("/sign-in");
+    redirect(`/sign-in?returnTo=${encodeURIComponent("/create-portfolio")}`);
   }
   const existingRoute = await getUserRoute(user.id);
   if (existingRoute) {
