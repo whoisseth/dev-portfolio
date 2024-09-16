@@ -53,7 +53,7 @@ export default function Navbar() {
   );
 
   return (
-    <div className="sticky top-0 border-b bg-background/80 py-4 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto flex items-center justify-between">
         <Link href="/" className="text-2xl font-semibold">
           DevFolio
@@ -79,6 +79,6 @@ export default function Navbar() {
           </SheetContent>
         </Sheet>
       </nav>
-    </div>
+    </header>
   );
 }
