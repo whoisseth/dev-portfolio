@@ -15,13 +15,13 @@ export default async function UserPage({ params }: Props) {
   const routeName = params["route-name"].split("/")[0]; // Get the first part after the domain
 
   const aboutMe = await getAboutMeWithRouteName(routeName);
-  console.log("About Me data:", aboutMe);
+  // console.log("About Me data:", aboutMe);
 
   return (
     <div className="relative">
       {/* {user?.id} */}
-      {user?.id && <TogglePreviewBtn className="fixed right-5 top-28 z-50" />}
-      {aboutMe && <Hero aboutMe={aboutMe.about_me} />}
+      {/* {user?.id && <TogglePreviewBtn className="fixed right-5 top-28 z-50" />} */}
+      {aboutMe && <Hero user={user} aboutMe={aboutMe.about_me} />}
       <ProjectsSection />
       <WorkExperienceDisplay />
     </div>

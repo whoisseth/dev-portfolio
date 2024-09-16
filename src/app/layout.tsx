@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import Warning from "@/components/warning";
 import { FooterComponent } from "@/components/footer";
+import { TailwindIndicator } from "@/components/tailwind-indicator";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -52,6 +53,7 @@ export default async function RootLayout({
           <main className="flex flex-grow flex-col">{children}</main>
           <FooterComponent />
         </Providers>
+        <TailwindIndicator />
         <Toaster />
         <SonnerToaster />
       </body>

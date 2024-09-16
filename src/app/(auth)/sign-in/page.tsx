@@ -9,11 +9,15 @@ import { FaGithub } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 
 export default function SignInPage() {
-  const searchParams = useSearchParams();
-  const returnTo = searchParams.get("returnTo") || "/";
+  const [returnTo, setReturnTo] = React.useState("/");
+
+  React.useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    setReturnTo(searchParams.get("returnTo") || "/");
+  }, []);
 
   return (
-    <div className="flex flex-col flex-grow items-center justify-center p-4">
+    <div className="flex flex-grow flex-col items-center justify-center p-4">
       <div className="w-full max-w-md space-y-6">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">Sign In</h1>

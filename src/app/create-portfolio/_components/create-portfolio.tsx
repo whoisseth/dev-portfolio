@@ -45,7 +45,7 @@ const RouteFormSchema = z.object({
     }),
 });
 
-const FormSchema = z.object({
+export const FormSchema = z.object({
   fullName: z.string().min(2, { message: "Full name is required." }),
   title: z.string().min(2, { message: "Title is required." }),
   tagline: z.string().min(5, { message: "Tagline is required." }).optional(),
@@ -55,7 +55,7 @@ const FormSchema = z.object({
     .max(300, { message: "Description must not exceed 250 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   skills: z.string().optional(),
-  phone: z
+  phoneNumber: z
     .string()
     .regex(/^\+?[1-9]\d{1,14}$/, { message: "Invalid phone number format." })
     .optional(),
@@ -220,7 +220,7 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
           tagline: data.tagline || null,
           skills: data.skills || null,
           github: data.github || null,
-          phoneNumber: data.phone || null,
+          phoneNumber: data.phoneNumber || null,
           linkedIn: data.linkedin || null,
           userId: user?.id || 0,
           routeId: routeId,
@@ -462,7 +462,7 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
 
                 <FormField
                   control={form.control}
-                  name="phone"
+                  name="phoneNumber"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Phone (optional)</FormLabel>

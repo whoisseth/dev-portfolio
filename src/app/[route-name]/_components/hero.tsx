@@ -1,95 +1,413 @@
 "use client";
 
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import LaptopSvg from "./svg/laptop";
 import { Briefcase, Github, Linkedin, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 import { AboutMe } from "@/db/schema";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormSchema } from "@/app/create-portfolio/_components/create-portfolio";
+import { z } from "zod";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { useState, useTransition } from "react";
+import { Input } from "@/components/ui/input";
+import { updateAboutMe } from "@/actions/create-portfolio-actions";
+import { toast } from "sonner";
+import { Textarea } from "@/components/ui/textarea";
+import { User } from "lucia";
 
 type HeroProps = {
   aboutMe: AboutMe;
+  user: User | undefined;
 };
 
-export function Hero({ aboutMe }: HeroProps) {
+export function Hero({ aboutMe, user }: HeroProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  console.log("About me id:", aboutMe.id);
+
+  // const avatarName = aboutMe.fullName.split(" ").join("");
+  const avatarName = "Oreo";
+  const avatarFlip = "true";
+  const avatarClip = "true"; // not wokring
+  const avatarBeard = "variant01"; // not working
+  // freckles=variant0
+  // crete a variable for avatarfles
+  const avatarFreckles = "variant01"; // not working
+
+  const avatarGlasses = "variant04";
+  // gender=female
+  const avatarGender = "female";
+
+  //
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      fullName: aboutMe.fullName ?? "",
+      title: aboutMe.title ?? "",
+      tagline: aboutMe.tagline ?? "",
+      description: aboutMe.description ?? "",
+      email: aboutMe.email ?? "",
+      skills: aboutMe.skills ?? "",
+      linkedin: aboutMe.linkedIn ?? "",
+      github: aboutMe.github ?? "",
+      phoneNumber: aboutMe.phoneNumber ?? undefined,
+    },
+  });
+
+  // console.log("Form data:", form.getValues());
+  console.log("Phone number:", form.getValues("phoneNumber"));
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    try {
+      console.log("Form submitted with data:", data);
+      startTransition(async () => {
+        await updateAboutMe({
+          ...data,
+          userId: aboutMe.userId,
+          routeId: aboutMe.routeId,
+          id: aboutMe.id,
+        });
+        toast.success("Your information has been updated successfully.");
+        setIsEditing(false);
+      });
+    } catch (error) {
+      console.error("Error updating about me:", error);
+      toast.error("Failed to update your information. Please try again.");
+    }
+  };
   return (
     <div
       id="about-me"
       className="container mx-auto py-12 sm:px-6 lg:px-8 lg:py-24"
     >
       <div className="flex flex-col items-center gap-12 lg:flex-row">
-        <div className="flex-1 lg:text-left">
-          <div>
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">
-              {aboutMe.fullName}
-            </h1>
-            <p className="text-xl text-gray-300 sm:text-3xl md:text-2xl">
-              {aboutMe.title}
-            </p>
-          </div>
-          <h2 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl md:text-4xl">
-            {aboutMe.tagline}
-          </h2>
-          <p className="mt-4 max-w-3xl text-sm text-muted-foreground sm:text-base lg:mx-0">
-            {aboutMe.description}
-          </p>
-          {/* extra details  */}
-          <div className="mt-4 space-y-3">
-            {aboutMe.email && (
-              <div className="flex items-center space-x-2">
-                <Mail className="h-4 w-4" />
-                <span className="text-sm">{aboutMe.email}</span>
+        {/* left side user info */}
+        <div className="flex-1">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4 lg:text-left"
+            >
+              <div className="flex-1">
+                {/* full name */}
+                <div>
+                  {isEditing ? (
+                    <FormField
+                      control={form.control}
+                      name="fullName"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="John Doe"
+                              className="border-none bg-transparent text-4xl font-bold leading-tight md:text-5xl"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    <h1 className="text-4xl font-bold leading-tight md:text-5xl">
+                      {aboutMe.fullName}
+                    </h1>
+                  )}
+
+                  {isEditing ? (
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="Software Engineer"
+                              className="border-none bg-transparent text-xl sm:text-3xl md:text-2xl"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    <p className="text-xl sm:text-3xl md:text-2xl">
+                      {aboutMe.title && `{ ${aboutMe.title} }`}
+                    </p>
+                  )}
+                </div>
+                {/* tagline */}
+                {isEditing ? (
+                  <FormField
+                    control={form.control}
+                    name="tagline"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="Innovative solutions to complex problems"
+                            className="mt-4 border-none bg-transparent text-3xl font-bold leading-tight sm:text-4xl md:text-4xl"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <h2 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl md:text-4xl">
+                    {aboutMe.tagline}
+                  </h2>
+                )}
+
+                {/* description */}
+                {isEditing ? (
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Textarea
+                            placeholder="I am a software engineer with a passion for building innovative solutions to complex problems."
+                            className="mt-4 max-w-3xl border-none bg-transparent text-sm text-muted-foreground sm:text-base"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <p className="mt-4 max-w-3xl text-sm text-muted-foreground sm:text-base">
+                    {aboutMe.description}
+                  </p>
+                )}
+                {/* extra details  */}
+                {/* add input for email    */}
+
+                <div className="mt-4 space-y-3">
+                  {isEditing ? (
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="john.doe@example.com"
+                              className="mt-4 border-none bg-transparent text-sm text-muted-foreground sm:text-base"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    aboutMe.email && (
+                      <div className="flex items-center space-x-2">
+                        <Mail className="h-4 w-4" />
+                        <span className="text-sm">{aboutMe.email}</span>
+                      </div>
+                    )
+                  )}
+
+                  {/* add input for skills  */}
+                  {isEditing ? (
+                    <FormField
+                      control={form.control}
+                      name="skills"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="JavaScript, React, Node.js, etc."
+                              className="mt-4 border-none bg-transparent text-sm text-muted-foreground sm:text-base"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    aboutMe.skills && (
+                      <div className="flex items-center space-x-2">
+                        <Briefcase className="h-4 w-4" />
+                        <span className="text-sm">
+                          {Array.isArray(aboutMe.skills)
+                            ? aboutMe.skills.join(", ")
+                            : aboutMe.skills}
+                        </span>
+                      </div>
+                    )
+                  )}
+
+                  {isEditing ? (
+                    <FormField
+                      control={form.control}
+                      name="phoneNumber"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="+913456789090"
+                              className="mt-4 border-none bg-transparent text-sm text-muted-foreground sm:text-base"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    aboutMe.phoneNumber && (
+                      <div className="flex items-center space-x-2">
+                        <Phone className="h-4 w-4" />
+                        <span className="text-sm">{aboutMe.phoneNumber}</span>
+                      </div>
+                    )
+                  )}
+
+                  {isEditing ? (
+                    <FormField
+                      control={form.control}
+                      name="linkedin"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="https://www.linkedin.com/in/john-doe"
+                              className="mt-4 border-none bg-transparent text-sm text-muted-foreground sm:text-base"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    aboutMe.linkedIn && (
+                      <div className="flex items-center space-x-2">
+                        <Linkedin className="h-4 w-4" />
+                        <Link
+                          target="_blank"
+                          href={aboutMe.linkedIn || ""}
+                          className="text-sm hover:underline"
+                        >
+                          {aboutMe.linkedIn?.replace("https://", "")}
+                        </Link>
+                      </div>
+                    )
+                  )}
+                  {/* github */}
+                  {isEditing ? (
+                    <FormField
+                      control={form.control}
+                      name="github"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="https://www.github.com/john-doe"
+                              className="mt-4 border-none bg-transparent text-sm text-muted-foreground sm:text-base"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    aboutMe.github && (
+                      <div className="flex items-center space-x-2">
+                        <Github className="h-4 w-4" />
+                        <Link
+                          target="_blank"
+                          href={aboutMe.github || ""}
+                          className="hover:underline"
+                        >
+                          {aboutMe.github?.replace("https://", "")}
+                        </Link>
+                      </div>
+                    )
+                  )}
+                </div>
+                {/*  */}
+                <div className="mt-8 flex flex-col gap-4 sm:flex-row lg:justify-start">
+                  {/* <Link href="#projects" className="w-full"> */}
+                  <Button type="button" size="default">
+                    View Projects
+                  </Button>
+                  {/* </Link> */}
+                  <Button type="button" size="default" variant="outline">
+                    View Resume
+                  </Button>
+                </div>
               </div>
-            )}
-            {aboutMe.skills && (
-              <div className="flex items-center space-x-2">
-                <Briefcase className="h-4 w-4" />
-                <span className="text-sm">
-                  {Array.isArray(aboutMe.skills) ? aboutMe.skills.join(", ") : aboutMe.skills}
-                </span>
+              {/* edit button */}
+              <div className="mt-8 flex flex-col gap-4 sm:max-w-[265px] sm:flex-row lg:justify-start">
+                {isEditing && (
+                  <>
+                    <Button
+                      className="w-full"
+                      variant={"outline"}
+                      onClick={() => setIsEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      disabled={isPending}
+                      className="w-full"
+                      type="submit"
+                    >
+                      {isPending ? "Saving..." : "Save"}
+                    </Button>
+                  </>
+                )}
+
+                {!isEditing && user && (
+                  <Button
+                    className="w-full"
+                    variant={"secondary"}
+                    type="button"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Edit
+                  </Button>
+                )}
               </div>
-            )}
-            {aboutMe.phoneNumber && (
-              <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4" />
-                <span className="text-sm">{aboutMe.phoneNumber}</span>
-              </div>
-            )}
-            {aboutMe.linkedIn && (
-              <div className="flex items-center space-x-2">
-                <Linkedin className="h-4 w-4" />
-                <Link
-                  target="_blank"
-                  href={aboutMe.linkedIn || ""}
-                  className="text-sm hover:underline"
-                >
-                  {aboutMe.linkedIn?.replace("https://", "")}
-                </Link>
-              </div>
-            )}
-            {aboutMe.github && (
-              <div className="flex items-center space-x-2">
-                <Github className="h-4 w-4" />
-                <Link
-                  target="_blank"
-                  href={aboutMe.github || ""}
-                  className="hover:underline"
-                >
-                  {aboutMe.github?.replace("https://", "")}
-                </Link>
-              </div>
-            )}
-          </div>
-          {/*  */}
-          <div className="mt-8 flex flex-col gap-4 sm:flex-row lg:justify-start">
-            <Button size="default">View Projects</Button>
-            <Button size="default" variant="outline">
-              View Resume
-            </Button>
-          </div>
+            </form>
+          </Form>
         </div>
+        {/* right side avatar */}
         <div className="flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-3 lg:max-w-none">
-          <LaptopSvg className="h-auto w-full" />
+          {/* <LaptopSvg className="h-auto w-full" /> */}
+          {/* Oreo is the avatar name */}
+          <img
+            // className="rounded-full border-2 bg-secondary   border-primary"
+            // dark:bg-[]
+            // className="rounded-full  !fill-black !dark:fill-white  dark:invert   border-primary"
+            className="!dark:fill-white rounded-full !fill-black dark:invert"
+            // add freckles
+            // add glasses
+
+            src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${avatarName}&flip=${avatarFlip}&avatarClip=${avatarClip}&beard=${avatarBeard}&freckles=${avatarFreckles}&glasses=${avatarGlasses}&gender=${avatarGender}&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
+            // src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${avatarName}&flip=${avatarFlip}&avatarClip=${avatarClip}&beard=${avatarBeard}&freckles=${avatarFreckles}&glasses=${avatarGlasses}&gender=${avatarGender}&hairAccessoriesProbability=10&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
+            alt="avatar"
+          />
         </div>
       </div>
     </div>

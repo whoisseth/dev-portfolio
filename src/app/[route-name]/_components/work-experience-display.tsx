@@ -65,7 +65,7 @@ export function WorkExperienceDisplay() {
     // <div id="work-experience" className="mx-auto max-w-2xl">
     <div id="work-experience" className="mx-auto ">
       <h2 className="mb-4  text-2xl font-bold">Work Experience</h2>
-      <div className="space-y-3">
+      <div className="flex flex-col gap-4">
         {sampleExperiences.map((experience) => (
           <Card
             key={experience.id}

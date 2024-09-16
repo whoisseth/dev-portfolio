@@ -101,3 +101,15 @@ export const getAboutMeWithRouteName = async (routeName: string) => {
     .get();
   return aboutMeData;
 };
+
+export const updateAboutMe = async (d: AboutMe) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  if (d.id === undefined) {
+    throw new Error("AboutMe id is undefined");
+  }
+  await db.update(aboutMe).set(d).where(eq(aboutMe.id, d.id));
+  revalidatePath("/");
+};
