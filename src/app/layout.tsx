@@ -53,7 +53,7 @@ export default async function RootLayout({
           <main className="flex flex-grow flex-col">{children}</main>
           <FooterComponent />
         </Providers>
-        <TailwindIndicator />
+        {/* <TailwindIndicator /> */}
         <Toaster />
         <SonnerToaster />
       </body>
