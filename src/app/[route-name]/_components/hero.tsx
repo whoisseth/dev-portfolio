@@ -88,7 +88,7 @@ export function Hero({ aboutMe, user }: HeroProps) {
   return (
     <div
       id="about-me"
-      className="container mx-auto py-12 sm:px-6 lg:px-8 lg:py-24"
+      className="container mx-auto py-12 lg:py-20 sm:px-6 lg:px-8   "
     >
       <div className="flex flex-col items-center gap-12 lg:flex-row">
         {/* left side user info */}
