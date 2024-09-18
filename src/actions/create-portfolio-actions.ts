@@ -113,3 +113,33 @@ export const updateAboutMe = async (d: AboutMe) => {
   await db.update(aboutMe).set(d).where(eq(aboutMe.id, d.id));
   revalidatePath("/");
 };
+
+// create a function to update the routeName
+export const updateRouteName = async (
+  routeId: number,
+  newRouteName: string,
+) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  await db
+    .update(routes)
+    .set({ routeName: newRouteName })
+    .where(eq(routes.id, routeId));
+  revalidatePath("/");
+};
+
+// create a function that will check user is login and its their portfolio or not and return the portfolio true or false
+export const checkUserPortfolio = async () => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  const portfolio = await db
+    .select()
+    .from(routes)
+    .where(eq(routes.userId, user.id))
+    .get();
+  return !!portfolio;
+};

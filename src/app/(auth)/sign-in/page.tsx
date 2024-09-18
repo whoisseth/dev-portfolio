@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
-import { useSearchParams } from "next/navigation";
+
 
 export default function SignInPage() {
   const [returnTo, setReturnTo] = React.useState("/");
@@ -17,7 +17,7 @@ export default function SignInPage() {
   }, []);
 
   return (
-    <div className="flex flex-grow flex-col items-center justify-center p-4">
+    <div className="flex flex-grow flex-col items-center justify-center p-4 ">
       <div className="w-full max-w-md space-y-6">
         <div className="space-y-2 text-center">
           <h1 className="text-3xl font-bold">Sign In</h1>
