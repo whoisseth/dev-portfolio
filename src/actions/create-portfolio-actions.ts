@@ -1,47 +1,19 @@
 "use server";
 
 import { db } from "@/db";
-import { aboutMe, AboutMe, routes } from "@/db/schema";
+import { heroSection, HeroSection, routes } from "@/db/schema";
 import { getCurrentUser } from "@/lib/session";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
-export const addAboutMe = async (d: AboutMe) => {
+export const addHeroSection = async (d: HeroSection) => {
   const user = await getCurrentUser();
   if (!user) {
     throw new Error("User not authenticated");
   }
-  await db.insert(aboutMe).values({
+  await db.insert(heroSection).values({
     ...d,
   });
-  revalidatePath("/");
-};
-
-// add route fuction
-// export const addRoute = async (d: string) => {
-//   const user = await getCurrentUser();
-//   if (!user) {
-//     throw new Error("User not authenticated");
-//   }
-//   await db.insert(routes).values({
-//     routeName: d,
-//     userId: user.id,
-//   });
-//   revalidatePath("/");
-// };
-
-export const addRoute2 = async (d: string) => {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error("User not authenticated");
-  }
-  await db
-    .insert(routes)
-    .values({
-      routeName: d,
-      userId: user.id,
-    })
-    .returning();
   revalidatePath("/");
 };
 
@@ -92,25 +64,38 @@ export const getUserRoute = async (userId: number) => {
 };
 
 // create a function to get the aboutMe data with the help of routeName
-export const getAboutMeWithRouteName = async (routeName: string) => {
-  const aboutMeData = await db
+export const getHeroSectionData = async (routeName: string) => {
+  const heroSectionData = await db
     .select()
-    .from(aboutMe)
-    .innerJoin(routes, eq(aboutMe.routeId, routes.id))
+    .from(heroSection)
+    .innerJoin(routes, eq(heroSection.routeId, routes.id))
     .where(eq(routes.routeName, routeName))
     .get();
-  return aboutMeData;
+  return heroSectionData;
 };
 
-export const updateAboutMe = async (d: AboutMe) => {
+export const updateHeroSection = async (d: HeroSection) => {
   const user = await getCurrentUser();
   if (!user) {
     throw new Error("User not authenticated");
   }
   if (d.id === undefined) {
-    throw new Error("AboutMe id is undefined");
+    throw new Error("HeroSection id is undefined");
   }
-  await db.update(aboutMe).set(d).where(eq(aboutMe.id, d.id));
+
+  // Check if the hero section belongs to the current user
+  const heroSectionData = await db
+    .select()
+    .from(heroSection)
+    .innerJoin(routes, eq(heroSection.routeId, routes.id))
+    .where(eq(heroSection.id, d.id))
+    .get();
+
+  if (!heroSectionData || heroSectionData.routes.userId !== user.id) {
+    throw new Error("You do not have permission to update this hero section");
+  }
+
+  await db.update(heroSection).set(d).where(eq(heroSection.id, d.id));
   revalidatePath("/");
 };
 
@@ -131,15 +116,21 @@ export const updateRouteName = async (
 };
 
 // create a function that will check user is login and its their portfolio or not and return the portfolio true or false
-export const checkUserPortfolio = async () => {
+
+
+export const canEditPortfolio = async (routeName: string): Promise<boolean> => {
   const user = await getCurrentUser();
   if (!user) {
-    throw new Error("User not authenticated");
+    return false; // User is not logged in
   }
+
   const portfolio = await db
     .select()
     .from(routes)
-    .where(eq(routes.userId, user.id))
+    .where(eq(routes.routeName, routeName))
     .get();
-  return !!portfolio;
+
+  // Check if portfolio exists and belongs to the current user
+  return !!portfolio && portfolio.userId === user.id;
 };
+

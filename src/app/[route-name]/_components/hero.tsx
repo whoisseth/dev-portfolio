@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import LaptopSvg from "./svg/laptop";
 import { Briefcase, Github, Linkedin, Mail, Phone } from "lucide-react";
 import Link from "next/link";
-import { AboutMe } from "@/db/schema";
+import { HeroSection } from "@/db/schema";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormSchema } from "@/app/create-portfolio/_components/create-portfolio";
@@ -18,21 +18,25 @@ import {
 } from "@/components/ui/form";
 import { useState, useTransition } from "react";
 import { Input } from "@/components/ui/input";
-import { updateAboutMe } from "@/actions/create-portfolio-actions";
+import {
+  updateHeroSection,
+} from "@/actions/create-portfolio-actions";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { User } from "lucia";
+import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
 
 type HeroProps = {
-  aboutMe: AboutMe;
+  heroSection: HeroSection;
   user: User | undefined;
 };
 
-export function Hero({ aboutMe, user }: HeroProps) {
+export function Hero({ heroSection, user }: HeroProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const canEdit = useCanEditPortfolio(user);
 
-  console.log("About me id:", aboutMe.id);
+  console.log("About me id:", heroSection.id);
 
   // const avatarName = aboutMe.fullName.split(" ").join("");
   const avatarName = "Oreo";
@@ -52,15 +56,15 @@ export function Hero({ aboutMe, user }: HeroProps) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      fullName: aboutMe.fullName ?? "",
-      title: aboutMe.title ?? "",
-      tagline: aboutMe.tagline ?? "",
-      description: aboutMe.description,
-      email: aboutMe.email,
-      skills: aboutMe.skills ?? undefined,
-      linkedin: aboutMe.linkedIn ?? undefined,
-      github: aboutMe.github ?? undefined,
-      phoneNumber: aboutMe.phoneNumber ?? undefined,
+      fullName: heroSection.fullName ?? "",
+      title: heroSection.title ?? "",
+      tagline: heroSection.tagline ?? "",
+      description: heroSection.description,
+      email: heroSection.email,
+      skills: heroSection.skills ?? undefined,
+      linkedin: heroSection.linkedIn ?? undefined,
+      github: heroSection.github ?? undefined,
+      phoneNumber: heroSection.phoneNumber ?? undefined,
     },
   });
 
@@ -71,11 +75,11 @@ export function Hero({ aboutMe, user }: HeroProps) {
     try {
       console.log("Form submitted with data:", data);
       startTransition(async () => {
-        await updateAboutMe({
+        await updateHeroSection({
           ...data,
-          userId: aboutMe.userId,
-          routeId: aboutMe.routeId,
-          id: aboutMe.id,
+          userId: heroSection.userId,
+          routeId: heroSection.routeId,
+          id: heroSection.id,
         });
         toast.success("Your information has been updated successfully.");
         setIsEditing(false);
@@ -88,7 +92,7 @@ export function Hero({ aboutMe, user }: HeroProps) {
   return (
     <div
       id="about-me"
-      className="container mx-auto py-12 lg:py-20 sm:px-6 lg:px-8   "
+      className="container mx-auto py-12 sm:px-6 lg:px-8 lg:py-20"
     >
       <div className="flex flex-col items-center gap-12 lg:flex-row">
         {/* left side user info */}
@@ -120,7 +124,7 @@ export function Hero({ aboutMe, user }: HeroProps) {
                     />
                   ) : (
                     <h1 className="text-4xl font-bold leading-tight md:text-5xl">
-                      {aboutMe.fullName}
+                      {heroSection.fullName}
                     </h1>
                   )}
 
@@ -143,7 +147,7 @@ export function Hero({ aboutMe, user }: HeroProps) {
                     />
                   ) : (
                     <p className="text-xl sm:text-3xl md:text-2xl">
-                      {aboutMe.title && `{ ${aboutMe.title} }`}
+                      {heroSection.title && `{ ${heroSection.title} }`}
                     </p>
                   )}
                 </div>
@@ -167,7 +171,7 @@ export function Hero({ aboutMe, user }: HeroProps) {
                   />
                 ) : (
                   <h2 className="mt-4 text-3xl font-bold leading-tight sm:text-4xl md:text-4xl">
-                    {aboutMe.tagline}
+                    {heroSection.tagline}
                   </h2>
                 )}
 
@@ -191,7 +195,7 @@ export function Hero({ aboutMe, user }: HeroProps) {
                   />
                 ) : (
                   <p className="mt-4 max-w-3xl text-sm text-muted-foreground sm:text-base">
-                    {aboutMe.description}
+                    {heroSection.description}
                   </p>
                 )}
                 {/* extra details  */}
@@ -216,10 +220,10 @@ export function Hero({ aboutMe, user }: HeroProps) {
                       )}
                     />
                   ) : (
-                    aboutMe.email && (
+                    heroSection.email && (
                       <div className="flex items-center space-x-2">
                         <Mail className="h-4 w-4" />
-                        <span className="text-sm">{aboutMe.email}</span>
+                        <span className="text-sm">{heroSection.email}</span>
                       </div>
                     )
                   )}
@@ -243,13 +247,13 @@ export function Hero({ aboutMe, user }: HeroProps) {
                       )}
                     />
                   ) : (
-                    aboutMe.skills && (
+                    heroSection.skills && (
                       <div className="flex items-center space-x-2">
                         <Briefcase className="h-4 w-4" />
                         <span className="text-sm">
-                          {Array.isArray(aboutMe.skills)
-                            ? aboutMe.skills.join(", ")
-                            : aboutMe.skills}
+                          {Array.isArray(heroSection.skills)
+                            ? heroSection.skills.join(", ")
+                            : heroSection.skills}
                         </span>
                       </div>
                     )
@@ -273,10 +277,12 @@ export function Hero({ aboutMe, user }: HeroProps) {
                       )}
                     />
                   ) : (
-                    aboutMe.phoneNumber && (
+                    heroSection.phoneNumber && (
                       <div className="flex items-center space-x-2">
                         <Phone className="h-4 w-4" />
-                        <span className="text-sm">{aboutMe.phoneNumber}</span>
+                        <span className="text-sm">
+                          {heroSection.phoneNumber}
+                        </span>
                       </div>
                     )
                   )}
@@ -299,15 +305,15 @@ export function Hero({ aboutMe, user }: HeroProps) {
                       )}
                     />
                   ) : (
-                    aboutMe.linkedIn && (
+                    heroSection.linkedIn && (
                       <div className="flex items-center space-x-2">
                         <Linkedin className="h-4 w-4" />
                         <Link
                           target="_blank"
-                          href={aboutMe.linkedIn || ""}
+                          href={heroSection.linkedIn || ""}
                           className="text-sm hover:underline"
                         >
-                          {aboutMe.linkedIn?.replace("https://", "")}
+                          {heroSection.linkedIn?.replace("https://", "")}
                         </Link>
                       </div>
                     )
@@ -331,15 +337,15 @@ export function Hero({ aboutMe, user }: HeroProps) {
                       )}
                     />
                   ) : (
-                    aboutMe.github && (
+                    heroSection.github && (
                       <div className="flex items-center space-x-2">
                         <Github className="h-4 w-4" />
                         <Link
                           target="_blank"
-                          href={aboutMe.github || ""}
+                          href={heroSection.github || ""}
                           className="hover:underline"
                         >
-                          {aboutMe.github?.replace("https://", "")}
+                          {heroSection.github?.replace("https://", "")}
                         </Link>
                       </div>
                     )
@@ -378,7 +384,7 @@ export function Hero({ aboutMe, user }: HeroProps) {
                   </>
                 )}
 
-                {!isEditing && user && (
+                {!isEditing && canEdit && user && (
                   <Button
                     className="w-full"
                     variant={"secondary"}

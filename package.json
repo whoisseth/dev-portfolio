@@ -41,7 +41,7 @@
     "jspdf": "^2.5.1",
     "lucia": "3.2.0",
     "lucide-react": "0.381.0",
-    "next": "14.2.3",
+    "next": "^14.2.12",
     "next-themes": "^0.3.0",
     "nextjs-toploader": "1.6.12",
     "react": "18.3.1",

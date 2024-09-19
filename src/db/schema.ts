@@ -89,7 +89,7 @@ export const routes = sqliteTable("routes", {
   // should be a foreign key
 });
 
-export const aboutMe = sqliteTable("about_me", {
+export const heroSection = sqliteTable("hero_section", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   tagline: text("tagline"),
@@ -126,9 +126,12 @@ export const projects = sqliteTable("projects", {
       onDelete: "cascade",
     })
     .notNull(),
+  description: text("description").notNull(),
+  image: text("image"),
+  link: text("link"),
 });
 
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
-export type AboutMe = typeof aboutMe.$inferInsert;
-export type Projects = typeof projects.$inferSelect;
+export type HeroSection = typeof heroSection.$inferInsert;
+// export type Projects = typeof projects.$inferSelect;

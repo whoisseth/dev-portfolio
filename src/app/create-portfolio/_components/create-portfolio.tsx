@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 // import { toast } from "@/components/ui/use-toast";
 
 import {
-  addAboutMe,
+  addHeroSection,
   addRoute,
   checkRouteAvailability,
 } from "@/actions/create-portfolio-actions";
@@ -226,7 +226,7 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
           routeId: routeId,
         };
 
-        await addAboutMe(aboutMeData);
+        await addHeroSection(aboutMeData);
         console.log("Portfolio data prepared:", portfolioData);
 
         toast.success("Portfolio created successfully.");

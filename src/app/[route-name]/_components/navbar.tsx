@@ -210,7 +210,7 @@ export default function Navbar({ user }: { user: UserType | undefined }) {
                   prefetch={false}
                   className={cn(
                     buttonVariants({ variant: "outline" }),
-                    "w-full mt-4",
+                    "mt-4 w-full",
                   )}
                   href={"/api/sign-out"}
                 >
