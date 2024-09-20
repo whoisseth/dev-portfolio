@@ -1,3 +1,6 @@
+import { useParams } from "next/navigation";
+import Link from "next/link";
+
 import { buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,8 +25,8 @@ import { Switch } from "@/components/ui/switch";
 import { LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { User } from "lucia";
 
 export function SettingsSheet({
   isPortfolioActive,
@@ -37,6 +40,8 @@ export function SettingsSheet({
   setIsDeactivateDialogOpen,
   isDeleteDialogOpen,
   setIsDeleteDialogOpen,
+  user,
+  userRoute,
 }: {
   isPortfolioActive: boolean;
   setIsPortfolioActive: (active: boolean) => void;
@@ -49,7 +54,12 @@ export function SettingsSheet({
   isDeleteDialogOpen: boolean;
   setIsDeleteDialogOpen: (open: boolean) => void;
   setIsDeactivateDialogOpen: (open: boolean) => void;
+  user: User | undefined;
+  userRoute: string | undefined;
 }) {
+  const params = useParams();
+  const currentRoute = params["route-name"] as string;
+
   return (
     <Sheet open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
       <SheetTrigger asChild>
@@ -93,6 +103,27 @@ export function SettingsSheet({
                 }
               }}
             />
+          </div>
+          {/* Add current route and user information */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Current Route:</p>
+            <Link
+              href={`/${currentRoute}`}
+              className="text-blue-500 hover:underline"
+            >
+              /{currentRoute}
+            </Link>
+          </div>
+          {/* Add user's login route */}
+          <div className="space-y-2">
+            <p className="text-sm font-medium">Your Route:</p>
+            <Link
+              // href={`/${user?.username}`}
+              href={`/${userRoute}`}
+              className="text-blue-500 hover:underline"
+            >
+              {/* /{user?.id} */}/{userRoute}
+            </Link>
           </div>
         </div>
         <SheetClose asChild>

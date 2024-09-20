@@ -50,17 +50,19 @@ export const checkRouteAvailability = async (routeName: string) => {
   return !route;
 };
 
-export const getUserRoute = async (userId: number) => {
+export const getUserRoute = async (userId: number | null) => {
   const user = await getCurrentUser();
   if (!user) {
     throw new Error("User not authenticated");
   }
-  const route = await db
-    .select()
-    .from(routes)
-    .where(eq(routes.userId, userId))
-    .get();
-  return route?.routeName;
+  if (userId) {
+    const route = await db
+      .select()
+      .from(routes)
+      .where(eq(routes.userId, userId))
+      .get();
+    return route?.routeName;
+  }
 };
 
 // create a function to get the aboutMe data with the help of routeName
@@ -117,7 +119,6 @@ export const updateRouteName = async (
 
 // create a function that will check user is login and its their portfolio or not and return the portfolio true or false
 
-
 export const canEditPortfolio = async (routeName: string): Promise<boolean> => {
   const user = await getCurrentUser();
   if (!user) {
@@ -133,4 +134,3 @@ export const canEditPortfolio = async (routeName: string): Promise<boolean> => {
   // Check if portfolio exists and belongs to the current user
   return !!portfolio && portfolio.userId === user.id;
 };
-
