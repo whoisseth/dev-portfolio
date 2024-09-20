@@ -27,7 +27,7 @@ import { User } from "lucia";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 
-const RouteFormSchema = z.object({
+export const RouteFormSchema = z.object({
   routeName: z
     .string()
     .min(3, { message: "Route name must be at least 3 characters." })

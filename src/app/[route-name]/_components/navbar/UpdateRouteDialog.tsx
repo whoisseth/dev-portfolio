@@ -18,7 +18,7 @@ export function UpdateRouteDialog({
   isUpdateRouteDialogOpen: boolean;
   setIsUpdateRouteDialogOpen: (open: boolean) => void;
   handleRouteNameUpdate: () => void;
-  routeName: string;
+  routeName: string | undefined;
   newRouteName: string;
 }) {
   return (

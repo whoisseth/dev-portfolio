@@ -10,6 +10,7 @@ import { SettingsSheet } from "./SettingsSheet";
 import { MobileMenuSheet } from "./MobileMenuSheet";
 import { DeactivatePortfolioDialog } from "./DeactivatePortfolioDialog";
 import { UpdateRouteDialog } from "./UpdateRouteDialog";
+import { updateRouteName } from "@/actions/create-portfolio-actions";
 
 export const navLinks: NavLink[] = [
   { name: "About Me", href: "#about-me", icon: <User size={20} /> },
@@ -22,14 +23,6 @@ export const navLinks: NavLink[] = [
   { name: "Resume", href: "/resume", icon: <FileText size={20} /> },
 ];
 
-// Mock function for updating route name
-const updateRouteName = async (routeId: string, newRouteName: string) => {
-  // Simulating an API call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
-  console.log(`Route updated: ${routeId} -> ${newRouteName}`);
-  return true;
-};
-
 export default function Navbar({
   user,
   userRoute,
@@ -39,35 +32,11 @@ export default function Navbar({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [routeName, setRouteName] = useState("utkarsh");
-  const [newRouteName, setNewRouteName] = useState("");
+  const [routeName, setRouteName] = useState(userRoute);
   const [isPortfolioActive, setIsPortfolioActive] = useState(true);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeactivateDialogOpen, setIsDeactivateDialogOpen] = useState(false);
   const [isUpdateRouteDialogOpen, setIsUpdateRouteDialogOpen] = useState(false);
-  const { toast } = useToast();
-
-  const handleRouteNameUpdate = async () => {
-    if (newRouteName && newRouteName !== routeName) {
-      const success = await updateRouteName(routeName, newRouteName);
-      if (success) {
-        setRouteName(newRouteName);
-        setNewRouteName("");
-        setIsUpdateRouteDialogOpen(false);
-        setIsSettingsOpen(false);
-        toast({
-          title: "Route Updated",
-          description: `Your route has been updated to /${newRouteName}`,
-        });
-      } else {
-        toast({
-          title: "Update Failed",
-          description: "Failed to update the route. Please try again.",
-          variant: "destructive",
-        });
-      }
-    }
-  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -89,13 +58,12 @@ export default function Navbar({
                 isSettingsOpen,
                 setIsSettingsOpen,
                 routeName,
-                newRouteName,
-                setNewRouteName,
                 setIsUpdateRouteDialogOpen,
                 setIsDeactivateDialogOpen,
                 isDeleteDialogOpen,
                 setIsDeleteDialogOpen,
-                userRoute,
+                isUpdateRouteDialogOpen,
+                setRouteName,
               }}
             />
           )}
@@ -111,17 +79,6 @@ export default function Navbar({
           isDeactivateDialogOpen,
           setIsDeactivateDialogOpen,
           setIsPortfolioActive,
-        }}
-      />
-
-      {/* Update Route Confirmation Dialog */}
-      <UpdateRouteDialog
-        {...{
-          isUpdateRouteDialogOpen,
-          setIsUpdateRouteDialogOpen,
-          handleRouteNameUpdate,
-          routeName,
-          newRouteName,
         }}
       />
     </header>
