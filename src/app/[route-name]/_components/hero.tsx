@@ -92,9 +92,8 @@ export function Hero({ heroSection, user }: HeroProps) {
   return (
     <div
       id="about-me"
-      className="container mx-auto py-12 sm:px-6 lg:px-8 lg:py-20"
     >
-      <div className="flex flex-col items-center gap-12 lg:flex-row">
+      <div className="flex flex-col py-6 items-center gap-12 lg:flex-row  ">
         {/* left side user info */}
         <div className="flex-1">
           <Form {...form}>
@@ -399,7 +398,7 @@ export function Hero({ heroSection, user }: HeroProps) {
           </Form>
         </div>
         {/* right side avatar */}
-        <div className="flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-3 lg:max-w-none">
+        <div className="flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-3 lg:max-w-none ">
           {/* <LaptopSvg className="h-auto w-full" /> */}
           {/* Oreo is the avatar name */}
           <img

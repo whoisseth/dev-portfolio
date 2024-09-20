@@ -65,13 +65,13 @@ export default function Navbar({ user }: { user: UserType | undefined }) {
 
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <nav className="container mx-auto flex items-center justify-between">
-        <Link href={`/${routeName}`} className="text-2xl font-semibold">
+      <nav className="container mx-auto flex items-center justify-between  ">
+        <Link href={`/${routeName}`} className="text-2xl font-semibold ">
           DevFolio
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden items-center gap-6 md:flex">
+        <div className="hidden items-center gap-6 md:flex ">
           <NavItems setIsOpen={setIsOpen} />
           {user && (
             // Settings Sheet
@@ -95,7 +95,9 @@ export default function Navbar({ user }: { user: UserType | undefined }) {
 
         {/* Mobile Menu */}
         {/* Sheet for Mobile Menu */}
+       
         <MobileMenuSheet {...{ isOpen, setIsOpen, setIsSettingsOpen }} />
+       
       </nav>
 
       {/* Deactivate Confirmation Dialog */}
