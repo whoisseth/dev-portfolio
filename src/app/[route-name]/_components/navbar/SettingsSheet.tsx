@@ -129,7 +129,7 @@ export function SettingsSheet({
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle>Portfolio Settings</SheetTitle>
+            <SheetTitle className=" text-left">Portfolio Settings</SheetTitle>
           </SheetHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
@@ -150,7 +150,7 @@ export function SettingsSheet({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Route Name</FormLabel>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-col  lg:flex-row">
                           <FormControl>
                             <Input
                               placeholder={routeName}
@@ -164,7 +164,7 @@ export function SettingsSheet({
                               routeForm.getValues("routeName") === routeName
                             }
                             type="submit"
-                            className="whitespace-nowrap"
+                            className=" w-full lg:w-auto"
                           >
                             {isPending ? "Updating..." : "Update"}
                           </Button>
