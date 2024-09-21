@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
+import { useState, useTransition } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -22,23 +22,38 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { addProject } from "@/actions/create-portfolio-actions";
+import { Project, UserRoute } from "@/db/schema";
+import { useToast } from "@/components/ui/use-toast";
 
 const projectSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
+  title: z.string().min(3, "Title is required"),
+  description: z.string().min(10, "Description is required"),
   imageUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
   tags: z.array(z.string()).default([]),
   liveLink: z.string().url("Invalid URL").optional().or(z.literal("")),
   codeLink: z.string().url("Invalid URL").optional().or(z.literal("")),
-})
+});
 
-type ProjectFormValues = z.infer<typeof projectSchema>
+type ProjectFormValues = z.infer<typeof projectSchema>;
 
-export function AddProjectDialogComponent() {
-  const [open, setOpen] = useState(false)
+type Props = {
+  userRoute: {
+    routeName: string;
+    routeId: number;
+    userId: number;
+  };
+};
+
+export function AddProjectDialogComponent({ userRoute }: Props) {
+  const [open, setOpen] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  useTransition;
+  const { toast } = useToast();
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
@@ -50,13 +65,37 @@ export function AddProjectDialogComponent() {
       liveLink: "",
       codeLink: "",
     },
-  })
+  });
 
-  function onSubmit(data: ProjectFormValues) {
-    console.log(data)
-    // Here you would typically send the data to your backend
-    setOpen(false)
-    form.reset()
+  async function onSubmit(data: ProjectFormValues) {
+    startTransition(async () => {
+      try {
+        await addProject({
+          ...data,
+          imageUrl: data.imageUrl || null,
+          liveLink: data.liveLink || null,
+          codeLink: data.codeLink || null,
+          userId: userRoute.userId,
+          routeId: userRoute.routeId,
+        });
+
+        toast({
+          title: "Success",
+          description: "Project added successfully!",
+          variant: "default",
+        });
+
+        setOpen(false);
+        form.reset();
+      } catch (error) {
+        console.error("Error adding project:", error);
+        toast({
+          title: "Error",
+          description: `Failed to add project. Please try again.- ${error} `,
+          variant: "destructive",
+        });
+      }
+    });
   }
 
   return (
@@ -64,11 +103,12 @@ export function AddProjectDialogComponent() {
       <DialogTrigger asChild>
         <Button variant="outline">Add Project</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add New Project</DialogTitle>
           <DialogDescription>
             Fill in the details of your new project. Click add when you're done.
+            -{JSON.stringify(userRoute)}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -106,7 +146,10 @@ export function AddProjectDialogComponent() {
                 <FormItem>
                   <FormLabel>Image URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://example.com/image.jpg" {...field} />
+                    <Input
+                      placeholder="https://example.com/image.jpg"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -119,13 +162,19 @@ export function AddProjectDialogComponent() {
                 <FormItem>
                   <FormLabel>Tags</FormLabel>
                   <FormControl>
-                    <Input 
-                      placeholder="React, TypeScript, Node.js" 
-                      {...field} 
-                      onChange={(e) => field.onChange(e.target.value.split(',').map(tag => tag.trim()))}
+                    <Input
+                      placeholder="React, TypeScript, Node.js"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(
+                          e.target.value.split(",").map((tag) => tag.trim()),
+                        )
+                      }
                     />
                   </FormControl>
-                  <FormDescription>Enter tags separated by commas</FormDescription>
+                  <FormDescription>
+                    Enter tags separated by commas
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -150,18 +199,23 @@ export function AddProjectDialogComponent() {
                 <FormItem>
                   <FormLabel>Code Link</FormLabel>
                   <FormControl>
-                    <Input placeholder="https://github.com/myproject" {...field} />
+                    <Input
+                      placeholder="https://github.com/myproject"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <DialogFooter>
-              <Button type="submit">Add Project</Button>
+            <DialogFooter className="mt-4">
+              <Button disabled={isPending} type="submit">
+                {isPending ? "Adding..." : "Add Project"}
+              </Button>
             </DialogFooter>
           </form>
         </Form>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

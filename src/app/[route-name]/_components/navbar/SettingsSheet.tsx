@@ -173,7 +173,7 @@ export function SettingsSheet({
               {/*  */}
               {/*  */}
             </div>
-            <div className="flex items-center justify-between">
+            {/* <div className="flex items-center justify-between">
               <Label htmlFor="portfolio-active">Portfolio Active</Label>
               <Switch
                 id="portfolio-active"
@@ -186,7 +186,7 @@ export function SettingsSheet({
                   }
                 }}
               />
-            </div>
+            </div> */}
             {/* Add current route and user information */}
             <div className="space-y-2">
               <p className="text-sm font-medium">Current Route:</p>
@@ -215,9 +215,9 @@ export function SettingsSheet({
               onOpenChange={setIsDeleteDialogOpen}
             >
               <DialogTrigger asChild>
-                <Button variant="destructive" className="mt-4 w-full">
+                {/* <Button variant="destructive" className="mt-4 w-full">
                   Delete Portfolio
-                </Button>
+                </Button> */}
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>

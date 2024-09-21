@@ -1,7 +1,13 @@
 "use server";
 
 import { db } from "@/db";
-import { heroSection, HeroSection, routes } from "@/db/schema";
+import {
+  heroSection,
+  HeroSection,
+  Project,
+  projects,
+  routes,
+} from "@/db/schema";
 import { getCurrentUser } from "@/lib/session";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
@@ -50,23 +56,31 @@ export const checkRouteAvailability = async (routeName: string) => {
   return !route;
 };
 
+// ... existing code ...
+
 export const getUserRoute = async (userId: number | null) => {
   const user = await getCurrentUser();
   if (!user) {
-    // throw new Error("User not authenticated");
     return null;
   }
   if (userId) {
     const route = await db
-      .select()
+      .select({
+        routeName: routes.routeName,
+        routeId: routes.id,
+        userId: routes.userId,
+      })
       .from(routes)
       .where(eq(routes.userId, userId))
       .get();
-    return route?.routeName;
+    return route;
   }
+  return null;
 };
 
-// create a function to get the aboutMe data with the help of routeName
+// ... existing code ...
+
+//
 export const getHeroSectionData = async (routeName: string) => {
   const heroSectionData = await db
     .select()
@@ -102,24 +116,6 @@ export const updateHeroSection = async (d: HeroSection) => {
   revalidatePath("/");
 };
 
-// create a function to update the routeName
-// export const updateRouteName = async (
-//   routeId: number,
-//   newRouteName: string,
-// ) => {
-//   const user = await getCurrentUser();
-//   if (!user) {
-//     throw new Error("User not authenticated");
-//   }
-//   await db
-//     .update(routes)
-//     .set({ routeName: newRouteName })
-//     .where(eq(routes.id, routeId));
-//   revalidatePath("/");
-// };
-
-// create a function that will check user is login and its their portfolio or not and return the portfolio true or false
-
 export const canEditPortfolio = async (routeName: string): Promise<boolean> => {
   const user = await getCurrentUser();
   if (!user) {
@@ -135,12 +131,6 @@ export const canEditPortfolio = async (routeName: string): Promise<boolean> => {
   // Check if portfolio exists and belongs to the current user
   return !!portfolio && portfolio.userId === user.id;
 };
-
-// create a function to update  the route name updateRouteName that will accept 2 parameter first parameter will be old route and second paramerter will new route
-
-// ... existing code ...
-
-// ... existing code ...
 
 // Update route name
 export const updateRouteName = async (
@@ -195,4 +185,21 @@ export const updateRouteName = async (
   return updatedRoute[0];
 };
 
-// ... existing code ...
+// Add a project to the database
+export const addProject = async (projectData: Project) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const newProject = await db
+    .insert(projects)
+    .values({
+      ...projectData,
+      userId: user.id,
+    })
+    .returning();
+
+  revalidatePath("/");
+  return newProject[0];
+};

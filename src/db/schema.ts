@@ -139,4 +139,6 @@ export const projects = sqliteTable("projects", {
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type HeroSection = typeof heroSection.$inferInsert;
-export type Projects = typeof projects.$inferSelect;
+export type Project = typeof projects.$inferInsert;
+
+export type UserRoute = typeof routes.$inferSelect;

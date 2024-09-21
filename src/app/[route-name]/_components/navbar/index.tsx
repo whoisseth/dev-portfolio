@@ -9,6 +9,7 @@ import Link from "next/link";
 import { SettingsSheet } from "./SettingsSheet";
 import { MobileMenuSheet } from "./MobileMenuSheet";
 import { DeactivatePortfolioDialog } from "./DeactivatePortfolioDialog";
+import { UserRoute } from "@/db/schema";
 
 export const navLinks: NavLink[] = [
   { name: "About Me", href: "#about-me", icon: <User size={20} /> },
@@ -26,12 +27,19 @@ export default function Navbar({
   userRoute,
 }: {
   user: UserType | undefined;
-  userRoute: string | null | undefined;
+  userRoute:
+    | {
+        routeName: string;
+        routeId: number;
+        userId: number;
+      }
+    | null
+    | undefined;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [routeName, setRouteName] = useState<string | null | undefined>(
-    userRoute,
+    userRoute?.routeName,
   );
 
   const [isPortfolioActive, setIsPortfolioActive] = useState(true);
@@ -42,7 +50,6 @@ export default function Navbar({
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto flex items-center justify-between">
-       
         {/* <Link href={`/${routeName}`} className="text-2xl font-semibold"> */}
         <Link href={`/`} className="text-2xl font-semibold">
           Portly

@@ -15,12 +15,12 @@ export default async function CreatePortfolioPage({}: Props) {
     redirect(`/sign-in?returnTo=${encodeURIComponent("/create-portfolio")}`);
   }
   const existingRoute = await getUserRoute(user.id);
-  if (existingRoute) {
-    redirect(`/${existingRoute}`);
+  if (existingRoute?.routeName) {
+    redirect(`/${existingRoute?.routeName}`);
   }
 
   return (
-    <div className="flex flex-col flex-grow">
+    <div className="flex flex-grow flex-col">
       <CreatePortfolio user={user} />
     </div>
   );

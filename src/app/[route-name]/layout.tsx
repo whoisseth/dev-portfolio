@@ -3,8 +3,6 @@ import Navbar from "./_components/navbar";
 import { getCurrentUser } from "@/lib/session";
 import { getUserRoute } from "@/actions/create-portfolio-actions";
 
-
-
 export default async function Layout({
   children,
 }: Readonly<{
