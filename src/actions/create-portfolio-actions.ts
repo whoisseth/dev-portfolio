@@ -53,7 +53,8 @@ export const checkRouteAvailability = async (routeName: string) => {
 export const getUserRoute = async (userId: number | null) => {
   const user = await getCurrentUser();
   if (!user) {
-    throw new Error("User not authenticated");
+    // throw new Error("User not authenticated");
+    return null;
   }
   if (userId) {
     const route = await db

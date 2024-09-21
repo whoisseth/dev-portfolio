@@ -1,0 +1,53 @@
+import { Project } from "./ProjectCard";
+
+export const projects: Project[] = [
+  {
+    name: "E-commerce Platform",
+    description:
+      "Full-stack e-commerce solution with user auth, product management, and payments.",
+    // image: "/placeholder.svg?height=200&width=300",
+    image: "/images/Code-typing-bro.svg",
+    technologies: ["React", "Node.js", "MongoDB"],
+    liveUrl: "https://example-ecommerce.com",
+    codeUrl: "https://github.com/example/ecommerce",
+  },
+  {
+    name: "Weather App",
+    description: "Responsive weather app with real-time data and forecasts.",
+    image: "/placeholder.svg?height=200&width=300",
+    technologies: ["Vue.js", "OpenWeatherMap API"],
+    liveUrl: "https://example-weather-app.com",
+    codeUrl: "https://github.com/example/weather-app",
+  },
+  {
+    name: "Task Manager",
+    description: "Collaborative task management tool with real-time updates.",
+    image: "/placeholder.svg?height=200&width=300",
+    technologies: ["Angular", "Firebase"],
+    liveUrl: "https://example-task-manager.com",
+    codeUrl: "https://github.com/example/task-manager",
+  },
+  {
+    name: "Portfolio Website",
+    description: "Personal portfolio showcasing projects and skills.",
+    image: "/placeholder.svg?height=200&width=300",
+    technologies: ["Next.js", "Tailwind CSS"],
+    liveUrl: "https://example-portfolio.com",
+  },
+  {
+    name: "Blog Platform",
+    description: "Custom blog platform with CMS and user comments.",
+    image: "/placeholder.svg?height=200&width=300",
+    technologies: ["Django", "PostgreSQL"],
+    liveUrl: "https://example-blog.com",
+    codeUrl: "https://github.com/example/blog-platform",
+  },
+  {
+    name: "Fitness Tracker",
+    description: "Mobile app for tracking workouts and nutrition.",
+    image: "/placeholder.svg?height=200&width=300",
+    technologies: ["React Native", "GraphQL"],
+    liveUrl: "https://example-fitness.com",
+    codeUrl: "https://github.com/example/fitness-tracker",
+  },
+];

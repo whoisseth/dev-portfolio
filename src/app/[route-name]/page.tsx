@@ -13,9 +13,9 @@ type Props = {
 export default async function UserPage({ params }: Props) {
   const user = await getCurrentUser();
   const routeName = params["route-name"].split("/")[0]; // Get the first part after the domain
-
   const heroSection = await getHeroSectionData(routeName);
-  console.log("heroSection data:", heroSection);
+
+  // console.log("heroSection data:", heroSection);
 
   return (
     <div className="relative">

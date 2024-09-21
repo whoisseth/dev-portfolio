@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import { integer, text, sqliteTableCreator } from "drizzle-orm/sqlite-core";
 
 export const accountTypeEnum = ["email", "google", "github"] as const;
@@ -119,16 +120,20 @@ export const projects = sqliteTable("projects", {
       onDelete: "cascade",
     })
     .notNull(),
-  title: text("title").notNull(),
-  // should be also link with routes table
   routeId: integer("route_id", { mode: "number" })
     .references(() => routes.id, {
       onDelete: "cascade",
     })
     .notNull(),
+  title: text("title").notNull(),
   description: text("description").notNull(),
-  image: text("image"),
-  link: text("link"),
+  imageUrl: text("image-url"),
+  tags: text("tags", { mode: "json" })
+    .notNull()
+    .$type<string[]>()
+    .default(sql`(json_array())`),
+  liveLink: text("live-link"),
+  codeLink: text("code-link"),
 });
 
 export type User = typeof users.$inferSelect;

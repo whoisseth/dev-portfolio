@@ -28,7 +28,7 @@ import { LogOut, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import { cn } from "@/lib/utils";
-import { User } from "lucia";
+
 import {
   Form,
   FormControl,
@@ -42,7 +42,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RouteFormSchema } from "@/app/create-portfolio/_components/create-portfolio";
 import { z } from "zod";
 import { SetStateAction, useTransition } from "react";
-import { UpdateRouteDialog } from "./UpdateRouteDialog";
 import { updateRouteName } from "@/actions/create-portfolio-actions";
 import { useToast } from "@/components/ui/use-toast";
 
@@ -54,11 +53,9 @@ export function SettingsSheet({
   isSettingsOpen,
   setIsSettingsOpen,
   routeName,
-  setIsUpdateRouteDialogOpen,
   setIsDeactivateDialogOpen,
   isDeleteDialogOpen,
   setIsDeleteDialogOpen,
-  isUpdateRouteDialogOpen,
   setRouteName,
 }: {
   isPortfolioActive: boolean;
@@ -66,12 +63,10 @@ export function SettingsSheet({
   isSettingsOpen: boolean;
   setIsSettingsOpen: (open: boolean) => void;
   routeName: string | undefined;
-  setIsUpdateRouteDialogOpen: (open: boolean) => void;
   isDeleteDialogOpen: boolean;
   setIsDeleteDialogOpen: (open: boolean) => void;
   setIsDeactivateDialogOpen: (open: boolean) => void;
-  isUpdateRouteDialogOpen: boolean;
-  setRouteName: React.Dispatch<SetStateAction<string | undefined>>;
+  setRouteName: React.Dispatch<SetStateAction<string | undefined | null>>;
 }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
@@ -129,7 +124,7 @@ export function SettingsSheet({
         </SheetTrigger>
         <SheetContent>
           <SheetHeader>
-            <SheetTitle className=" text-left">Portfolio Settings</SheetTitle>
+            <SheetTitle className="text-left">Portfolio Settings</SheetTitle>
           </SheetHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
@@ -150,7 +145,7 @@ export function SettingsSheet({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Route Name</FormLabel>
-                        <div className="flex items-center gap-2 flex-col  lg:flex-row">
+                        <div className="flex flex-col items-center gap-2 lg:flex-row">
                           <FormControl>
                             <Input
                               placeholder={routeName}
@@ -164,7 +159,7 @@ export function SettingsSheet({
                               routeForm.getValues("routeName") === routeName
                             }
                             type="submit"
-                            className=" w-full lg:w-auto"
+                            className="w-full lg:w-auto"
                           >
                             {isPending ? "Updating..." : "Update"}
                           </Button>

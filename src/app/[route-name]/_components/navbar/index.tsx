@@ -9,8 +9,6 @@ import Link from "next/link";
 import { SettingsSheet } from "./SettingsSheet";
 import { MobileMenuSheet } from "./MobileMenuSheet";
 import { DeactivatePortfolioDialog } from "./DeactivatePortfolioDialog";
-import { UpdateRouteDialog } from "./UpdateRouteDialog";
-import { updateRouteName } from "@/actions/create-portfolio-actions";
 
 export const navLinks: NavLink[] = [
   { name: "About Me", href: "#about-me", icon: <User size={20} /> },
@@ -28,11 +26,14 @@ export default function Navbar({
   userRoute,
 }: {
   user: UserType | undefined;
-  userRoute: string | undefined;
+  userRoute: string | null | undefined;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [routeName, setRouteName] = useState(userRoute);
+  const [routeName, setRouteName] = useState<string | null | undefined>(
+    userRoute,
+  );
+
   const [isPortfolioActive, setIsPortfolioActive] = useState(true);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeactivateDialogOpen, setIsDeactivateDialogOpen] = useState(false);
@@ -41,14 +42,16 @@ export default function Navbar({
   return (
     <header className="sticky top-0 z-50 border-b border-border/40 bg-background/95 py-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <nav className="container mx-auto flex items-center justify-between">
-        <Link href={`/${routeName}`} className="text-2xl font-semibold">
-          DevFolio
+       
+        {/* <Link href={`/${routeName}`} className="text-2xl font-semibold"> */}
+        <Link href={`/`} className="text-2xl font-semibold">
+          Portly
         </Link>
 
         {/* Desktop Menu */}
         <div className="hidden items-center gap-6 md:flex">
           <NavItems setIsOpen={setIsOpen} />
-          {user && (
+          {user && routeName && (
             // Settings Sheet
             <SettingsSheet
               {...{

@@ -3,7 +3,7 @@ import Navbar from "./_components/navbar";
 import { getCurrentUser } from "@/lib/session";
 import { getUserRoute } from "@/actions/create-portfolio-actions";
 
-type Props = {};
+
 
 export default async function Layout({
   children,
@@ -12,7 +12,6 @@ export default async function Layout({
 }>) {
   const user = await getCurrentUser();
   const userRoute = await getUserRoute(user?.id || null);
-
   return (
     <div>
       <Navbar user={user} userRoute={userRoute} />
