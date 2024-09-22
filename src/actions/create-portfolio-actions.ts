@@ -203,3 +203,51 @@ export const addProject = async (projectData: Project) => {
   revalidatePath("/");
   return newProject[0];
 };
+
+// create a function to get getProjects with routeName
+
+// export const getProjects = async (routeName: string) => {
+//   const userProjects = await db
+//     .select()
+//     .from(projects)
+//     .innerJoin(routes, eq(projects.routeId, routes.id))
+//     .where(eq(routes.routeName, routeName))
+//     .get();
+
+//   return userProjects;
+// };
+
+// ... existing code ...
+
+// Get projects associated with a specific route name
+export const getProjects = async (routeName: string) => {
+  const userProjects = await db
+    .select({
+      title: projects.title,
+      userId: projects.userId,
+      description: projects.description,
+      id: projects.id,
+      imageUrl: projects.imageUrl,
+      tags: projects.tags,
+      linkLink: projects.liveLink,
+      routeId: projects.routeId,
+      codeLink: projects.codeLink,
+    })
+    .from(projects)
+    .innerJoin(routes, eq(projects.routeId, routes.id))
+    .where(eq(routes.routeName, routeName));
+
+  return userProjects;
+};
+
+// ... existing code ...
+
+// title: string;
+// userId: number;
+// description: string;
+// routeId: number;
+// id?: number | undefined;
+// imageUrl?: string | null | undefined;
+// tags?: string[] | undefined;
+// liveLink?: string | null | undefined;
+// codeLink?:

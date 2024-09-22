@@ -5,15 +5,16 @@ import { Folder, Plus } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { ProjectCard } from "./ProjectCard";
-import { projects } from "./data";
+// import { projects } from "./data";
 import { AddProjectDialogComponent } from "./add-project-dialog";
 import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
 import { User as UserType } from "lucia";
 import { Suspense } from "react";
-import { UserRoute } from "@/db/schema";
+import { Project } from "@/db/schema";
 
 type ProjectSectionType = {
   user: UserType | undefined;
+  projects: Project[];
   userRoute:
     | {
         routeName: string;
@@ -24,7 +25,11 @@ type ProjectSectionType = {
     | undefined;
 };
 
-export function ProjectsSection({ user, userRoute }: ProjectSectionType) {
+export function ProjectsSection({
+  user,
+  userRoute,
+  projects,
+}: ProjectSectionType) {
   const canEdit = useCanEditPortfolio(user);
 
   return (
@@ -42,9 +47,7 @@ export function ProjectsSection({ user, userRoute }: ProjectSectionType) {
         </Suspense>
       </section>
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {projects.map((project) => (
-          <ProjectCard key={project.name} project={project} />
-        ))}
+        {projects?.map((project, i) => <ProjectCard key={i} {...project} />)}
       </div>
       <div className="flex items-center">
         <Link

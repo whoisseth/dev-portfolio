@@ -5,6 +5,7 @@ import { WorkExperienceDisplay } from "./_components/work-experience-display";
 import TogglePreviewBtn from "./_components/toggle-preview-btn";
 import {
   getHeroSectionData,
+  getProjects,
   getUserRoute,
 } from "@/actions/create-portfolio-actions";
 import { getCurrentUser } from "@/lib/session";
@@ -18,8 +19,9 @@ export default async function UserPage({ params }: Props) {
   const userRoute = await getUserRoute(user?.id || null);
   const routeName = params["route-name"].split("/")[0]; // Get the first part after the domain
   const heroSection = await getHeroSectionData(routeName);
+  const projects = await getProjects(routeName);
 
-  // console.log("heroSection data:", heroSection);
+  console.log("projects ---:", projects);
 
   return (
     <div className="relative">
@@ -27,7 +29,7 @@ export default async function UserPage({ params }: Props) {
         <Hero user={user} heroSection={heroSection.hero_section} />
       )}
 
-      <ProjectsSection user={user} userRoute={userRoute} />
+      <ProjectsSection projects={projects} user={user} userRoute={userRoute} />
       <WorkExperienceDisplay />
     </div>
   );

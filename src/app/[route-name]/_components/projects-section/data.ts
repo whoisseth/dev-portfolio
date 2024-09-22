@@ -1,6 +1,4 @@
-import { Project } from "./ProjectCard";
-
-export const projects: Project[] = [
+export const projects = [
   {
     name: "E-commerce Platform",
     description:

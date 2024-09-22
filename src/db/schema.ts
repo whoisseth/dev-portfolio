@@ -140,5 +140,4 @@ export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type HeroSection = typeof heroSection.$inferInsert;
 export type Project = typeof projects.$inferInsert;
-
 export type UserRoute = typeof routes.$inferSelect;
