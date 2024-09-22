@@ -17,7 +17,7 @@ type Props = {
 export default async function UserPage({ params }: Props) {
   const user = await getCurrentUser();
   const userRoute = await getUserRoute(user?.id || null);
-  const routeName = params["route-name"].split("/")[0]; // Get the first part after the domain
+  const routeName = params["route-name"].split("/")[0].toLowerCase(); // Get the first part after the domain
   const heroSection = await getHeroSectionData(routeName);
   const projects = await getProjects(routeName);
 

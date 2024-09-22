@@ -136,6 +136,15 @@ export const projects = sqliteTable("projects", {
   codeLink: text("code-link"),
 });
 
+// reserved routes 
+export const reservedRoutes = sqliteTable("reserved_routes", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  routeName: text("route_name").notNull().unique(),
+});
+
+
+
+export type ReservedRoute = typeof reservedRoutes.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type HeroSection = typeof heroSection.$inferInsert;

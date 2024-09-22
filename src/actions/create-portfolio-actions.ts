@@ -6,10 +6,11 @@ import {
   HeroSection,
   Project,
   projects,
+  reservedRoutes,
   routes,
 } from "@/db/schema";
 import { getCurrentUser } from "@/lib/session";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 export const addHeroSection = async (d: HeroSection) => {
@@ -28,10 +29,18 @@ export const addRoute = async (d: string) => {
   if (!user) {
     throw new Error("User not authenticated");
   }
+
+  const lowercaseRouteName = d.toLowerCase();
+
+  const isAvailable = await checkRouteAvailability(lowercaseRouteName);
+  if (!isAvailable) {
+    throw new Error("Route name is already taken or reserved");
+  }
+
   const route = await db
     .insert(routes)
     .values({
-      routeName: d,
+      routeName: lowercaseRouteName,
       userId: user.id,
     })
     .returning();
@@ -46,14 +55,21 @@ export const checkRouteAvailability = async (routeName: string) => {
     throw new Error("User not authenticated");
   }
 
+  const lowercaseRouteName = routeName.toLowerCase();
+
   const route = await db
     .select()
     .from(routes)
-    .where(eq(routes.routeName, routeName))
+    .where(sql`LOWER(${routes.routeName}) = ${lowercaseRouteName}`)
     .get();
 
-  // If the result is undefined, the username doesn't exist
-  return !route;
+  const reservedRoute = await db
+    .select()
+    .from(reservedRoutes)
+    .where(sql`LOWER(${reservedRoutes.routeName}) = ${lowercaseRouteName}`)
+    .get();
+
+  return !route && !reservedRoute;
 };
 
 // ... existing code ...
@@ -164,8 +180,8 @@ export const updateRouteName = async (
   // Check if the new route name is available
   const isAvailable = await checkRouteAvailability(newRouteName);
   if (!isAvailable) {
-    console.log(`New route name is already taken: ${newRouteName}`);
-    throw new Error("The new route name is already taken");
+    console.log(`New route name is already taken or reserved: ${newRouteName}`);
+    throw new Error("The new route name is already taken or reserved");
   }
 
   // Update the route
