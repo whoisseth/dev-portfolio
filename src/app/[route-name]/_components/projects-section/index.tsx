@@ -47,7 +47,14 @@ export function ProjectsSection({
         </Suspense>
       </section>
       <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {projects?.map((project, i) => <ProjectCard key={i} {...project} />)}
+        {projects?.map((project, i) => (
+          <ProjectCard
+            canEdit={canEdit}
+            userRoute={userRoute}
+            key={i}
+            project={project}
+          />
+        ))}
       </div>
       <div className="flex items-center">
         <Link

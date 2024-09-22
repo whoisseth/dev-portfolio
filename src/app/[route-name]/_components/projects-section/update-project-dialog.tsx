@@ -25,22 +25,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { addProject } from "@/actions/create-portfolio-actions";
-import { Project, UserRoute } from "@/db/schema";
+import { addProject, updateProject } from "@/actions/create-portfolio-actions";
 import { useToast } from "@/components/ui/use-toast";
+import { FilePen, PenIcon } from "lucide-react";
+import { Project } from "@/db/schema";
+import { projectSchema } from "./add-project-dialog";
 
-export const projectSchema = z.object({
-  title: z.string().min(3, "Title is required"),
-  description: z.string().min(10, "Description is required"),
-  imageUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
-  tags: z.array(z.string()).default([]),
-  liveLink: z.string().url("Invalid URL").optional().or(z.literal("")),
-  codeLink: z.string().url("Invalid URL").optional().or(z.literal("")),
-});
-
-export type ProjectFormValues = z.infer<typeof projectSchema>;
+type ProjectFormValues = z.infer<typeof projectSchema>;
 
 type Props = {
+  project: Project;
   userRoute: {
     routeName: string;
     routeId: number;
@@ -48,7 +42,7 @@ type Props = {
   };
 };
 
-export function AddProjectDialogComponent({ userRoute }: Props) {
+export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -58,40 +52,51 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
     defaultValues: {
-      title: "",
-      description: "",
-      imageUrl: "",
-      tags: [],
-      liveLink: "",
-      codeLink: "",
+      title: project.title,
+      description: project.description,
+      imageUrl: project.imageUrl ?? undefined,
+      tags: project.tags,
+      liveLink: project.liveLink ?? undefined,
+      codeLink: project.codeLink ?? undefined,
     },
   });
 
   async function onSubmit(data: ProjectFormValues) {
     startTransition(async () => {
       try {
-        await addProject({
-          ...data,
-          imageUrl: data.imageUrl || null,
-          liveLink: data.liveLink || null,
-          codeLink: data.codeLink || null,
-          userId: userRoute.userId,
-          routeId: userRoute.routeId,
+        await updateProject({
+          title: data.title,
+          description: data.description,
+          imageUrl: data.imageUrl,
+          tags: data.tags,
+          liveLink: data.liveLink,
+          codeLink: data.codeLink,
+          userId: userRoute.userId, // Add this line
+          routeId: userRoute.routeId, // Add this line
+          id: project.id,
         });
+        // await addProject({
+        //   ...data,
+        //   imageUrl: data.imageUrl || null,
+        //   liveLink: data.liveLink || null,
+        //   codeLink: data.codeLink || null,
+        //   userId: userRoute.userId,
+        //   routeId: userRoute.routeId,
+        // });
 
         toast({
           title: "Success",
-          description: "Project added successfully!",
+          description: "Project Updated successfully!",
           variant: "default",
         });
 
         setOpen(false);
         form.reset();
       } catch (error) {
-        console.error("Error adding project:", error);
+        console.error("Error updating project:", error);
         toast({
           title: "Error",
-          description: `Failed to add project. Please try again.- ${error} `,
+          description: `Failed to update project. Please try again.- ${error} `,
           variant: "destructive",
         });
       }
@@ -101,14 +106,32 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">Add Project</Button>
+        {/* <Button
+          variant="outline"
+          size="sm"
+          className="flex items-center mt-2 mx-2 space-x-2 transition-all duration-200 ease-in-out hover:bg-primary hover:text-primary-foreground"
+        >
+          <PenIcon className="h-4 w-4" />
+          <span>Edit Project</span>
+        </Button> */}
+
+        <Button
+          variant={"outline"}
+          size={"sm"}
+          className="absolute left-1 top-1 z-50"
+        >
+          <FilePen size={16} className="mr-2" />
+          Edit
+        </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add New Project</DialogTitle>
+          <DialogTitle>Update Project</DialogTitle>
           <DialogDescription>
-            Fill in the details of your new project. Click add when you're done.
+            Update the details of your existing project. Click Update when
+            you're done.
             {/* -{JSON.stringify(userRoute)} */}
+            {/* project-{JSON.stringify(project)} */}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -155,6 +178,7 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
                 </FormItem>
               )}
             />
+
             <FormField
               control={form.control}
               name="tags"
@@ -167,7 +191,7 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
                       {...field}
                       onChange={(e) =>
                         field.onChange(
-                          e.target.value.split(", ").map((tag) => tag.trim()),
+                          e.target.value.split(",").map((tag) => tag.trim()),
                         )
                       }
                     />
@@ -210,7 +234,7 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
             />
             <DialogFooter className="mt-4">
               <Button disabled={isPending} type="submit">
-                {isPending ? "Adding..." : "Add Project"}
+                {isPending ? "Updating..." : "Update Project"}
               </Button>
             </DialogFooter>
           </form>

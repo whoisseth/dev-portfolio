@@ -242,6 +242,48 @@ export const getProjects = async (routeName: string) => {
 
 // ... existing code ...
 
+export const updateProject = async (projectData: Project) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  if (!projectData.id) {
+    throw new Error("Project ID is required for updating");
+  }
+
+  // Check if the project belongs to the current user
+  const existingProject = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.id, projectData.id))
+    .get();
+
+  if (!existingProject || existingProject.userId !== user.id) {
+    throw new Error("You do not have permission to update this project");
+  }
+
+  const updatedProject = await db
+    .update(projects)
+    .set({
+      title: projectData.title,
+      description: projectData.description,
+      imageUrl: projectData.imageUrl,
+      tags: projectData.tags,
+      liveLink: projectData.liveLink,
+      codeLink: projectData.codeLink,
+    })
+    .where(eq(projects.id, projectData.id))
+    .returning();
+
+  revalidatePath("/");
+  return updatedProject[0];
+};
+
+// ... existing code ...
+
+// ... existing code ...
+
 // title: string;
 // userId: number;
 // description: string;
