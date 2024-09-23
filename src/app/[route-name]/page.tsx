@@ -26,7 +26,11 @@ export default async function UserPage({ params }: Props) {
   return (
     <div className="relative">
       {heroSection && (
-        <Hero user={user} heroSection={heroSection.hero_section} />
+        <Hero
+          user={user}
+          heroSection={heroSection.hero_section}
+          routeName={routeName}
+        />
       )}
 
       <ProjectsSection projects={projects} user={user} userRoute={userRoute} />

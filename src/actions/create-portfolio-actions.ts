@@ -8,6 +8,7 @@ import {
   projects,
   reservedRoutes,
   routes,
+  users,
 } from "@/db/schema";
 import { getCurrentUser } from "@/lib/session";
 import { eq, sql } from "drizzle-orm";
@@ -296,16 +297,15 @@ export const updateProject = async (projectData: Project) => {
   return updatedProject[0];
 };
 
-// ... existing code ...
-
-// ... existing code ...
-
-// title: string;
-// userId: number;
-// description: string;
-// routeId: number;
-// id?: number | undefined;
-// imageUrl?: string | null | undefined;
-// tags?: string[] | undefined;
-// liveLink?: string | null | undefined;
-// codeLink?:
+// create a function to get all users with get a Full Name from heroSection , and get routeName from routes table without login
+export const getAllUsers = async () => {
+  const allUsers = await db
+    .select({
+      sno: sql<number>`ROW_NUMBER() OVER (ORDER BY ${heroSection.fullName})`,
+      fullName: heroSection.fullName,
+      routeName: routes.routeName,
+    })
+    .from(heroSection)
+    .innerJoin(routes, eq(heroSection.routeId, routes.id));
+  return allUsers;
+};

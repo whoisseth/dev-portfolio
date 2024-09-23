@@ -26,11 +26,12 @@ import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
 import { FilePen } from "lucide-react";
 
 type HeroProps = {
+  routeName: string;
   heroSection: HeroSection;
   user: User | undefined;
 };
 
-export function Hero({ heroSection, user }: HeroProps) {
+export function Hero({ heroSection, user, routeName }: HeroProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isPending, startTransition] = useTransition();
   const canEdit = useCanEditPortfolio(user);
@@ -406,8 +407,11 @@ export function Hero({ heroSection, user }: HeroProps) {
             className="!dark:fill-white rounded-full !fill-black dark:invert"
             // add freckles
             // add glasses
+            //                     {/* notionists */}
+            // lorelei
 
-            src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${avatarName}&flip=${avatarFlip}&avatarClip=${avatarClip}&beard=${avatarBeard}&freckles=${avatarFreckles}&glasses=${avatarGlasses}&gender=${avatarGender}&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
+            src={`https://api.dicebear.com/9.x/notionists/svg?seed=${routeName}&flip=true&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
+            // src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${avatarName}&flip=${avatarFlip}&avatarClip=${avatarClip}&beard=${avatarBeard}&freckles=${avatarFreckles}&glasses=${avatarGlasses}&gender=${avatarGender}&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
             // src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${avatarName}&flip=${avatarFlip}&avatarClip=${avatarClip}&beard=${avatarBeard}&freckles=${avatarFreckles}&glasses=${avatarGlasses}&gender=${avatarGender}&hairAccessoriesProbability=10&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
             alt="avatar"
           />
