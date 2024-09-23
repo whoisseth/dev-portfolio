@@ -11,6 +11,7 @@ import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
 import { User as UserType } from "lucia";
 import { Suspense } from "react";
 import { Project } from "@/db/schema";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 type ProjectSectionType = {
   user: UserType | undefined;
@@ -31,6 +32,7 @@ export function ProjectsSection({
   projects,
 }: ProjectSectionType) {
   const canEdit = useCanEditPortfolio(user);
+  const [animationParent] = useAutoAnimate();
 
   return (
     <section id="projects" className="bg-background py-8">
@@ -46,7 +48,10 @@ export function ProjectsSection({
           )}
         </Suspense>
       </section>
-      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <div
+        ref={animationParent}
+        className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+      >
         {projects?.map((project, i) => (
           <ProjectCard
             canEdit={canEdit}

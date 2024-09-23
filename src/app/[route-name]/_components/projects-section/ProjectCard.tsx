@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -10,13 +9,10 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, FilePen, Github, Trash } from "lucide-react";
+import { ExternalLink, Github } from "lucide-react";
 import { Project } from "@/db/schema";
 import Link from "next/link";
 import { UpdateProjectDialogComponent } from "./update-project-dialog";
-import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
-import { deleteProject } from "@/actions/create-portfolio-actions";
-import { toast } from "sonner";
 import { DeleteProjectDialog } from "./delete-project-dialog";
 
 type props = {
@@ -33,34 +29,17 @@ type props = {
 };
 
 export const ProjectCard = ({ project, userRoute, canEdit }: props) => {
-  // const [imgSrc, setImgSrc] = useState(project.imageUrl);
-
-  async function handleDeleteProject() {
-    console.log("this is deleting -", project.title);
-    if (!project.id) {
-      return;
-    }
-    try {
-      await deleteProject(project.id);
-      toast.success("Project deleted successfully");
-    } catch (error) {
-      toast.error("Failed to delete project");
-      console.error("Error deleting project:", error);
-    }
-  }
-
   return (
     <Card className="relative flex h-full flex-col">
-      {/* edit btn */}
-      <div className="absolute left-1 top-1 z-10 flex gap-2">
-        {userRoute && canEdit && (
+      {userRoute && canEdit && (
+        <div className="absolute left-1 top-1 z-10 flex gap-2">
           <UpdateProjectDialogComponent
             userRoute={userRoute}
             project={project}
           />
-        )}
-        <DeleteProjectDialog project={project} />
-      </div>
+          <DeleteProjectDialog project={project} />
+        </div>
+      )}
 
       <CardHeader className="p-4">
         <img
