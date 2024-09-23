@@ -297,6 +297,26 @@ export const updateProject = async (projectData: Project) => {
   return updatedProject[0];
 };
 
+// create a fuction to delete a project
+export const deleteProject = async (projectId: number) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  const existingProject = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.id, projectId))
+    .get();
+  if (!existingProject || existingProject.userId !== user.id) {
+    throw new Error("You do not have permission to delete this project");
+  }
+
+  await db.delete(projects).where(eq(projects.id, projectId));
+  revalidatePath("/");
+};
+
 // create a function to get all users with get a Full Name from heroSection , and get routeName from routes table without login
 export const getAllUsers = async () => {
   const allUsers = await db

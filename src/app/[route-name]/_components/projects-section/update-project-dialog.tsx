@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { addProject, updateProject } from "@/actions/create-portfolio-actions";
+import { updateProject } from "@/actions/create-portfolio-actions";
 import { useToast } from "@/components/ui/use-toast";
 import { FilePen, PenIcon } from "lucide-react";
 import { Project } from "@/db/schema";
@@ -108,21 +108,12 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        {/* <Button
-          variant="outline"
-          size="sm"
-          className="flex items-center mt-2 mx-2 space-x-2 transition-all duration-200 ease-in-out hover:bg-primary hover:text-primary-foreground"
-        >
-          <PenIcon className="h-4 w-4" />
-          <span>Edit Project</span>
-        </Button> */}
-
         <Button
           variant={"outline"}
           size={"sm"}
-          className="absolute left-1 top-1 z-50"
+          className="text-xs h-8 "
         >
-          <FilePen size={16} className="mr-2" />
+          <FilePen size={14} className="mr-2" />
           Edit
         </Button>
       </DialogTrigger>
