@@ -78,6 +78,8 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
     },
   });
 
+  const { isDirty: isRouteNameDirty } = routeForm.formState; // Add this line
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -86,6 +88,8 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
       email: "",
     },
   });
+
+  const { isDirty: isFormDirty } = form.formState; // Add this line
 
   const handleRouteAvailability = async (
     data: z.infer<typeof RouteFormSchema>,
@@ -265,7 +269,7 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
                         <Button
                           type="submit"
                           className="whitespace-nowrap"
-                          disabled={isChecking}
+                          disabled={isChecking || !isRouteNameDirty}
                         >
                           {isChecking ? "Checking..." : "Check Availability"}
                         </Button>
@@ -511,7 +515,11 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
                     </FormItem>
                   )}
                 />
-                <Button type="submit" className="w-full" disabled={isPending}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  disabled={isPending || !isFormDirty}
+                >
                   {isPending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

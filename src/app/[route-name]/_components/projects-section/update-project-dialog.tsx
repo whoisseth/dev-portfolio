@@ -61,6 +61,8 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
     },
   });
 
+  const { isDirty } = form.formState; // Add this line
+
   async function onSubmit(data: ProjectFormValues) {
     startTransition(async () => {
       try {
@@ -233,7 +235,7 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
               )}
             />
             <DialogFooter className="mt-4">
-              <Button disabled={isPending} type="submit">
+              <Button disabled={isPending || !isDirty} type="submit">
                 {isPending ? "Updating..." : "Update Project"}
               </Button>
             </DialogFooter>

@@ -23,6 +23,7 @@ import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { User } from "lucia";
 import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
+import { FilePen } from "lucide-react";
 
 type HeroProps = {
   heroSection: HeroSection;
@@ -65,6 +66,7 @@ export function Hero({ heroSection, user }: HeroProps) {
       phoneNumber: heroSection.phoneNumber ?? undefined,
     },
   });
+  const { isDirty } = form.formState; // Add this line
 
   // console.log("Form data:", form.getValues());
   console.log("Phone number:", form.getValues("phoneNumber"));
@@ -370,7 +372,7 @@ export function Hero({ heroSection, user }: HeroProps) {
                       Cancel
                     </Button>
                     <Button
-                      disabled={isPending}
+                      disabled={isPending || !isDirty}
                       className="w-full"
                       type="submit"
                     >
@@ -386,7 +388,7 @@ export function Hero({ heroSection, user }: HeroProps) {
                     type="button"
                     onClick={() => setIsEditing(true)}
                   >
-                    Edit
+                    <FilePen size={16} className="mr-2" /> Edit
                   </Button>
                 )}
               </div>
@@ -394,8 +396,8 @@ export function Hero({ heroSection, user }: HeroProps) {
           </Form>
         </div>
         {/* right side avatar */}
-        <div className="flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-3 lg:max-w-none  ">
-           {/* <LaptopSvg className="h-auto w-full" /> */}
+        <div className="flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-3 lg:max-w-none">
+          {/* <LaptopSvg className="h-auto w-full" /> */}
           {/* Oreo is the avatar name */}
           <img
             // className="rounded-full border-2 bg-secondary   border-primary"
