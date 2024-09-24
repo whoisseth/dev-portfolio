@@ -173,7 +173,7 @@ export default function AvatarEditor({
                 key={variant}
                 variant={
                   Array.isArray(currentOptions[feature]) &&
-                  currentOptions[feature][0] === variant
+                  (currentOptions[feature] as any[])[0] === variant
                     ? "default"
                     : "secondary"
                 }

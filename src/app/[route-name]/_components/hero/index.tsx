@@ -413,11 +413,11 @@ export function Hero({ heroSection, user, routeName }: HeroProps) {
               avatarOptions={avatarOptions}
               setAvatarOptions={setAvatarOptions}
               user={user}
-              className="absolute right-2 top-2"
+              className="absolute right-0 top-5"
             />
           )}
-         
-          <div className="bg-mute flex h-auto w-full flex-1 items-center justify-center rounded-full bg-muted  ">
+
+          <div className="bg-mute flex h-auto w-full flex-1 items-center justify-center rounded-full bg-muted">
             <div
               //
               className="h-full w-full"
