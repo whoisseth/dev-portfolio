@@ -47,8 +47,8 @@ export function UserTableComponent({ users }: UserTableProps) {
   };
 
   return (
-    <div className="w-full">
-      <h1 className="mb-4 text-2xl font-bold">
+    <div className="w-full lg:max-w-3xl">
+      <h1 className="mb-4 text-2xl font-bold pl-1">
         <span className="text-blue-500"> {users.length}</span> People Built
         their Portfolio
       </h1>
@@ -62,7 +62,7 @@ export function UserTableComponent({ users }: UserTableProps) {
                   <div>Full Name</div>
                 </TableHead>
                 <TableHead>URL</TableHead>
-                <TableHead className="hidden md:table-cell">
+                <TableHead className="hidden sm:table-cell">
                   Route Name
                 </TableHead>
               </TableRow>
@@ -70,7 +70,7 @@ export function UserTableComponent({ users }: UserTableProps) {
             <TableBody>
               {getCurrentPageData().map((user, i) => (
                 <TableRow key={i} className=" ">
-                  <TableCell className="py-0 ">
+                  <TableCell className="py-0">
                     <div className="flex items-center gap-2">
                       <p className="whitespace-nowrap"> {user.sno} -</p>
                       {/* notionists */}
@@ -88,12 +88,12 @@ export function UserTableComponent({ users }: UserTableProps) {
                   <TableCell>
                     <Link
                       href={`/${user.routeName}`}
-                      className="text-blue-500 hover:underline  text-base"
+                      className="text-base text-blue-500 hover:underline"
                     >
                       portly.dev/{user.routeName}
                     </Link>
                   </TableCell>
-                  <TableCell className="hidden md:table-cell text-base">
+                  <TableCell className="hidden text-base sm:table-cell">
                     {user.routeName}
                   </TableCell>
                 </TableRow>

@@ -10,7 +10,7 @@ type Props = {
 
 export default function RightSection({ user }: Props) {
   return (
-    <div className="h-fit rounded-md bg-muted/50 p-6 md:w-1/2">
+    <div className="h-fit rounded-md bg-muted/50  p-6 lg:w-1/2">
       <h1 className="mb-4 text-3xl font-bold">
         Build Your{" "}
         <span className="underline underline-offset-4">
