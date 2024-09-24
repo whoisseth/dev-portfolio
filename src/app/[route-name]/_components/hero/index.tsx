@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import LaptopSvg from "./svg/laptop";
 import { Briefcase, Github, Linkedin, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 import { HeroSection } from "@/db/schema";
@@ -24,6 +23,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { User } from "lucia";
 import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
 import { FilePen } from "lucide-react";
+import AvatarEditor, { AvatarOptions } from "./_components/avatar-editor";
+import { createAvatar, Options } from "@dicebear/core";
+import { notionists } from "@dicebear/collection";
 
 type HeroProps = {
   routeName: string;
@@ -31,27 +33,35 @@ type HeroProps = {
   user: User | undefined;
 };
 
+export const initialOptions: AvatarOptions = {
+  seed: "avatar",
+  flip: true,
+  scale: 100,
+  body: ["variant01", "variant02", "variant03"],
+  brows: ["variant01"],
+  gesture: ["hand"],
+  hair: ["variant01"],
+  lips: ["variant01"],
+  nose: ["variant01"],
+};
+
 export function Hero({ heroSection, user, routeName }: HeroProps) {
   const [isEditing, setIsEditing] = useState(false);
+
   const [isPending, startTransition] = useTransition();
   const canEdit = useCanEditPortfolio(user);
+  const [avatarOptions, setAvatarOptions] = useState<AvatarOptions>(
+    heroSection.avatarOptions as AvatarOptions,
+  );
 
   console.log("About me id:", heroSection.id);
 
-  // const avatarName = aboutMe.fullName.split(" ").join("");
-  const avatarName = "Oreo";
-  const avatarFlip = "true";
-  const avatarClip = "true"; // not wokring
-  const avatarBeard = "variant01"; // not working
-  // freckles=variant0
-  // crete a variable for avatarfles
-  const avatarFreckles = "variant01"; // not working
-
-  const avatarGlasses = "variant04";
-  // gender=female
-  const avatarGender = "female";
-
-  //
+  const avatar = createAvatar(
+    notionists,
+    avatarOptions as Partial<Options & Options>,
+  );
+  const svg = avatar.toString();
+  console.log("SVG0-", svg); // Add this line to check the SVG content
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -398,23 +408,22 @@ export function Hero({ heroSection, user, routeName }: HeroProps) {
         </div>
         {/* right side avatar */}
         <div className="flex w-full max-w-2xl flex-1 flex-col items-center justify-center gap-3 lg:max-w-none">
-          {/* <LaptopSvg className="h-auto w-full" /> */}
-          {/* Oreo is the avatar name */}
-          <img
-            // className="rounded-full border-2 bg-secondary   border-primary"
-            // dark:bg-[]
-            // className="rounded-full  !fill-black !dark:fill-white  dark:invert   border-primary"
-            className="!dark:fill-white rounded-full !fill-black dark:invert"
-            // add freckles
-            // add glasses
-            //                     {/* notionists */}
-            // lorelei
-
-            src={`https://api.dicebear.com/9.x/notionists/svg?seed=${routeName}&flip=true&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
-            // src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${avatarName}&flip=${avatarFlip}&avatarClip=${avatarClip}&beard=${avatarBeard}&freckles=${avatarFreckles}&glasses=${avatarGlasses}&gender=${avatarGender}&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
-            // src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${avatarName}&flip=${avatarFlip}&avatarClip=${avatarClip}&beard=${avatarBeard}&freckles=${avatarFreckles}&glasses=${avatarGlasses}&gender=${avatarGender}&hairAccessoriesProbability=10&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
-            alt="avatar"
-          />
+          {canEdit && user && (
+            <AvatarEditor
+              avatarOptions={avatarOptions}
+              setAvatarOptions={setAvatarOptions}
+              user={user}
+              className="absolute right-2 top-2"
+            />
+          )}
+         
+          <div className="bg-mute flex h-auto w-full flex-1 items-center justify-center rounded-full bg-muted  ">
+            <div
+              //
+              className="h-full w-full"
+              dangerouslySetInnerHTML={{ __html: svg }}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -65,4 +65,38 @@ async function populateReservedRoutes() {
   }
 }
 
-populateReservedRoutes();
+// populateReservedRoutes();
+
+import { heroSection } from "@/db/schema";
+import { sql } from "drizzle-orm";
+
+async function updateAvatarOptions() {
+  // Fetch all hero sections
+  const heroSections = await db.select().from(heroSection).all();
+
+  for (const section of heroSections) {
+    const { id, fullName, avatarOptions } = section;
+
+    // Ensure avatarOptions is a string before parsing
+    let options =
+      typeof avatarOptions === "string" ? JSON.parse(avatarOptions) : {};
+
+    // Update the seed to the full name and set flip to true if not already set
+    options.seed = fullName;
+    if (options.flip === undefined) {
+      options.flip = true;
+    }
+
+    // Update the record in the database
+    await db
+      .update(heroSection)
+      .set({ avatarOptions: sql`${JSON.stringify(options)}` })
+      .where(sql`${heroSection.id} = ${id}`);
+  }
+
+  console.log("Avatar options updated successfully.");
+}
+
+updateAvatarOptions().catch((error) => {
+  console.error("Error updating avatar options:", error);
+});

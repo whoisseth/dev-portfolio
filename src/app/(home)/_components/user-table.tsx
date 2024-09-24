@@ -13,19 +13,20 @@ import {
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight, Ghost } from "lucide-react";
+import { createAvatar, Options } from "@dicebear/core";
+import { notionists } from "@dicebear/collection";
+import { AvatarOptions } from "@/app/[route-name]/_components/hero/_components/avatar-editor";
 
 interface User {
   sno: number;
   fullName: string;
   routeName: string;
+  avatarOptions: AvatarOptions | null;
 }
 
 interface UserTableProps {
@@ -48,7 +49,7 @@ export function UserTableComponent({ users }: UserTableProps) {
 
   return (
     <div className="w-full lg:max-w-3xl">
-      <h1 className="mb-4 text-2xl font-bold pl-1">
+      <h1 className="mb-4 pl-1 text-2xl font-bold">
         <span className="text-blue-500"> {users.length}</span> People Built
         their Portfolio
       </h1>
@@ -75,11 +76,14 @@ export function UserTableComponent({ users }: UserTableProps) {
                       <p className="whitespace-nowrap"> {user.sno} -</p>
                       {/* notionists */}
                       {/* lorelei */}
-                      <img
+                      {user.avatarOptions && (
+                        <AvatarComponent avatarOptions={user.avatarOptions} />
+                      )}
+                      {/* <img
                         src={`https://api.dicebear.com/9.x/notionists/svg?seed=${user.routeName}&flip=true&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
                         alt="avatar-img"
                         className="size-7 rounded-full border"
-                      />
+                      /> */}
                     </div>
                   </TableCell>
                   <TableCell className="whitespace-nowrap text-base">
@@ -144,5 +148,25 @@ export function UserTableComponent({ users }: UserTableProps) {
         </Pagination>
       </section>
     </div>
+  );
+}
+
+function AvatarComponent({
+  avatarOptions,
+}: {
+  avatarOptions: Partial<Options & Options>;
+}) {
+  const avatar = createAvatar(
+    notionists,
+    avatarOptions as Partial<Options & Options>,
+  );
+  const svg = avatar.toString();
+  console.log("SVG0-", svg);
+  return (
+    <div
+      //
+      className="size-7 rounded-full border bg-muted"
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
   );
 }

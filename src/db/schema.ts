@@ -1,3 +1,4 @@
+import { AvatarOptions } from "@/app/[route-name]/_components/hero/_components/avatar-editor";
 import { sql } from "drizzle-orm";
 import { integer, text, sqliteTableCreator } from "drizzle-orm/sqlite-core";
 
@@ -106,6 +107,9 @@ export const heroSection = sqliteTable("hero_section", {
   phoneNumber: text("phone_number"),
   linkedIn: text("linkedin"),
   github: text("github"),
+  avatarOptions: text("avatar_options", { mode: "json" })
+    .$type<AvatarOptions>()
+    .default(sql`(json_object('seed', fullName, 'flip', true))`), // Set default seed to fullName and flip to true
   routeId: integer("route_id", { mode: "number" })
     .references(() => routes.id, {
       onDelete: "cascade",
@@ -136,13 +140,11 @@ export const projects = sqliteTable("projects", {
   codeLink: text("code-link"),
 });
 
-// reserved routes 
+// reserved routes
 export const reservedRoutes = sqliteTable("reserved_routes", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   routeName: text("route_name").notNull().unique(),
 });
-
-
 
 export type ReservedRoute = typeof reservedRoutes.$inferSelect;
 export type User = typeof users.$inferSelect;

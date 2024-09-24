@@ -1,5 +1,6 @@
 "use server";
 
+import { AvatarOptions } from "@/app/[route-name]/_components/hero/_components/avatar-editor";
 import { db } from "@/db";
 import {
   heroSection,
@@ -324,8 +325,37 @@ export const getAllUsers = async () => {
       sno: sql<number>`ROW_NUMBER() OVER (ORDER BY ${heroSection.fullName})`,
       fullName: heroSection.fullName,
       routeName: routes.routeName,
+      avatarOptions: heroSection.avatarOptions,
     })
     .from(heroSection)
     .innerJoin(routes, eq(heroSection.routeId, routes.id));
   return allUsers;
+};
+
+export const updateAvatarOptions = async (
+  userId: number,
+  avatarOptions: AvatarOptions,
+) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  // Check if the hero section belongs to the current user
+  const heroSectionData = await db
+    .select()
+    .from(heroSection)
+    .innerJoin(routes, eq(heroSection.routeId, routes.id))
+    .where(eq(heroSection.userId, userId))
+    .get();
+
+  if (!heroSectionData || heroSectionData.routes.userId !== user.id) {
+    throw new Error("You do not have permission to update this hero section");
+  }
+
+  await db
+    .update(heroSection)
+    .set({ avatarOptions })
+    .where(eq(heroSection.userId, userId));
+  revalidatePath("/");
 };
