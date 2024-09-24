@@ -385,7 +385,7 @@ export function Hero({ heroSection, user, routeName }: HeroProps) {
                 {!isEditing && canEdit && user && (
                   <Button
                     className="w-full"
-                    variant={"secondary"}
+                    variant={"outline"}
                     type="button"
                     onClick={() => setIsEditing(true)}
                   >
