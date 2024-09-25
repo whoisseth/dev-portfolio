@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import {
   Table,
@@ -17,10 +17,9 @@ import {
   PaginationLink,
 } from "@/components/ui/pagination";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight, Ghost } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { createAvatar, Options } from "@dicebear/core";
 import { notionists } from "@dicebear/collection";
-import { AvatarOptions } from "@/app/[route-name]/_components/hero/_components/avatar-editor";
 
 interface User {
   sno: number;
@@ -33,11 +32,11 @@ interface UserTableProps {
   users: User[];
 }
 
-// const avatar = "https://api.dicebear.com/9.x/lorelei/svg?seed=1&flip=true";
-// const avatar = "https://api.dicebear.com/9.x/lorelei/svg?seed=Aiden1";
+interface AvatarOptions extends Partial<Options> {}
 
 export function UserTableComponent({ users }: UserTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
+  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(users.length / itemsPerPage);
 
@@ -47,10 +46,32 @@ export function UserTableComponent({ users }: UserTableProps) {
     return users.slice(startIndex, endIndex);
   };
 
+  const handleTooltipToggle = (index: number) => {
+    setOpenTooltipIndex(openTooltipIndex === index ? null : index);
+  };
+
+  const closeTooltip = useCallback(() => {
+    setOpenTooltipIndex(null);
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (!(event.target as Element).closest('.tooltip-trigger')) {
+        closeTooltip();
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [closeTooltip]);
+
   return (
     <div className="w-full lg:max-w-3xl">
       <h1 className="mb-4 pl-1 text-2xl font-bold">
-        <span className="text-blue-500"> {users.length}</span> People Built
+        <span className="text-blue-500">{users.length}</span> People Built
         their Portfolio
       </h1>
       <section style={{ zoom: "80%" }}>
@@ -59,9 +80,7 @@ export function UserTableComponent({ users }: UserTableProps) {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[100px]">Sno.</TableHead>
-                <TableHead>
-                  <div>Full Name</div>
-                </TableHead>
+                <TableHead>Full Name</TableHead>
                 <TableHead>URL</TableHead>
                 <TableHead className="hidden sm:table-cell">
                   Route Name
@@ -70,32 +89,34 @@ export function UserTableComponent({ users }: UserTableProps) {
             </TableHeader>
             <TableBody>
               {getCurrentPageData().map((user, i) => (
-                <TableRow key={i} className=" ">
+                <TableRow key={i}>
                   <TableCell className="py-0">
                     <div className="flex items-center gap-2">
-                      <p className="whitespace-nowrap"> {user.sno} -</p>
-                      {/* notionists */}
-                      {/* lorelei */}
+                      <p className="whitespace-nowrap">{user.sno} -</p>
                       {user.avatarOptions && (
                         <AvatarComponent avatarOptions={user.avatarOptions} />
                       )}
-                      {/* <img
-                        src={`https://api.dicebear.com/9.x/notionists/svg?seed=${user.routeName}&flip=true&mouth=happy01,happy02,happy03,happy04,happy05,happy06,happy07,happy08,happy09,happy10,happy11,happy12,happy13,happy14,happy16`}
-                        alt="avatar-img"
-                        className="size-7 rounded-full border"
-                      /> */}
                     </div>
                   </TableCell>
-                  <TableCell className="whitespace-nowrap text-base">
-                    {user.fullName}
+                  <TableCell className="relative whitespace-normal text-base">
+                    <div className="sm:max-w-full">
+                      <MobileTooltipTrigger
+                        fullName={user.fullName}
+                        routeName={user.routeName}
+                        isOpen={openTooltipIndex === i}
+                        onToggle={() => handleTooltipToggle(i)}
+                      />
+                    </div>
                   </TableCell>
                   <TableCell>
-                    <Link
-                      href={`/${user.routeName}`}
-                      className="text-base text-blue-500 hover:underline"
-                    >
-                      portly.dev/{user.routeName}
-                    </Link>
+                    <div className="max-w-28 truncate sm:max-w-full">
+                      <Link
+                        href={`/${user.routeName}`}
+                        className="text-base text-blue-500 hover:underline"
+                      >
+                        portly.dev/{user.routeName}
+                      </Link>
+                    </div>
                   </TableCell>
                   <TableCell className="hidden text-base sm:table-cell">
                     {user.routeName}
@@ -109,7 +130,7 @@ export function UserTableComponent({ users }: UserTableProps) {
           <PaginationContent>
             <PaginationItem>
               <Button
-                variant={"ghost"}
+                variant="ghost"
                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
               >
@@ -129,7 +150,7 @@ export function UserTableComponent({ users }: UserTableProps) {
             ))}
             <PaginationItem>
               <Button
-                variant={"ghost"}
+                variant="ghost"
                 onClick={() =>
                   setCurrentPage((prev) => Math.min(prev + 1, totalPages))
                 }
@@ -137,12 +158,6 @@ export function UserTableComponent({ users }: UserTableProps) {
               >
                 Next <ChevronRight className="h-4 w-4" />
               </Button>
-
-              {/* <PaginationNext
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                }
-            /> */}
             </PaginationItem>
           </PaginationContent>
         </Pagination>
@@ -154,19 +169,54 @@ export function UserTableComponent({ users }: UserTableProps) {
 function AvatarComponent({
   avatarOptions,
 }: {
-  avatarOptions: Partial<Options & Options>;
+  avatarOptions: Partial<Options>;
 }) {
-  const avatar = createAvatar(
-    notionists,
-    avatarOptions as Partial<Options & Options>,
-  );
+  const avatar = createAvatar(notionists, avatarOptions);
   const svg = avatar.toString();
-  console.log("SVG0-", svg);
   return (
     <div
-      //
       className="size-7 rounded-full border bg-muted"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
+  );
+}
+
+function MobileTooltipTrigger({ 
+  fullName, 
+  routeName, 
+  isOpen, 
+  onToggle 
+}: { 
+  fullName: string; 
+  routeName: string; 
+  isOpen: boolean; 
+  onToggle: () => void;
+}) {
+  const handleTouch = (e: React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggle();
+  };
+
+  return (
+    <div className="relative tooltip-trigger">
+      <div
+        className="sm:hidden max-w-28 truncate"
+        onTouchStart={handleTouch}
+        onTouchEnd={(e) => e.preventDefault()}
+        aria-label={`View details for ${fullName}`}
+        role="button"
+        tabIndex={0}
+      >
+        {fullName}
+      </div>
+      <div className="hidden sm:block">{fullName}</div>
+      {isOpen && (
+        <div className="absolute left-0 z-50 mt-2 w-64 rounded-md bg-white p-2 text-sm text-gray-700 shadow-lg sm:hidden">
+          <p className="font-semibold">Full Name: {fullName}</p>
+          <p>Route Name: {routeName}</p>
+        </div>
+      )}
+    </div>
   );
 }

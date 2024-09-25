@@ -68,7 +68,7 @@ export function Hero({
     avatarOptions as Partial<Options & Options>,
   );
   const svg = avatar.toString();
-  console.log("SVG0-", svg); // Add this line to check the SVG content
+  // console.log("SVG0-", svg); // Add this line to check the SVG content
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -87,7 +87,7 @@ export function Hero({
   const { isDirty } = form.formState; // Add this line
 
   // console.log("Form data:", form.getValues());
-  console.log("Phone number:", form.getValues("phoneNumber"));
+  // console.log("Phone number:", form.getValues("phoneNumber"));
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
