@@ -19,7 +19,7 @@ export const navLinks: NavLink[] = [
     href: "#work-experience",
     icon: <BriefcaseBusiness size={20} />,
   },
-  { name: "Resume", href: "/resume", icon: <FileText size={20} /> },
+  // { name: "Resume", href: "/resume", icon: <FileText size={20} /> },
 ];
 
 export default function Navbar({

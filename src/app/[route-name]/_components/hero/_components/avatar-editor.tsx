@@ -206,7 +206,8 @@ export default function AvatarEditor({
           className={cn("hover:border-primary hover:bg-transparent", className)}
           variant="outline"
         >
-          <FilePen size={16} className="mr-2" /> Edit Avatar
+          {/* <FilePen size={16} className="mr-2" /> */}
+           Edit Avatar
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[900px]">

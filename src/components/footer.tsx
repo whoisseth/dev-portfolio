@@ -7,13 +7,13 @@ import { DarkModeToggle } from "./dark-mode-toggle";
 export function FooterComponent() {
   return (
     <footer className="bg-background px-4 py-6 md:py-8">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
+      <div className="mx-auto flex container flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
         <div className="flex flex-col items-center md:items-start">
           <Link href="/" className="text-xl font-bold text-primary">
             Portly
           </Link>
           <p className="text-center text-sm text-muted-foreground md:text-left">
-            © 2024 Portly. All rights reserved.
+            © 2024 portly.dev all rights reserved.
           </p>
         </div>
         <div className="flex flex-col items-center space-y-4 md:flex-row md:space-x-6 md:space-y-0">

@@ -111,9 +111,9 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
         <Button
           variant={"outline"}
           size={"sm"}
-          className="text-xs h-8 "
+          className=" flex-1"
         >
-          <FilePen size={14} className="mr-2" />
+          {/* <FilePen size={14} className="mr-2" /> */}
           Edit
         </Button>
       </DialogTrigger>

@@ -1,4 +1,4 @@
-// src/hooks/useCanEditPortfolio.ts
+'use client'
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { canEditPortfolio } from '@/actions/create-portfolio-actions';

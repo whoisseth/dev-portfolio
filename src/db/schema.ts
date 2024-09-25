@@ -140,6 +140,28 @@ export const projects = sqliteTable("projects", {
   codeLink: text("code-link"),
 });
 
+// work experience
+// routeId
+
+export const workExperiences = sqliteTable("work_experiences", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  userId: integer("user_id", { mode: "number" })
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  routeId: integer("route_id", { mode: "number" })
+    .references(() => routes.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  jobTitle: text("job_title").notNull(),
+  companyName: text("company_name").notNull(),
+  location: text("location").notNull(),
+  startDate: text("start_date").notNull(),
+  endDate: text("end_date"),
+  isPresent: integer("is_present", { mode: "boolean" }).notNull(),
+  jobDescription: text("job_description").notNull(),
+});
+
 // reserved routes
 export const reservedRoutes = sqliteTable("reserved_routes", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
@@ -152,3 +174,4 @@ export type Profile = typeof profiles.$inferSelect;
 export type HeroSection = typeof heroSection.$inferInsert;
 export type Project = typeof projects.$inferInsert;
 export type UserRoute = typeof routes.$inferSelect;
+export type WorkExperience = typeof workExperiences.$inferInsert;

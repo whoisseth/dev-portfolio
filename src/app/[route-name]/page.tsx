@@ -1,14 +1,14 @@
 import React from "react";
 import { Hero } from "./_components/hero";
 import { ProjectsSection } from "./_components/projects-section";
-import { WorkExperienceDisplay } from "./_components/work-experience-display";
-import TogglePreviewBtn from "./_components/toggle-preview-btn";
 import {
   getHeroSectionData,
   getProjects,
   getUserRoute,
 } from "@/actions/create-portfolio-actions";
 import { getCurrentUser } from "@/lib/session";
+import { WorkExperienceSection } from "./_components/work-experience-section";
+import { getWorkExperiences } from "@/actions/create-portfolio-actions";
 
 type Props = {
   params: { "route-name": string };
@@ -20,21 +20,31 @@ export default async function UserPage({ params }: Props) {
   const routeName = params["route-name"].split("/")[0].toLowerCase(); // Get the first part after the domain
   const heroSection = await getHeroSectionData(routeName);
   const projects = await getProjects(routeName);
+  const workExperiences = await getWorkExperiences(routeName);
 
   console.log("projects ---:", projects);
 
   return (
-    <div className="relative">
+    <div className="relative ">
+
+      
+
       {heroSection && (
         <Hero
-          user={user}
-          heroSection={heroSection.hero_section}
-          routeName={routeName}
+        user={user}
+        isProjectsEmpty={projects.length === 0}
+        heroSection={heroSection.hero_section}
+        routeName={routeName}
         />
       )}
 
+   
       <ProjectsSection projects={projects} user={user} userRoute={userRoute} />
-      <WorkExperienceDisplay />
+      <WorkExperienceSection
+        user={user}
+        userRoute={userRoute}
+        workExperiences={workExperiences}
+      />
     </div>
   );
 }

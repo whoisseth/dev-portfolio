@@ -12,30 +12,35 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Trash } from "lucide-react";
-import { Project } from "@/db/schema";
-import { deleteProject } from "@/actions/create-portfolio-actions";
+import { deleteWorkExperience } from "@/actions/create-portfolio-actions";
+// import { toast, useToast } from "@/components/ui/use-toast";
+// import { toast, useToast } from "@/components/ui/use-toast";
+import { WorkExperience } from "@/db/schema";
 import { toast } from "sonner";
 
-interface DeleteProjectDialogProps {
-  project: Project;
+interface DeleteWorkExperienceDialogProps {
+  workExperience: WorkExperience;
 }
 
-export function DeleteProjectDialog({ project }: DeleteProjectDialogProps) {
+export function DeleteWorkExperienceDialog({
+  workExperience,
+}: DeleteWorkExperienceDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  //   const { toast } = useToast();
 
-  async function handleDeleteProject() {
-    if (!project.id) {
+  async function handleDeleteWorkExperience() {
+    if (!workExperience.id) {
       return;
     }
     setIsDeleting(true);
     try {
-      await deleteProject(project.id);
-      toast.success("Project deleted successfully");
+      await deleteWorkExperience(workExperience.id);
+      toast.success("Work experience deleted successfully");
       setIsOpen(false);
     } catch (error) {
-      toast.error("Failed to delete project");
-      console.error("Error deleting project:", error);
+      toast.error("Failed to delete work experience");
+      console.error("Error deleting work experience:", error);
     } finally {
       setIsDeleting(false);
     }
@@ -44,16 +49,16 @@ export function DeleteProjectDialog({ project }: DeleteProjectDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" className="  flex-1" size="sm">
+        <Button variant="destructive" className="h-8 text-xs" size="sm">
           <Trash size={14} className="mr-1 h-3 w-3" /> Delete
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Delete Project</DialogTitle>
+          <DialogTitle>Delete Work Experience</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete the project "{project.title}"? This
-            action cannot be undone.
+            Are you sure you want to delete the work experience "
+            {workExperience.jobTitle}"? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -62,7 +67,7 @@ export function DeleteProjectDialog({ project }: DeleteProjectDialogProps) {
           </Button>
           <Button
             variant="destructive"
-            onClick={handleDeleteProject}
+            onClick={handleDeleteWorkExperience}
             disabled={isDeleting}
           >
             {isDeleting ? "Deleting..." : "Delete"}

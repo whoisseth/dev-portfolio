@@ -32,6 +32,7 @@ type HeroProps = {
   routeName: string;
   heroSection: HeroSection;
   user: User | undefined;
+  isProjectsEmpty?: boolean;
 };
 
 export const initialOptions: AvatarOptions = {
@@ -46,7 +47,12 @@ export const initialOptions: AvatarOptions = {
   nose: ["variant01"],
 };
 
-export function Hero({ heroSection, user, routeName }: HeroProps) {
+export function Hero({
+  heroSection,
+  user,
+  routeName,
+  isProjectsEmpty,
+}: HeroProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   const [isPending, startTransition] = useTransition();
@@ -103,7 +109,7 @@ export function Hero({ heroSection, user, routeName }: HeroProps) {
   };
   return (
     <div id="about-me">
-      <div className="flex flex-col-reverse items-center gap-12 py-6 lg:flex-row">
+      <div className="flex flex-col-reverse items-center gap-12 py-6 sm:py-10 lg:flex-row">
         {/* left side user info */}
         <div className="flex-1">
           <Form {...form}>
@@ -365,15 +371,17 @@ export function Hero({ heroSection, user, routeName }: HeroProps) {
                   {/* <Link href="#projects" className="w-full"> */}
 
                   {/* #projects */}
-                  <Link
-                    href="#projects"
-                    className={cn(
-                      buttonVariants({ variant: "default" }),
-                      "sm:max-w-[265px] w-full",
-                    )}
-                  >
-                    View Projects
-                  </Link>
+                  {!isProjectsEmpty && (
+                    <Link
+                      href="#projects"
+                      className={cn(
+                        buttonVariants({ variant: "default" }),
+                        "w-full sm:max-w-[265px]",
+                      )}
+                    >
+                      View Projects
+                    </Link>
+                  )}
                   {/* </Link> */}
                   {/* <Button type="button" size="default" variant="outline">
                     View Resume
@@ -426,7 +434,7 @@ export function Hero({ heroSection, user, routeName }: HeroProps) {
             />
           )}
 
-          <div className="bg-mute flex h-auto w-full flex-1 items-center justify-center rounded-full bg-muted">
+          <div className="bg-mute flex h-auto w-full max-w-[500px] flex-1 items-center justify-center rounded-full bg-muted">
             <div
               //
               className="h-full w-full"
