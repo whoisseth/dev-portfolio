@@ -247,7 +247,7 @@ export const getProjects = async (routeName: string) => {
       id: projects.id,
       imageUrl: projects.imageUrl,
       tags: projects.tags,
-      linkLink: projects.liveLink,
+      liveLink: projects.liveLink,
       routeId: projects.routeId,
       codeLink: projects.codeLink,
     })

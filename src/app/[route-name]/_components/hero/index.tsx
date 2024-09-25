@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Briefcase, Github, Linkedin, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 import { HeroSection } from "@/db/schema";
@@ -26,6 +26,7 @@ import { FilePen } from "lucide-react";
 import AvatarEditor, { AvatarOptions } from "./_components/avatar-editor";
 import { createAvatar, Options } from "@dicebear/core";
 import { notionists } from "@dicebear/collection";
+import { cn } from "@/lib/utils";
 
 type HeroProps = {
   routeName: string;
@@ -362,13 +363,21 @@ export function Hero({ heroSection, user, routeName }: HeroProps) {
                 {/*  */}
                 <div className="mt-8 flex flex-col gap-4 sm:flex-row lg:justify-start">
                   {/* <Link href="#projects" className="w-full"> */}
-                  <Button type="button" size="default">
+
+                  {/* #projects */}
+                  <Link
+                    href="#projects"
+                    className={cn(
+                      buttonVariants({ variant: "default" }),
+                      "sm:max-w-[265px] w-full",
+                    )}
+                  >
                     View Projects
-                  </Button>
+                  </Link>
                   {/* </Link> */}
-                  <Button type="button" size="default" variant="outline">
+                  {/* <Button type="button" size="default" variant="outline">
                     View Resume
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
               {/* edit button */}

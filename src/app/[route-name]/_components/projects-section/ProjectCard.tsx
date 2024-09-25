@@ -31,6 +31,7 @@ type props = {
 export const ProjectCard = ({ project, userRoute, canEdit }: props) => {
   return (
     <Card className="relative flex h-full flex-col">
+     
       {userRoute && canEdit && (
         <div className="absolute left-1 top-1 z-10 flex gap-2">
           <UpdateProjectDialogComponent
@@ -40,7 +41,6 @@ export const ProjectCard = ({ project, userRoute, canEdit }: props) => {
           <DeleteProjectDialog project={project} />
         </div>
       )}
-
       <CardHeader className="p-4">
         <img
           src={
@@ -76,6 +76,7 @@ export const ProjectCard = ({ project, userRoute, canEdit }: props) => {
       </CardContent>
       <CardFooter className="p-4 pt-0">
         <div className="flex space-x-2 text-sm">
+          {/* linkLink */}
           {project.liveLink && (
             <Button variant="outline" size="sm" asChild>
               <Link

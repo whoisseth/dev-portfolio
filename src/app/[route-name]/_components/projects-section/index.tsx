@@ -61,7 +61,7 @@ export function ProjectsSection({
           />
         ))}
       </div>
-      <div className="flex items-center">
+      {/* <div className="flex items-center">
         <Link
           href={"#projects"}
           className={cn(buttonVariants({ variant: "link" }), "mx-auto")}
@@ -69,7 +69,7 @@ export function ProjectsSection({
           <Folder size={20} className="mr-2" />
           View All Projects
         </Link>
-      </div>
+      </div> */}
     </section>
   );
 }
