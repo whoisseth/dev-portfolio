@@ -61,7 +61,7 @@ export function Hero({
     heroSection.avatarOptions as AvatarOptions,
   );
 
-  console.log("About me id:", heroSection.id);
+  // console.log("About me id:", heroSection.id);
 
   const avatar = createAvatar(
     notionists,
@@ -90,9 +90,10 @@ export function Hero({
   // console.log("Phone number:", form.getValues("phoneNumber"));
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    try {
-      console.log("Form submitted with data:", data);
-      startTransition(async () => {
+    startTransition(async () => {
+      try {
+        console.log("Form submitted with data:", data);
+        console.log("inside startTransition");
         await updateHeroSection({
           ...data,
           userId: heroSection.userId,
@@ -101,11 +102,13 @@ export function Hero({
         });
         toast.success("Your information has been updated successfully.");
         setIsEditing(false);
-      });
-    } catch (error) {
-      console.error("Error updating about me:", error);
-      toast.error("Failed to update your information. Please try again.");
-    }
+        console.log("inside startTransition - Form updated");
+        console.log("after startTransition");
+      } catch (error) {
+        console.error("Error updating about me:", error);
+        toast.error("Failed to update your information. Please try again.");
+      }
+    });
   };
   return (
     <div id="about-me">

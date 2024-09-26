@@ -204,8 +204,9 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
     }
   };
 
+  // utkarsh
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log("Form submitted", data);
+    // console.log("Form submitted", data);
 
     try {
       startTransition(async () => {
@@ -219,7 +220,7 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
 
         // Here you would typically have an API call to create the portfolio
 
-        const aboutMeData = {
+        await addHeroSection({
           ...data,
           tagline: data.tagline || null,
           skills: data.skills || null,
@@ -228,9 +229,18 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
           linkedIn: data.linkedin || null,
           userId: user?.id || 0,
           routeId: routeId,
-        };
-
-        await addHeroSection(aboutMeData);
+          avatarOptions: {
+            seed: data.fullName,
+            flip: true,
+            hair: ["variant01"],
+            body: ["variant06"],
+            nose: ["variant13"],
+            lips: ["variant30"],
+            scale: 103,
+            brows: ["variant06"],
+            gesture: ["variant01"],
+          },
+        });
         console.log("Portfolio data prepared:", portfolioData);
 
         toast.success("Portfolio created successfully.");
