@@ -35,7 +35,7 @@ export function ProjectsSection({
   const [animationParent] = useAutoAnimate();
 
   return (
-    <section id="projects" className="mx-auto ">
+    <section id="projects" className="mx-auto  ">
       {(projects.length > 0 || canEdit) && (
         <section className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold">My Projects</h2>

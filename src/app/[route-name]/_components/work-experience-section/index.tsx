@@ -30,7 +30,7 @@ export function WorkExperienceSection({
   const canEdit = useCanEditPortfolio(user);
 
   return (
-    <div id="work-experience" className="mx-auto">
+    <div id="work-experience" className="mx-auto ">
       {(workExperiences.length > 0 || canEdit) && (
         <section className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold">Work Experience</h2>

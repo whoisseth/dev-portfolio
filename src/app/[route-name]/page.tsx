@@ -9,9 +9,7 @@ import {
 import { getCurrentUser } from "@/lib/session";
 import { WorkExperienceSection } from "./_components/work-experience-section";
 import { getWorkExperiences } from "@/actions/create-portfolio-actions";
-import { Button, buttonVariants } from "@/components/ui/button";
-import Link from "next/link";
-import { cn } from "@/lib/utils";
+import AddHeroSection from "./_components/add-hero-section";
 
 type Props = {
   params: { "route-name": string };
@@ -25,8 +23,6 @@ export default async function UserPage({ params }: Props) {
   const projects = await getProjects(routeName);
   const workExperiences = await getWorkExperiences(routeName);
 
-  console.log("projects ---:", projects);
-
   return (
     <div className="relative py-2">
       {heroSection ? (
@@ -37,15 +33,7 @@ export default async function UserPage({ params }: Props) {
           routeName={routeName}
         />
       ) : (
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold"> Hero Section</h2>
-          <Link
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
-            href="/create-portfolio"
-          >
-            Add Hero Section
-          </Link>
-        </div>
+        <AddHeroSection user={user} />
       )}
 
       <ProjectsSection projects={projects} user={user} userRoute={userRoute} />
