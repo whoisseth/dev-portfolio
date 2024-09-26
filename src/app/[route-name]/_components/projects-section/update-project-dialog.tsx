@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -27,9 +28,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { updateProject } from "@/actions/create-portfolio-actions";
 import { useToast } from "@/components/ui/use-toast";
-import { FilePen, PenIcon } from "lucide-react";
 import { Project } from "@/db/schema";
 import { projectSchema } from "./add-project-dialog";
+import { Plus, X } from "lucide-react";
 
 type ProjectFormValues = z.infer<typeof projectSchema>;
 
@@ -45,9 +46,8 @@ type Props = {
 export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-
-  useTransition;
   const { toast } = useToast();
+  const tagInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
@@ -61,7 +61,7 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
     },
   });
 
-  const { isDirty } = form.formState; // Add this line
+  const { isDirty } = form.formState;
 
   async function onSubmit(data: ProjectFormValues) {
     startTransition(async () => {
@@ -73,18 +73,10 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
           tags: data.tags,
           liveLink: data.liveLink,
           codeLink: data.codeLink,
-          userId: userRoute.userId, // Add this line
-          routeId: userRoute.routeId, // Add this line
+          userId: userRoute.userId,
+          routeId: userRoute.routeId,
           id: project.id,
         });
-        // await addProject({
-        //   ...data,
-        //   imageUrl: data.imageUrl || null,
-        //   liveLink: data.liveLink || null,
-        //   codeLink: data.codeLink || null,
-        //   userId: userRoute.userId,
-        //   routeId: userRoute.routeId,
-        // });
 
         toast({
           title: "Success",
@@ -105,15 +97,20 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
     });
   }
 
+  const addTag = (tags: string[], onChange: (value: string[]) => void) => {
+    const newTag = tagInputRef.current?.value.trim();
+    if (newTag && !tags.includes(newTag)) {
+      onChange([...tags, newTag]);
+      if (tagInputRef.current) {
+        tagInputRef.current.value = "";
+      }
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button
-          variant={"outline"}
-          size={"sm"}
-          className=" flex-1"
-        >
-          {/* <FilePen size={14} className="mr-2" /> */}
+        <Button variant="outline" size="sm" className="flex-1">
           Edit
         </Button>
       </DialogTrigger>
@@ -123,8 +120,6 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
           <DialogDescription>
             Update the details of your existing project. Click Update when
             you're done.
-            {/* -{JSON.stringify(userRoute)} */}
-            {/* project-{JSON.stringify(project)} */}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -171,7 +166,6 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="tags"
@@ -179,18 +173,61 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
                 <FormItem>
                   <FormLabel>Tags</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="React, TypeScript, Node.js"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value.split(",").map((tag) => tag.trim()),
-                        )
-                      }
+                    <Controller
+                      name="tags"
+                      control={form.control}
+                      render={({ field: { onChange, value } }) => (
+                        <div>
+                          <div className="mb-2 flex flex-wrap gap-2">
+                            {value.map((tag, index) => (
+                              <Badge
+                                key={index}
+                                variant="secondary"
+                                className="text-sm"
+                              >
+                                {tag}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newTags = [...value];
+                                    newTags.splice(index, 1);
+                                    onChange(newTags);
+                                  }}
+                                  className="ml-1 hover:text-destructive focus:outline-none"
+                                >
+                                  <X size={14} />
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                          <div className="flex gap-2">
+                            <Input
+                              ref={tagInputRef}
+                              placeholder="Add a new tag"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addTag(value, onChange);
+                                }
+                              }}
+                              className="flex-grow"
+                            />
+                            <Button
+                              type="button"
+                              // size={"icon"}
+                              onClick={() => addTag(value, onChange)}
+                              // className="ml-2"
+                            >
+                              {/* <Plus size={16} /> */}
+                              Add Tag
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     />
                   </FormControl>
                   <FormDescription>
-                    Enter tags separated by commas.
+                    Type a new tag and press Enter or click "Add Tag" to add.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
@@ -28,6 +29,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { addProject } from "@/actions/create-portfolio-actions";
 import { Project, UserRoute } from "@/db/schema";
 import { useToast } from "@/components/ui/use-toast";
+import { X } from "lucide-react";
 
 export const projectSchema = z.object({
   title: z.string().min(3, "Title is required"),
@@ -51,9 +53,8 @@ type Props = {
 export function AddProjectDialogComponent({ userRoute }: Props) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-
-  useTransition;
   const { toast } = useToast();
+  const tagInputRef = useRef<HTMLInputElement>(null);
 
   const form = useForm<ProjectFormValues>({
     resolver: zodResolver(projectSchema),
@@ -67,7 +68,7 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
     },
   });
 
-  const { isDirty } = form.formState; // Add this line
+  const { isDirty } = form.formState;
 
   async function onSubmit(data: ProjectFormValues) {
     startTransition(async () => {
@@ -100,6 +101,16 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
     });
   }
 
+  const addTag = (tags: string[], onChange: (value: string[]) => void) => {
+    const newTag = tagInputRef.current?.value.trim();
+    if (newTag && !tags.includes(newTag)) {
+      onChange([...tags, newTag]);
+      if (tagInputRef.current) {
+        tagInputRef.current.value = "";
+      }
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -110,7 +121,6 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
           <DialogTitle>Add New Project</DialogTitle>
           <DialogDescription>
             Fill in the details of your new project. Click add when you're done.
-            {/* -{JSON.stringify(userRoute)} */}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -164,18 +174,59 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
                 <FormItem>
                   <FormLabel>Tags</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="React, TypeScript, Node.js"
-                      {...field}
-                      onChange={(e) =>
-                        field.onChange(
-                          e.target.value.split(", ").map((tag) => tag.trim()),
-                        )
-                      }
+                    <Controller
+                      name="tags"
+                      control={form.control}
+                      render={({ field: { onChange, value } }) => (
+                        <div>
+                          <div className="mb-2 flex flex-wrap gap-2">
+                            {value.map((tag, index) => (
+                              <Badge
+                                key={index}
+                                variant="secondary"
+                                className="text-sm"
+                              >
+                                {tag}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const newTags = [...value];
+                                    newTags.splice(index, 1);
+                                    onChange(newTags);
+                                  }}
+                                  className="ml-1 hover:text-destructive focus:outline-none"
+                                >
+                                  <X size={14} />
+                                </button>
+                              </Badge>
+                            ))}
+                          </div>
+                          <div className="flex">
+                            <Input
+                              ref={tagInputRef}
+                              placeholder="Add a new tag"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addTag(value, onChange);
+                                }
+                              }}
+                              className="flex-grow"
+                            />
+                            <Button
+                              type="button"
+                              onClick={() => addTag(value, onChange)}
+                              className="ml-2"
+                            >
+                              Add Tag
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     />
                   </FormControl>
                   <FormDescription>
-                    Enter tags separated by commas.
+                    Type a new tag and press Enter or click "Add Tag" to add it.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>
