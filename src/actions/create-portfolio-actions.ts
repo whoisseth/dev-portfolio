@@ -13,7 +13,7 @@ import {
   WorkExperience,
 } from "@/db/schema";
 import { getCurrentUser } from "@/lib/session";
-import { eq, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { workExperiences } from "@/db/schema";
 
@@ -330,7 +330,8 @@ export const getAllUsers = async () => {
       avatarOptions: heroSection.avatarOptions,
     })
     .from(heroSection)
-    .innerJoin(routes, eq(heroSection.routeId, routes.id));
+    .innerJoin(routes, eq(heroSection.routeId, routes.id))
+    .orderBy(desc(routes.createdAt)); // Use the column reference with .desc() method
   return allUsers;
 };
 

@@ -11,6 +11,9 @@ export const users = sqliteTable("user", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   email: text("email").unique(),
   emailVerified: integer("email_verified", { mode: "timestamp" }),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
 });
 
 export const accounts = sqliteTable("accounts", {
@@ -79,18 +82,20 @@ export const sessions = sqliteTable("session", {
 // *********************//
 
 export const routes = sqliteTable("routes", {
-  // shoulde be unique
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   routeName: text("route_name").notNull().unique(),
-  // should be a foreign key
   userId: integer("user_id", { mode: "number" })
     .references(() => users.id, {
       onDelete: "cascade",
     })
     .notNull(),
-  // should be a foreign key
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
 });
-
 export const heroSection = sqliteTable("hero_section", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
@@ -103,18 +108,24 @@ export const heroSection = sqliteTable("hero_section", {
   fullName: text("full_name").notNull(),
   description: text("description").notNull(),
   email: text("email").notNull(),
-  skills: text("skills"), // We'll store this as a JSON string
+  skills: text("skills"),
   phoneNumber: text("phone_number"),
   linkedIn: text("linkedin"),
   github: text("github"),
   avatarOptions: text("avatar_options", { mode: "json" })
     .$type<AvatarOptions>()
-    .default(sql`(json_object('seed', fullName, 'flip', true))`), // Set default seed to fullName and flip to true
+    .default(sql`(json_object('seed', fullName, 'flip', true))`),
   routeId: integer("route_id", { mode: "number" })
     .references(() => routes.id, {
       onDelete: "cascade",
     })
     .notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
 });
 
 export const projects = sqliteTable("projects", {
@@ -138,6 +149,12 @@ export const projects = sqliteTable("projects", {
     .default(sql`(json_array())`),
   liveLink: text("live-link"),
   codeLink: text("code-link"),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
 });
 
 // work experience
@@ -160,6 +177,12 @@ export const workExperiences = sqliteTable("work_experiences", {
   endDate: text("end_date"),
   isPresent: integer("is_present", { mode: "boolean" }).notNull(),
   jobDescription: text("job_description").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
 });
 
 // reserved routes

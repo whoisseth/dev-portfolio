@@ -63,8 +63,23 @@ export const FormSchema = z.object({
   github: z.string().url({ message: "Invalid GitHub URL." }).optional(),
 });
 
-export function CreatePortfolio({ user }: { user: User | undefined }) {
-  const [isRouteAssigned, setIsRouteAssigned] = useState(false);
+type Props = {
+  existingRoute:
+    | {
+        routeName: string;
+        routeId: number;
+        userId: number;
+      }
+    | null
+    | undefined;
+  user: User | undefined;
+};
+
+export function CreatePortfolio({ user, existingRoute }: Props) {
+  // boolean
+  const [isRouteAssigned, setIsRouteAssigned] = useState(
+    Boolean(existingRoute?.routeName ?? 0),
+  );
   const [isChecking, setIsChecking] = useState(false);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [isGeneratingTagline, setIsGeneratingTagline] = useState(false);
@@ -103,12 +118,15 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
         toast.error(
           "Route is not available. Please try a different route name.",
         );
+        return false;
       } else {
         setIsRouteAssigned(true);
+        return true;
       }
     } catch (error) {
       console.error("Error checking route availability:", error);
       toast.error("Failed to check route availability. Please try again.");
+      return false;
     } finally {
       setIsChecking(false);
     }
@@ -122,18 +140,19 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
     const currentDescription = form.getValues("description");
 
     let prompt =
-      "Generate a concise and to-the-point professional description for a portfolio, maximum 250 characters";
+      "Generate a professional first-person description for a portfolio, in a single paragraph, strictly under 200 characters, without special characters. Use 'I am' statements and make it personal and concise.";
 
     if (fullName || title || tagline) {
-      prompt += ` for ${fullName || "a person"}, who is a ${title || "professional"}`;
-      if (tagline) prompt += `. Their tagline is: "${tagline}"`;
+      prompt += ` The description should be for me, ${fullName || "the portfolio owner"}. I am a ${title || "professional"}`;
+      if (tagline) prompt += ` and my tagline is '${tagline}'`;
     }
 
     if (currentDescription) {
-      prompt += `. Incorporate key points from the following: "${currentDescription}"`;
+      prompt += `. Consider this existing description: ${currentDescription}`;
     }
 
-    prompt += ". Ensure the response is no longer than 250 characters.";
+    prompt +=
+      " Ensure the response uses 'I am' statements, is 200 characters or fewer, has no special characters, and is a single paragraph. Be concise and focus on key professional attributes.";
 
     try {
       const response = await fetch("/api/generate", {
@@ -168,18 +187,19 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
     const currentTagline = form.getValues("tagline");
 
     let prompt = alternative
-      ? "Create a simple, clear tagline under 30 characters for any tech role."
-      : "Create a straightforward tagline under 30 characters for any tech field.";
+      ? "Create a simple clear tagline under 30 characters for any tech role without special characters, double quotes, or colons."
+      : "Create a straightforward tagline under 30 characters for any tech field without special characters, double quotes, or colons.";
 
     if (fullName || title) {
-      prompt += ` for ${fullName || "a person"}, who is a ${title || "professional"}`;
+      prompt += ` for ${fullName || "a person"} who is a ${title || "professional"}`;
     }
 
     if (currentTagline && !alternative) {
-      prompt += `. Consider this existing tagline: "${currentTagline}"`;
+      prompt += ` Consider this existing tagline ${currentTagline}`;
     }
 
-    prompt += ". Ensure the response is no longer than 50 characters.";
+    prompt +=
+      " Ensure the response is no longer than 50 characters and does not contain special characters, double quotes, or colons.";
 
     try {
       const response = await fetch("/api/generate", {
@@ -204,23 +224,26 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
     }
   };
 
-  // utkarsh
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    // console.log("Form submitted", data);
-
     try {
       startTransition(async () => {
-        const routeName = routeForm.getValues("routeName");
-        const [{ id: routeId }] = await addRoute(routeName);
+        // if   Boolean(existingRoute.routeName)
+        let routeId = existingRoute?.routeId;
+        if (!Boolean(existingRoute?.routeName ?? 0)) {
+          const routeName = routeForm.getValues("routeName");
+          const isRouteAdded = await handleRouteAvailability({ routeName });
 
-        const portfolioData = {
-          ...data,
-          userId: user?.id,
-        };
+          if (!isRouteAdded) {
+            toast.error(
+              "Failed to add route. Please try a different route name.",
+            );
+            return;
+          }
 
-        // Here you would typically have an API call to create the portfolio
-
-        await addHeroSection({
+          const [{ id }] = await addRoute(routeName);
+          routeId = id;
+        }
+        const heroSectionData = {
           ...data,
           tagline: data.tagline || null,
           skills: data.skills || null,
@@ -228,7 +251,7 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
           phoneNumber: data.phoneNumber || null,
           linkedIn: data.linkedin || null,
           userId: user?.id || 0,
-          routeId: routeId,
+          routeId: routeId || 0,
           avatarOptions: {
             seed: data.fullName,
             flip: true,
@@ -240,8 +263,10 @@ export function CreatePortfolio({ user }: { user: User | undefined }) {
             brows: ["variant06"],
             gesture: ["variant01"],
           },
-        });
-        console.log("Portfolio data prepared:", portfolioData);
+        };
+
+        console.log("heroSectionData", heroSectionData);
+        await addHeroSection(heroSectionData);
 
         toast.success("Portfolio created successfully.");
       });
