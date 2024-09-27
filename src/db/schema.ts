@@ -113,6 +113,9 @@ export const heroSection = sqliteTable("hero_section", {
   linkedIn: text("linkedin"),
   github: text("github"),
   youtube: text("youtube"),
+  personalLinks: text("personal_links", { mode: "json" })
+    .$type<{ name: string; url: string }[]>()
+    .default(sql`(json_array())`),
   avatarOptions: text("avatar_options", { mode: "json" })
     .$type<AvatarOptions>()
     .default(sql`(json_object('seed', fullName, 'flip', true))`),
