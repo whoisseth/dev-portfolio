@@ -112,6 +112,7 @@ export const heroSection = sqliteTable("hero_section", {
   phoneNumber: text("phone_number"),
   linkedIn: text("linkedin"),
   github: text("github"),
+  youtube: text("youtube"),
   avatarOptions: text("avatar_options", { mode: "json" })
     .$type<AvatarOptions>()
     .default(sql`(json_object('seed', fullName, 'flip', true))`),

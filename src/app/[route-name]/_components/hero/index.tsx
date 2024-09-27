@@ -1,7 +1,14 @@
 "use client";
 
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Briefcase, Github, Linkedin, Mail, Phone } from "lucide-react";
+import {
+  Briefcase,
+  Github,
+  Linkedin,
+  Mail,
+  Phone,
+  Youtube,
+} from "lucide-react";
 import Link from "next/link";
 import { HeroSection } from "@/db/schema";
 import { useForm } from "react-hook-form";
@@ -81,6 +88,7 @@ export function Hero({
       skills: heroSection.skills ?? undefined,
       linkedin: heroSection.linkedIn ?? undefined,
       github: heroSection.github ?? undefined,
+      youtube: heroSection.youtube ?? undefined,
       phoneNumber: heroSection.phoneNumber ?? undefined,
     },
   });
@@ -324,12 +332,12 @@ export function Hero({
                     />
                   ) : (
                     heroSection.linkedIn && (
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 text-blue-400">
                         <Linkedin className="h-4 w-4" />
                         <Link
                           target="_blank"
                           href={heroSection.linkedIn || ""}
-                          className="text-sm hover:underline"
+                          className="text-sm text-blue-400 hover:underline"
                         >
                           {heroSection.linkedIn?.replace("https://", "")}
                         </Link>
@@ -356,14 +364,45 @@ export function Hero({
                     />
                   ) : (
                     heroSection.github && (
-                      <div className="flex items-center space-x-2">
+                      <div className="flex items-center space-x-2 text-blue-400">
                         <Github className="h-4 w-4" />
                         <Link
                           target="_blank"
                           href={heroSection.github || ""}
-                          className="hover:underline"
+                            className="text-sm text-blue-400 hover:underline"
                         >
                           {heroSection.github?.replace("https://", "")}
+                        </Link>
+                      </div>
+                    )
+                  )}
+                  {/* youtube */}
+                  {isEditing ? (
+                    <FormField
+                      control={form.control}
+                      name="youtube"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="https://www.youtube.com/c/yourchannel"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  ) : (
+                    heroSection.youtube && (
+                      <div className="flex items-center gap-2 text-blue-400">
+                        <Youtube className="h-4 w-4" />
+                        <Link
+                          target="_blank"
+                          href={heroSection.youtube || ""}
+                          className="text-sm text-blue-400 hover:underline"
+                        >
+                          {heroSection.youtube?.replace("https://", "")}
                         </Link>
                       </div>
                     )

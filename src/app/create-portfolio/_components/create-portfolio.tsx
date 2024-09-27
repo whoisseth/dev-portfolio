@@ -61,6 +61,7 @@ export const FormSchema = z.object({
     .optional(),
   linkedin: z.string().url({ message: "Invalid LinkedIn URL." }).optional(),
   github: z.string().url({ message: "Invalid GitHub URL." }).optional(),
+  youtube: z.string().url({ message: "Invalid YouTube URL." }).optional(),
 });
 
 type Props = {
@@ -550,6 +551,23 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="youtube"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>YouTube URL (optional)</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="https://www.youtube.com/c/yourchannel"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
                 <Button
                   type="submit"
                   className="w-full"
