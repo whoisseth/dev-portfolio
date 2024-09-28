@@ -116,9 +116,10 @@ export const heroSection = sqliteTable("hero_section", {
   personalLinks: text("personal_links", { mode: "json" })
     .$type<{ name: string; url: string }[]>()
     .default(sql`(json_array())`),
-  avatarOptions: text("avatar_options", { mode: "json" })
-    .$type<AvatarOptions>()
-    .default(sql`(json_object('seed', fullName, 'flip', true))`),
+  avatarOptions: text("avatar_options", { mode: "json" }),
+  // avatarOptions: text("avatar_options", { mode: "json" })
+  //   .$type<AvatarOptions>()
+  //   .default(sql`(json_object('seed', fullName, 'flip', true))`),
   routeId: integer("route_id", { mode: "number" })
     .references(() => routes.id, {
       onDelete: "cascade",
