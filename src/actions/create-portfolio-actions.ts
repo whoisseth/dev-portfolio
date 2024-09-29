@@ -324,7 +324,7 @@ export const deleteProject = async (projectId: number) => {
 export const getAllUsers = async () => {
   const allUsers = await db
     .select({
-      sno: sql<number>`ROW_NUMBER() OVER (ORDER BY ${heroSection.fullName})`,
+      sno: sql<number>`ROW_NUMBER() OVER (ORDER BY ${routes.createdAt} DESC)`,
       fullName: heroSection.fullName,
       routeName: routes.routeName,
       avatarOptions: heroSection.avatarOptions,
