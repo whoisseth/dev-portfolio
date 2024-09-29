@@ -17,6 +17,7 @@ export const env = createEnv({
     EMAIL_SERVER_USER: z.string().min(1),
     EMAIL_SERVER_PASSWORD: z.string().min(1),
     GEMINI_API_KEY: z.string().min(1),
+    GA_MEASUREMENT_ID: z.string().min(1),
   },
   client: {},
   runtimeEnv: {
@@ -34,5 +35,6 @@ export const env = createEnv({
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
   },
 });

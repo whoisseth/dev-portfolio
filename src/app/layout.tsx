@@ -12,6 +12,7 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import Warning from "@/components/warning";
 import { FooterComponent } from "@/components/footer";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
+import { Analytics } from '@vercel/analytics/react';
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -41,6 +42,25 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Google Analytics */}
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${env.GA_MEASUREMENT_ID}`}
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${env.GA_MEASUREMENT_ID}', {
+                page_path: window.location.pathname,
+              });
+            `,
+          }}
+        />
+      </head>
       <body
         className={cn(
           "flex min-h-svh flex-col bg-background antialiased",
@@ -56,7 +76,18 @@ export default async function RootLayout({
         <TailwindIndicator />
         <Toaster />
         <SonnerToaster />
+        <Analytics />
       </body>
     </html>
   );
 }
+
+// <!-- Google tag (gtag.js) -->
+// <script async src="https://www.googletagmanager.com/gtag/js?id=G-9TY4ZVX6Q9"></script>
+// <script>
+// window.dataLayer = window.dataLayer || [];
+// function gtag(){dataLayer.push(arguments);}
+// gtag('js', new Date());
+
+// gtag('config', 'G-9TY4ZVX6Q9');
+// </script>
