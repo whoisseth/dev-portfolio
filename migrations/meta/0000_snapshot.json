@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "d260fcc9-4ded-43eb-98fc-6ce934491a2b",
+  "id": "64add457-5103-444c-8204-e1fe575b5fdc",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "accounts": {
@@ -185,13 +185,21 @@
           "notNull": false,
           "autoincrement": false
         },
+        "personal_links": {
+          "name": "personal_links",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(json_array())"
+        },
         "avatar_options": {
           "name": "avatar_options",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false,
-          "default": "(json_object('seed', fullName, 'flip', true))"
+          "default": "(json_object())"
         },
         "route_id": {
           "name": "route_id",
@@ -919,5 +927,8 @@
     "schemas": {},
     "tables": {},
     "columns": {}
+  },
+  "internal": {
+    "indexes": {}
   }
 }

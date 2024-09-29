@@ -1,19 +1,12 @@
 {
-  "version": "6",
+  "version": "7",
   "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
       "version": "6",
-      "when": 1727457202387,
-      "tag": "0000_moaning_retro_girl",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1727459984786,
-      "tag": "0001_lazy_mulholland_black",
+      "when": 1727614389525,
+      "tag": "0000_curly_king_bedlam",
       "breakpoints": true
     }
   ]

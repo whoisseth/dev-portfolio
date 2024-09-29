@@ -1,1 +1,0 @@
-ALTER TABLE hero_section ADD COLUMN personal_links TEXT DEFAULT '[]';

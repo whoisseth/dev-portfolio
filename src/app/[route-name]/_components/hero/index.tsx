@@ -386,6 +386,7 @@ export function Hero({
                           <FormControl>
                             <Input
                               placeholder="https://www.youtube.com/c/yourchannel"
+                              className="mt-4 border-none bg-transparent text-sm text-muted-foreground sm:text-base"
                               {...field}
                             />
                           </FormControl>
