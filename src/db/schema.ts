@@ -1,5 +1,5 @@
 import { AvatarOptions } from "@/app/[route-name]/_components/hero/_components/avatar-editor";
-import { sql } from "drizzle-orm";
+import { InferModel, sql } from "drizzle-orm";
 import { integer, text, sqliteTableCreator } from "drizzle-orm/sqlite-core";
 
 export const accountTypeEnum = ["email", "google", "github"] as const;
@@ -149,13 +149,14 @@ export const projects = sqliteTable("projects", {
     .notNull(),
   title: text("title").notNull(),
   description: text("description").notNull(),
-  imageUrl: text("image-url"),
+  imageUrl: text("image_url"),
+  cloudinaryPublicId: text("cloudinary_public_id"),
   tags: text("tags", { mode: "json" })
     .notNull()
     .$type<string[]>()
     .default(sql`(json_array())`),
-  liveLink: text("live-link"),
-  codeLink: text("code-link"),
+  liveLink: text("live_link"),
+  codeLink: text("code_link"),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`CURRENT_TIMESTAMP`,
   ),
@@ -198,10 +199,64 @@ export const reservedRoutes = sqliteTable("reserved_routes", {
   routeName: text("route_name").notNull().unique(),
 });
 
+export const projectImages = sqliteTable("project_images", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  projectId: integer("project_id", { mode: "number" })
+    .references(() => projects.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  userId: integer("user_id", { mode: "number" })
+    .references(() => users.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  routeId: integer("route_id", { mode: "number" })
+    .references(() => routes.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  url: text("url").notNull(),
+  created_at: integer("created_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updated_at: integer("updated_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+});
+
+// Define your 'images' table
+export const images = sqliteTable("images", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  url: text("url").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  routeId: integer("route_id", { mode: "number" })
+    .references(() => routes.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+  userId: integer("user_id", { mode: "number" })
+    .references(() => users.id, {
+      onDelete: "cascade",
+    })
+    .notNull(),
+});
+
+export type Image = typeof images.$inferSelect;
+export type NewImage = typeof images.$inferInsert;
+
 export type ReservedRoute = typeof reservedRoutes.$inferSelect;
 export type User = typeof users.$inferSelect;
 export type Profile = typeof profiles.$inferSelect;
 export type HeroSection = typeof heroSection.$inferInsert;
 export type Project = typeof projects.$inferInsert;
+
 export type UserRoute = typeof routes.$inferSelect;
 export type WorkExperience = typeof workExperiences.$inferInsert;
+//
+
+//
+export type ProjectImage = typeof projectImages.$inferSelect;
+export type NewProjectImage = typeof projectImages.$inferInsert;

@@ -3,15 +3,15 @@ import { migrate } from "drizzle-orm/libsql/migrator";
 import { client, db } from ".";
 import { reservedRoutes, routes, users } from "./schema";
 
-// (async () => {
-//   try {
-//     await migrate(db, { migrationsFolder: "./migrations" });
-//     client.close();
-//     console.log("Successfully Migrated");
-//   } catch (error) {
-//     console.log("Failed to Migrate", error);
-//   }
-// })();
+(async () => {
+  try {
+    await migrate(db, { migrationsFolder: "./migrations" });
+    client.close();
+    console.log("Successfully Migrated");
+  } catch (error) {
+    console.log("Failed to Migrate", error);
+  }
+})();
 
 // give the unique route names that are reserved for the portfolio
 const initialReservedRoutes = [

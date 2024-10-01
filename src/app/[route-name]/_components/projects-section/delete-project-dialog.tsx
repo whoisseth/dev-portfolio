@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -22,29 +22,38 @@ interface DeleteProjectDialogProps {
 
 export function DeleteProjectDialog({ project }: DeleteProjectDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   async function handleDeleteProject() {
-    if (!project.id) {
-      return;
-    }
-    setIsDeleting(true);
-    try {
-      await deleteProject(project.id);
-      toast.success("Project deleted successfully");
-      setIsOpen(false);
-    } catch (error) {
-      toast.error("Failed to delete project");
-      console.error("Error deleting project:", error);
-    } finally {
-      setIsDeleting(false);
-    }
+    startTransition(async () => {
+      try {
+        if (!project.id) {
+          throw new Error("Project ID is undefined");
+        }
+        await deleteProject(project.id);
+        if (project.imageUrl) {
+          await fetch("/api/delete-image", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ imageUrl: project.imageUrl }),
+          });
+        }
+
+        toast.success("Project deleted successfully");
+        setIsOpen(false);
+      } catch (error) {
+        toast.error("Failed to delete project");
+        console.error("Error deleting project:", error);
+      }
+    });
   }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" className="  flex-1" size="sm">
+        <Button variant="destructive" className="flex-1" size="sm">
           <Trash size={14} className="mr-1 h-3 w-3" /> Delete
         </Button>
       </DialogTrigger>
@@ -63,9 +72,9 @@ export function DeleteProjectDialog({ project }: DeleteProjectDialogProps) {
           <Button
             variant="destructive"
             onClick={handleDeleteProject}
-            disabled={isDeleting}
+            disabled={isPending}
           >
-            {isDeleting ? "Deleting..." : "Delete"}
+            {isPending ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -31,6 +31,16 @@ CREATE TABLE `hero_section` (
 	FOREIGN KEY (`route_id`) REFERENCES `routes`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `images` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`url` text NOT NULL,
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP,
+	`route_id` integer NOT NULL,
+	`user_id` integer NOT NULL,
+	FOREIGN KEY (`route_id`) REFERENCES `routes`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `magic_links` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`email` text NOT NULL,
@@ -48,16 +58,30 @@ CREATE TABLE `profile` (
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
+CREATE TABLE `project_images` (
+	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
+	`project_id` integer NOT NULL,
+	`user_id` integer NOT NULL,
+	`route_id` integer NOT NULL,
+	`url` text NOT NULL,
+	`created_at` integer DEFAULT CURRENT_TIMESTAMP,
+	`updated_at` integer DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY (`project_id`) REFERENCES `projects`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade,
+	FOREIGN KEY (`route_id`) REFERENCES `routes`(`id`) ON UPDATE no action ON DELETE cascade
+);
+--> statement-breakpoint
 CREATE TABLE `projects` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer NOT NULL,
 	`route_id` integer NOT NULL,
 	`title` text NOT NULL,
 	`description` text NOT NULL,
-	`image-url` text,
+	`image_url` text,
+	`cloudinary_public_id` text,
 	`tags` text DEFAULT (json_array()) NOT NULL,
-	`live-link` text,
-	`code-link` text,
+	`live_link` text,
+	`code_link` text,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP,
 	`updated_at` integer DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade,

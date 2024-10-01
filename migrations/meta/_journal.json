@@ -1,12 +1,12 @@
 {
-  "version": "7",
+  "version": "6",
   "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
       "version": "6",
-      "when": 1727614389525,
-      "tag": "0000_curly_king_bedlam",
+      "when": 1727779511496,
+      "tag": "0000_wet_polaris",
       "breakpoints": true
     }
   ]

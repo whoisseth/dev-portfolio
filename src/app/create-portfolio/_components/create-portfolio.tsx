@@ -55,10 +55,11 @@ export const FormSchema = z.object({
     .max(300, { message: "Description must not exceed 250 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
   skills: z.string().optional(),
+  // phone number also posipal for empty string
   phoneNumber: z
     .string()
     .regex(/^\+?[1-9]\d{1,14}$/, { message: "Invalid phone number format." })
-    .optional(),
+    .or(z.literal("")),
   linkedin: z.string().url({ message: "Invalid LinkedIn URL." }).optional(),
   github: z.string().url({ message: "Invalid GitHub URL." }).optional(),
   youtube: z.string().url({ message: "Invalid YouTube URL." }).optional(),

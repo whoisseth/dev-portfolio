@@ -89,7 +89,7 @@ export function Hero({
       linkedin: heroSection.linkedIn ?? undefined,
       github: heroSection.github ?? undefined,
       youtube: heroSection.youtube ?? undefined,
-      phoneNumber: heroSection.phoneNumber ?? undefined,
+      phoneNumber: heroSection.phoneNumber ?? "",
     },
   });
   const { isDirty } = form.formState; // Add this line
@@ -369,7 +369,7 @@ export function Hero({
                         <Link
                           target="_blank"
                           href={heroSection.github || ""}
-                            className="text-sm text-blue-400 hover:underline"
+                          className="text-sm text-blue-400 hover:underline"
                         >
                           {heroSection.github?.replace("https://", "")}
                         </Link>

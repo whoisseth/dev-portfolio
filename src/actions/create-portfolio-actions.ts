@@ -5,6 +5,7 @@ import { db } from "@/db";
 import {
   heroSection,
   HeroSection,
+  images,
   Project,
   projects,
   reservedRoutes,
@@ -16,6 +17,7 @@ import { getCurrentUser } from "@/lib/session";
 import { desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { workExperiences } from "@/db/schema";
+import { projectImages, NewProjectImage } from "@/db/schema";
 
 export const addHeroSection = async (d: HeroSection) => {
   const user = await getCurrentUser();
@@ -206,38 +208,28 @@ export const updateRouteName = async (
 };
 
 // Add a project to the database
-export const addProject = async (projectData: Project) => {
+// Add a project to the database
+// Add a project to the database
+export const addProject = async (
+  projectData: Omit<Project, "id" | "cloudinaryPublicId">,
+) => {
   const user = await getCurrentUser();
   if (!user) {
     throw new Error("User not authenticated");
   }
 
+  // Insert project into database
   const newProject = await db
     .insert(projects)
     .values({
       ...projectData,
-      userId: user.id,
     })
-    .returning();
+    .returning()
+    .get();
 
   revalidatePath("/");
-  return newProject[0];
+  return newProject;
 };
-
-// create a function to get getProjects with routeName
-
-// export const getProjects = async (routeName: string) => {
-//   const userProjects = await db
-//     .select()
-//     .from(projects)
-//     .innerJoin(routes, eq(projects.routeId, routes.id))
-//     .where(eq(routes.routeName, routeName))
-//     .get();
-
-//   return userProjects;
-// };
-
-// ... existing code ...
 
 // Get projects associated with a specific route name
 export const getProjects = async (routeName: string) => {
@@ -262,46 +254,10 @@ export const getProjects = async (routeName: string) => {
 
 // ... existing code ...
 
-export const updateProject = async (projectData: Project) => {
-  const user = await getCurrentUser();
-  if (!user) {
-    throw new Error("User not authenticated");
-  }
-
-  if (!projectData.id) {
-    throw new Error("Project ID is required for updating");
-  }
-
-  // Check if the project belongs to the current user
-  const existingProject = await db
-    .select()
-    .from(projects)
-    .where(eq(projects.id, projectData.id))
-    .get();
-
-  if (!existingProject || existingProject.userId !== user.id) {
-    throw new Error("You do not have permission to update this project");
-  }
-
-  const updatedProject = await db
-    .update(projects)
-    .set({
-      title: projectData.title,
-      description: projectData.description,
-      imageUrl: projectData.imageUrl,
-      tags: projectData.tags,
-      liveLink: projectData.liveLink,
-      codeLink: projectData.codeLink,
-    })
-    .where(eq(projects.id, projectData.id))
-    .returning();
-
-  revalidatePath("/");
-  return updatedProject[0];
-};
-
-// create a fuction to delete a project
-export const deleteProject = async (projectId: number) => {
+export const updateProject = async (
+  projectId: number,
+  projectData: Partial<Project>,
+) => {
   const user = await getCurrentUser();
   if (!user) {
     throw new Error("User not authenticated");
@@ -312,10 +268,45 @@ export const deleteProject = async (projectId: number) => {
     .from(projects)
     .where(eq(projects.id, projectId))
     .get();
+
+  if (!existingProject || existingProject.userId !== user.id) {
+    throw new Error("You do not have permission to update this project");
+  }
+  if (existingProject.imageUrl) {
+    await db.delete(images).where(eq(images.url, existingProject.imageUrl));
+  }
+
+ 
+
+  // Update project in database
+  const updatedProject = await db
+    .update(projects)
+    .set(projectData)
+    .where(eq(projects.id, projectId))
+    .returning()
+    .get();
+
+  revalidatePath("/");
+  return updatedProject;
+};
+
+// create a fuction to delete a project
+export const deleteProject = async (projectId: number) => {
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+  const existingProject = await db
+    .select()
+    .from(projects)
+    .where(eq(projects.id, projectId))
+    .get();
   if (!existingProject || existingProject.userId !== user.id) {
     throw new Error("You do not have permission to delete this project");
   }
-
+  if (existingProject.imageUrl) {
+    await db.delete(images).where(eq(images.url, existingProject.imageUrl));
+  }
   await db.delete(projects).where(eq(projects.id, projectId));
   revalidatePath("/");
 };

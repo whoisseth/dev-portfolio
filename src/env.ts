@@ -18,6 +18,10 @@ export const env = createEnv({
     EMAIL_SERVER_PASSWORD: z.string().min(1),
     GEMINI_API_KEY: z.string().min(1),
     GA_MEASUREMENT_ID: z.string().min(1),
+    CLOUDINARY_CLOUD_NAME: z.string().min(1),
+    CLOUDINARY_API_KEY: z.string().min(1),
+    CLOUDINARY_API_SECRET: z.string().min(1),
+    CLOUDINARY_URL: z.string().min(1),
   },
   client: {},
   runtimeEnv: {
@@ -36,5 +40,9 @@ export const env = createEnv({
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GEMINI_API_KEY: process.env.GEMINI_API_KEY,
     GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
+    CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+    CLOUDINARY_URL: process.env.CLOUDINARY_URL,
   },
 });
