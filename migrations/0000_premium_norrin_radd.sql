@@ -1,4 +1,4 @@
-CREATE TABLE `accounts` (
+CREATE TABLE IF NOT EXISTS `accounts` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer NOT NULL,
 	`account_type` text NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE `accounts` (
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `hero_section` (
+CREATE TABLE IF NOT EXISTS `hero_section` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`title` text NOT NULL,
 	`tagline` text,
@@ -31,7 +31,7 @@ CREATE TABLE `hero_section` (
 	FOREIGN KEY (`route_id`) REFERENCES `routes`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `images` (
+CREATE TABLE IF NOT EXISTS `images` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`url` text NOT NULL,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP,
@@ -41,14 +41,14 @@ CREATE TABLE `images` (
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `magic_links` (
+CREATE TABLE IF NOT EXISTS `magic_links` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`email` text NOT NULL,
 	`token` text,
 	`token_expires_at` integer NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `profile` (
+CREATE TABLE IF NOT EXISTS `profile` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer NOT NULL,
 	`display_name` text,
@@ -58,7 +58,7 @@ CREATE TABLE `profile` (
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `project_images` (
+CREATE TABLE IF NOT EXISTS `project_images` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`project_id` integer NOT NULL,
 	`user_id` integer NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE `project_images` (
 	FOREIGN KEY (`route_id`) REFERENCES `routes`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `projects` (
+CREATE TABLE IF NOT EXISTS `projects` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer NOT NULL,
 	`route_id` integer NOT NULL,
@@ -88,12 +88,12 @@ CREATE TABLE `projects` (
 	FOREIGN KEY (`route_id`) REFERENCES `routes`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `reserved_routes` (
+CREATE TABLE IF NOT EXISTS `reserved_routes` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`route_name` text NOT NULL
 );
 --> statement-breakpoint
-CREATE TABLE `reset_tokens` (
+CREATE TABLE IF NOT EXISTS `reset_tokens` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer NOT NULL,
 	`token` text,
@@ -101,7 +101,7 @@ CREATE TABLE `reset_tokens` (
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `routes` (
+CREATE TABLE IF NOT EXISTS `routes` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`route_name` text NOT NULL,
 	`user_id` integer NOT NULL,
@@ -110,21 +110,21 @@ CREATE TABLE `routes` (
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `session` (
+CREATE TABLE IF NOT EXISTS `session` (
 	`id` text PRIMARY KEY NOT NULL,
 	`user_id` integer NOT NULL,
 	`expires_at` integer NOT NULL,
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`email` text,
 	`email_verified` integer,
 	`created_at` integer DEFAULT CURRENT_TIMESTAMP
 );
 --> statement-breakpoint
-CREATE TABLE `verify_email_tokens` (
+CREATE TABLE IF NOT EXISTS `verify_email_tokens` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer NOT NULL,
 	`token` text,
@@ -132,7 +132,7 @@ CREATE TABLE `verify_email_tokens` (
 	FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE TABLE `work_experiences` (
+CREATE TABLE IF NOT EXISTS `work_experiences` (
 	`id` integer PRIMARY KEY AUTOINCREMENT NOT NULL,
 	`user_id` integer NOT NULL,
 	`route_id` integer NOT NULL,
@@ -149,13 +149,13 @@ CREATE TABLE `work_experiences` (
 	FOREIGN KEY (`route_id`) REFERENCES `routes`(`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `accounts_user_id_unique` ON `accounts` (`user_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `accounts_github_id_unique` ON `accounts` (`github_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `accounts_google_id_unique` ON `accounts` (`google_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `magic_links_email_unique` ON `magic_links` (`email`);--> statement-breakpoint
-CREATE UNIQUE INDEX `profile_user_id_unique` ON `profile` (`user_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `reserved_routes_route_name_unique` ON `reserved_routes` (`route_name`);--> statement-breakpoint
-CREATE UNIQUE INDEX `reset_tokens_user_id_unique` ON `reset_tokens` (`user_id`);--> statement-breakpoint
-CREATE UNIQUE INDEX `routes_route_name_unique` ON `routes` (`route_name`);--> statement-breakpoint
-CREATE UNIQUE INDEX `user_email_unique` ON `user` (`email`);--> statement-breakpoint
-CREATE UNIQUE INDEX `verify_email_tokens_user_id_unique` ON `verify_email_tokens` (`user_id`);
+CREATE UNIQUE INDEX IF NOT EXISTS `accounts_user_id_unique` ON `accounts` (`user_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `accounts_github_id_unique` ON `accounts` (`github_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `accounts_google_id_unique` ON `accounts` (`google_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `magic_links_email_unique` ON `magic_links` (`email`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `profile_user_id_unique` ON `profile` (`user_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `reserved_routes_route_name_unique` ON `reserved_routes` (`route_name`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `reset_tokens_user_id_unique` ON `reset_tokens` (`user_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `routes_route_name_unique` ON `routes` (`route_name`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `user_email_unique` ON `user` (`email`);--> statement-breakpoint
+CREATE UNIQUE INDEX IF NOT EXISTS `verify_email_tokens_user_id_unique` ON `verify_email_tokens` (`user_id`);
