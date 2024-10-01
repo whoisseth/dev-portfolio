@@ -44,10 +44,10 @@ export const ProjectCard = ({ project, userRoute, canEdit }: props) => {
       </CardHeader>
 
       {userRoute && canEdit && (
-        <div className=" px-4 flex gap-2 ">
+        <div className="flex gap-2 px-4">
           <UpdateProjectDialogComponent
             userRoute={userRoute}
-            project={project}
+            project={{ ...project, id: project.id! }}
           />
           <DeleteProjectDialog project={project} />
         </div>
