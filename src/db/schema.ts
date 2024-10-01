@@ -199,6 +199,7 @@ export const reservedRoutes = sqliteTable("reserved_routes", {
   routeName: text("route_name").notNull().unique(),
 });
 
+// not using this this in our app
 export const projectImages = sqliteTable("project_images", {
   id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
   projectId: integer("project_id", { mode: "number" })

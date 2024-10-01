@@ -85,7 +85,6 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
   const [isChecking, setIsChecking] = useState(false);
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [isGeneratingTagline, setIsGeneratingTagline] = useState(false);
-  const [isGeneratingAltTagline, setIsGeneratingAltTagline] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const routeForm = useForm<z.infer<typeof RouteFormSchema>>({
@@ -180,10 +179,7 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
   };
 
   const generateTagline = async (alternative = false) => {
-    const setGenerating = alternative
-      ? setIsGeneratingAltTagline
-      : setIsGeneratingTagline;
-    setGenerating(true);
+    setIsGeneratingTagline(true);
     const fullName = form.getValues("fullName");
     const title = form.getValues("title");
     const currentTagline = form.getValues("tagline");
@@ -222,7 +218,7 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
       console.error("Error:", error);
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
-      setGenerating(false);
+      setIsGeneratingTagline(false);
     }
   };
 
@@ -294,7 +290,13 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
                   name="routeName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Route Name</FormLabel>
+                      <FormLabel>
+                        Route Name → [{" "}
+                        <span className="text-muted-foreground">
+                          https://portly.dev/{routeForm.getValues("routeName")}{" "}
+                        </span>{" "}
+                        ]
+                      </FormLabel>
                       <div className="flex w-full flex-col gap-2 sm:flex-row">
                         <FormControl>
                           <Input
@@ -382,9 +384,7 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
                                 type="button"
                                 size="sm"
                                 onClick={() => generateTagline()}
-                                disabled={
-                                  isGeneratingTagline || isGeneratingAltTagline
-                                }
+                                disabled={isGeneratingTagline}
                               >
                                 {isGeneratingTagline ? (
                                   <>
@@ -393,24 +393,6 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
                                   </>
                                 ) : (
                                   "Generate With AI"
-                                )}
-                              </Button>
-                              <Button
-                                type="button"
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => generateTagline(true)}
-                                disabled={
-                                  isGeneratingTagline || isGeneratingAltTagline
-                                }
-                              >
-                                {isGeneratingAltTagline ? (
-                                  <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Generating...
-                                  </>
-                                ) : (
-                                  "Alternative Tagline"
                                 )}
                               </Button>
                             </section>
