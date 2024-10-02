@@ -86,9 +86,9 @@ export function Hero({
       description: heroSection.description,
       email: heroSection.email,
       skills: heroSection.skills ?? undefined,
-      linkedin: heroSection.linkedIn ?? undefined,
-      github: heroSection.github ?? undefined,
-      youtube: heroSection.youtube ?? undefined,
+      linkedin: heroSection.linkedIn ?? "",
+      github: heroSection.github ?? "",
+      youtube: heroSection.youtube ?? "",
       phoneNumber: heroSection.phoneNumber ?? "",
     },
   });
@@ -104,6 +104,7 @@ export function Hero({
         console.log("inside startTransition");
         await updateHeroSection({
           ...data,
+          linkedIn: data.linkedin || "",
           userId: heroSection.userId,
           routeId: heroSection.routeId,
           id: heroSection.id,

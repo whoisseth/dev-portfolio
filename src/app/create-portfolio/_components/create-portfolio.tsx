@@ -60,9 +60,9 @@ export const FormSchema = z.object({
     .string()
     .regex(/^\+?[1-9]\d{1,14}$/, { message: "Invalid phone number format." })
     .or(z.literal("")),
-  linkedin: z.string().url({ message: "Invalid LinkedIn URL." }).optional(),
-  github: z.string().url({ message: "Invalid GitHub URL." }).optional(),
-  youtube: z.string().url({ message: "Invalid YouTube URL." }).optional(),
+  linkedin: z.string().url({ message: "Invalid LinkedIn URL." }).or(z.literal("")),
+  github: z.string().url({ message: "Invalid GitHub URL." }).or(z.literal("")),
+  youtube: z.string().url({ message: "Invalid YouTube URL." }).or(z.literal("")),
 });
 
 type Props = {
