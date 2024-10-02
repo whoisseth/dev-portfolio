@@ -50,7 +50,7 @@ export const projectSchema = z.object({
     )
     .optional(),
   imageUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
-  tags: z.array(z.string()).default([]),
+  tags: z.array(z.string()).max(8, "Maximum of 8 tags allowed").default([]),
   liveLink: z.string().url("Invalid URL").optional().or(z.literal("")),
   codeLink: z.string().url("Invalid URL").optional().or(z.literal("")),
 });
@@ -145,7 +145,7 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
 
   const addTag = (tags: string[], onChange: (value: string[]) => void) => {
     const newTag = tagInputRef.current?.value.trim();
-    if (newTag && !tags.includes(newTag)) {
+    if (newTag && !tags.includes(newTag) && tags.length < 8) {
       onChange([...tags, newTag]);
       if (tagInputRef.current) {
         tagInputRef.current.value = "";
@@ -216,8 +216,23 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
     }
   };
 
+  const resetForm = useCallback(() => {
+    form.reset();
+    setPreviewImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [form]);
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen) {
+      resetForm();
+    }
+    setOpen(newOpen);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">Add Project</Button>
       </DialogTrigger>
@@ -389,72 +404,6 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
             <div className="space-y-4 md:w-1/2">
               <FormField
                 control={form.control}
-                name="tags"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Tags (Optinal)</FormLabel>
-                    <FormControl>
-                      <Controller
-                        name="tags"
-                        control={form.control}
-                        render={({ field: { onChange, value } }) => (
-                          <div>
-                            <div className="mb-2 flex flex-wrap gap-2">
-                              {value.map((tag, index) => (
-                                <Badge
-                                  key={index}
-                                  variant="secondary"
-                                  className="text-sm"
-                                >
-                                  {tag}
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      const newTags = [...value];
-                                      newTags.splice(index, 1);
-                                      onChange(newTags);
-                                    }}
-                                    className="ml-1 hover:text-destructive focus:outline-none"
-                                  >
-                                    <X size={14} />
-                                  </button>
-                                </Badge>
-                              ))}
-                            </div>
-                            <div className="flex">
-                              <Input
-                                ref={tagInputRef}
-                                placeholder="Add a new tag"
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    e.preventDefault();
-                                    addTag(value, onChange);
-                                  }
-                                }}
-                                className="flex-grow"
-                              />
-                              <Button
-                                type="button"
-                                onClick={() => addTag(value, onChange)}
-                                className="ml-2"
-                              >
-                                Add Tag
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Type a new tag and press Enter or click "Add Tag" to add
-                      it.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
                 name="liveLink"
                 render={({ field }) => (
                   <FormItem>
@@ -478,6 +427,73 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
                         {...field}
                       />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tags (Optinal)</FormLabel>
+                    <FormControl>
+                      <Controller
+                        name="tags"
+                        control={form.control}
+                        render={({ field: { onChange, value } }) => (
+                          <div>
+                            <div className="flex">
+                              <Input
+                                ref={tagInputRef}
+                                placeholder="Add a new tag"
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    e.preventDefault();
+                                    addTag(value, onChange);
+                                  }
+                                }}
+                                className="flex-grow"
+                                disabled={value.length >= 8}
+                              />
+                              <Button
+                                type="button"
+                                onClick={() => addTag(value, onChange)}
+                                className="ml-2"
+                                disabled={value.length >= 8}
+                              >
+                                Add Tag
+                              </Button>
+                            </div>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {value.map((tag, index) => (
+                                <Badge
+                                  key={index}
+                                  variant="secondary"
+                                  className="text-sm"
+                                >
+                                  {tag}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newTags = [...value];
+                                      newTags.splice(index, 1);
+                                      onChange(newTags);
+                                    }}
+                                    className="ml-1 hover:text-destructive focus:outline-none"
+                                  >
+                                    <X size={14} />
+                                  </button>
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      Type a new tag and press Enter or click "Add Tag" to add it. Maximum of 8 tags allowed.
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
