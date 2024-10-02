@@ -70,7 +70,7 @@ export default async function RootLayout({
       >
         <Providers>
           <NextTopLoader showSpinner={false} />
-          <Warning />
+          {/* <Warning /> */}
           <main className="flex flex-grow flex-col">{children}</main>
           <FooterComponent />
         </Providers>
