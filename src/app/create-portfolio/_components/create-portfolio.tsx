@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState, useTransition, useRef } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,7 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,8 @@ import {
 import { User } from "lucia";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 
 export const RouteFormSchema = z.object({
   routeName: z
@@ -54,15 +57,31 @@ export const FormSchema = z.object({
     .min(10, { message: "Description must be at least 10 characters." })
     .max(300, { message: "Description must not exceed 250 characters." }),
   email: z.string().email({ message: "Invalid email address." }),
-  skills: z.string().optional(),
+  skills: z
+    .array(z.string())
+    .max(20, "You can add a maximum of 20 skills.")
+    .optional(),
   // phone number also posipal for empty string
   phoneNumber: z
     .string()
     .regex(/^\+?[1-9]\d{1,14}$/, { message: "Invalid phone number format." })
-    .or(z.literal("")),
-  linkedin: z.string().url({ message: "Invalid LinkedIn URL." }).or(z.literal("")),
-  github: z.string().url({ message: "Invalid GitHub URL." }).or(z.literal("")),
-  youtube: z.string().url({ message: "Invalid YouTube URL." }).or(z.literal("")),
+    .or(z.literal(""))
+    .optional(),
+  linkedin: z
+    .string()
+    .url({ message: "Invalid LinkedIn URL." })
+    .or(z.literal(""))
+    .optional(),
+  github: z
+    .string()
+    .url({ message: "Invalid GitHub URL." })
+    .or(z.literal(""))
+    .optional(),
+  youtube: z
+    .string()
+    .url({ message: "Invalid YouTube URL." })
+    .or(z.literal(""))
+    .optional(),
 });
 
 type Props = {
@@ -99,6 +118,7 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
+      skills: [],
       fullName: "",
       description: "",
       email: "",
@@ -219,6 +239,18 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsGeneratingTagline(false);
+    }
+  };
+
+  const skillInputRef = useRef<HTMLInputElement>(null);
+
+  const addSkill = (skills: string[], onChange: (value: string[]) => void) => {
+    const newSkill = skillInputRef.current?.value.trim();
+    if (newSkill && !skills.includes(newSkill) && skills.length < 20) {
+      onChange([...skills, newSkill]);
+      if (skillInputRef.current) {
+        skillInputRef.current.value = "";
+      }
     }
   };
 
@@ -471,12 +503,80 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
                   name="skills"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Skills (optional)</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="JavaScript, React, Node.js"
-                          {...field}
-                        />
+                        <div>
+                          <div className="flex">
+                            <Input
+                              ref={skillInputRef}
+                              placeholder="Add a new skill"
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addSkill(
+                                    Array.isArray(field.value)
+                                      ? field.value
+                                      : [],
+                                    field.onChange,
+                                  );
+                                }
+                              }}
+                              className="flex-grow"
+                              disabled={
+                                Array.isArray(field.value) &&
+                                field.value.length >= 20
+                              }
+                            />
+                            <Button
+                              type="button"
+                              onClick={() =>
+                                addSkill(
+                                  Array.isArray(field.value) ? field.value : [],
+                                  field.onChange,
+                                )
+                              }
+                              className="ml-2"
+                              disabled={
+                                Array.isArray(field.value) &&
+                                field.value.length >= 20
+                              }
+                            >
+                              Add Skill
+                            </Button>
+                          </div>
+                          <div className="mt-2 flex flex-wrap gap-2">
+                            {Array.isArray(field.value) &&
+                              field.value.map((skill, index) => (
+                                <Badge
+                                  key={index}
+                                  variant="secondary"
+                                  className="text-sm"
+                                >
+                                  {skill}
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      const newSkills = Array.isArray(
+                                        field.value,
+                                      )
+                                        ? [...field.value]
+                                        : [];
+                                      newSkills.splice(index, 1);
+                                      field.onChange(newSkills);
+                                    }}
+                                    className="ml-1 hover:text-destructive focus:outline-none"
+                                  >
+                                    <X size={14} />
+                                  </button>
+                                </Badge>
+                              ))}
+                          </div>
+                          <div className="mt-2 text-xs text-muted-foreground">
+                            {Array.isArray(field.value)
+                              ? field.value.length
+                              : 0}
+                            /20
+                          </div>
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

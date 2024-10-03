@@ -22,7 +22,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { updateHeroSection } from "@/actions/create-portfolio-actions";
 import { toast } from "sonner";
@@ -34,6 +34,8 @@ import AvatarEditor, { AvatarOptions } from "./_components/avatar-editor";
 import { createAvatar, Options } from "@dicebear/core";
 import { notionists } from "@dicebear/collection";
 import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 
 type HeroProps = {
   routeName: string;
@@ -85,7 +87,7 @@ export function Hero({
       tagline: heroSection.tagline ?? "",
       description: heroSection.description,
       email: heroSection.email,
-      skills: heroSection.skills ?? undefined,
+      skills: heroSection.skills ?? [],
       linkedin: heroSection.linkedIn ?? "",
       github: heroSection.github ?? "",
       youtube: heroSection.youtube ?? "",
@@ -119,6 +121,27 @@ export function Hero({
       }
     });
   };
+
+  const skillInputRef = useRef<HTMLInputElement>(null);
+
+  const addSkill = (skills: string[], onChange: (value: string[]) => void) => {
+    const newSkill = skillInputRef.current?.value.trim();
+    if (newSkill && !skills.includes(newSkill)) {
+      onChange([...skills, newSkill]);
+      if (skillInputRef.current) {
+        skillInputRef.current.value = "";
+      }
+    }
+  };
+
+  const removeSkill = (
+    skillToRemove: string,
+    skills: string[],
+    onChange: (value: string[]) => void,
+  ) => {
+    onChange(skills.filter((skill) => skill !== skillToRemove));
+  };
+
   return (
     <div id="about-me">
       <div className="flex flex-col-reverse items-center gap-12 py-6 sm:py-10 lg:flex-row">
@@ -263,11 +286,80 @@ export function Hero({
                       render={({ field }) => (
                         <FormItem>
                           <FormControl>
-                            <Input
-                              placeholder="JavaScript, React, Node.js, etc."
-                              className="mt-4 border-none bg-transparent text-sm text-muted-foreground sm:text-base"
-                              {...field}
-                            />
+                            <div>
+                              <div className="flex">
+                                <Input
+                                  disabled={
+                                    Array.isArray(field.value) &&
+                                    field.value.length >= 20
+                                  }
+                                  ref={skillInputRef}
+                                  placeholder="Add a new skill"
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      e.preventDefault();
+                                      addSkill(
+                                        Array.isArray(field.value)
+                                          ? field.value
+                                          : [],
+                                        field.onChange,
+                                      );
+                                    }
+                                  }}
+                                  className="flex-grow"
+                                />
+                                <Button
+                                  type="button"
+                                  disabled={
+                                    Array.isArray(field.value) &&
+                                    field.value.length >= 20
+                                  }
+                                  onClick={() =>
+                                    addSkill(
+                                      Array.isArray(field.value)
+                                        ? field.value
+                                        : [],
+                                      field.onChange,
+                                    )
+                                  }
+                                  className="ml-2"
+                                >
+                                  Add Skill
+                                </Button>
+                              </div>
+
+                              <div className="mt-2 flex flex-wrap gap-1">
+                                {field.value &&
+                                  field.value.map((skill, index) => (
+                                    <Badge
+                                      key={index}
+                                      variant="secondary"
+                                      className="text-sm"
+                                    >
+                                      {skill}
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          const newSkills = [
+                                            ...(field.value || []),
+                                          ] as string[];
+                                          newSkills.splice(index, 1);
+                                          field.onChange(newSkills);
+                                        }}
+                                        className="ml-1 hover:text-destructive focus:outline-none"
+                                      >
+                                        <X size={14} />
+                                      </button>
+                                    </Badge>
+                                  ))}
+                              </div>
+                              <div className="mt-2 text-xs text-muted-foreground">
+                                {Array.isArray(field.value)
+                                  ? field.value.length
+                                  : 0}
+                                /20
+                              </div>
+                            </div>
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -276,12 +368,20 @@ export function Hero({
                   ) : (
                     heroSection.skills && (
                       <div className="flex items-center space-x-2">
-                        <Briefcase className="h-4 w-4" />
-                        <span className="text-sm">
-                          {Array.isArray(heroSection.skills)
-                            ? heroSection.skills.join(", ")
-                            : heroSection.skills}
-                        </span>
+                        <div className="size-4">
+                          <Briefcase className="h-4 w-4" />
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {heroSection.skills.map((skill, index) => (
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="text-sm"
+                            >
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                     )
                   )}

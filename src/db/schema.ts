@@ -108,7 +108,11 @@ export const heroSection = sqliteTable("hero_section", {
   fullName: text("full_name").notNull(),
   description: text("description").notNull(),
   email: text("email").notNull(),
-  skills: text("skills"),
+  // skills shoudle be arra
+  skills: text("skills", { mode: "json" })
+    .$type<string[]>()
+    .default(sql`(json_array())`),
+  // skills: text("skills"),
   phoneNumber: text("phone_number"),
   linkedIn: text("linkedin"),
   github: text("github"),
