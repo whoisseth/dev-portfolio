@@ -276,8 +276,6 @@ export const updateProject = async (
     await db.delete(images).where(eq(images.url, existingProject.imageUrl));
   }
 
- 
-
   // Update project in database
   const updatedProject = await db
     .update(projects)

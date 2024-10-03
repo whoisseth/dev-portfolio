@@ -1,5 +1,5 @@
 import { AvatarOptions } from "@/app/[route-name]/_components/hero/_components/avatar-editor";
-import { InferModel, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { integer, text, sqliteTableCreator } from "drizzle-orm/sqlite-core";
 
 export const accountTypeEnum = ["email", "google", "github"] as const;

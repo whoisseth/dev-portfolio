@@ -30,7 +30,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { User } from "lucia";
 import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
 import { FilePen } from "lucide-react";
-import AvatarEditor, { AvatarOptions } from "./_components/avatar-editor";
+import AvatarEditor, {
+  AvatarFeature,
+  AvatarOptions,
+} from "./_components/avatar-editor";
 import { createAvatar, Options } from "@dicebear/core";
 import { notionists } from "@dicebear/collection";
 import { cn } from "@/lib/utils";
@@ -42,18 +45,6 @@ type HeroProps = {
   heroSection: HeroSection;
   user: User | undefined;
   isProjectsEmpty?: boolean;
-};
-
-export const initialOptions: AvatarOptions = {
-  seed: "avatar",
-  flip: true,
-  scale: 100,
-  body: ["variant01", "variant02", "variant03"],
-  brows: ["variant01"],
-  gesture: ["hand"],
-  hair: ["variant01"],
-  lips: ["variant01"],
-  nose: ["variant01"],
 };
 
 export function Hero({
@@ -132,14 +123,6 @@ export function Hero({
         skillInputRef.current.value = "";
       }
     }
-  };
-
-  const removeSkill = (
-    skillToRemove: string,
-    skills: string[],
-    onChange: (value: string[]) => void,
-  ) => {
-    onChange(skills.filter((skill) => skill !== skillToRemove));
   };
 
   return (

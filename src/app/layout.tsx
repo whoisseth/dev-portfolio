@@ -12,7 +12,7 @@ import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import Warning from "@/components/warning";
 import { FooterComponent } from "@/components/footer";
 import { TailwindIndicator } from "@/components/tailwind-indicator";
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/react";
 import { env } from "process";
 
 const archivo = Archivo({

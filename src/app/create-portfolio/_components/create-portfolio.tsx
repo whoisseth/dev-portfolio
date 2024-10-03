@@ -283,19 +283,29 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
           userId: user?.id || 0,
           routeId: routeId || 0,
           avatarOptions: {
+            rotate: 0,
+            scale: 100,
+            translateX: 0,
+            translateY: 0,
+            beardProbability: 100,
+            gestureProbability: 100,
+            glassesProbability: 100,
+            body: ["variant01"],
+            beard: [],
+            glasses: [],
+            brows: ["variant01"],
+            gesture: [],
+            hair: ["variant01"],
+            lips: ["variant01"],
+            nose: ["variant01"],
+            eyes: ["variant01"],
             seed: data.fullName,
             flip: true,
-            hair: ["variant01"],
-            body: ["variant06"],
-            nose: ["variant13"],
-            lips: ["variant30"],
-            scale: 103,
-            brows: ["variant06"],
-            gesture: ["variant01"],
           },
         };
 
         console.log("heroSectionData", heroSectionData);
+        // await addHeroSection(heroSectionData);
         await addHeroSection(heroSectionData);
 
         toast.success("Portfolio created successfully.");

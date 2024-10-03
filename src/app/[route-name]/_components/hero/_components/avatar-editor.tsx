@@ -11,6 +11,7 @@ import { User } from "lucia";
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -19,25 +20,45 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { FilePen } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Options } from "@dicebear/core";
+
+export type AvatarFeature =
+  | "body"
+  | "beard"
+  | "glasses"
+  | "brows"
+  | "gesture"
+  | "hair"
+  | "lips"
+  | "nose"
+  | "eyes";
 
 export type AvatarOptions = {
   seed: string;
   flip: boolean;
+  rotate: number;
   scale: number;
-  body: string[];
-  brows: string[];
-  gesture: string[];
-  hair: string[];
-  lips: string[];
-  nose: string[];
+  translateX: number;
+  translateY: number;
+  beardProbability: number;
+  gestureProbability: number;
+  glassesProbability: number;
+} & {
+  [K in AvatarFeature]: string[];
 };
 
-const featureOptions = {
+const featureOptions: Record<AvatarFeature, string[]> = {
   body: Array.from(
     { length: 25 },
+    (_, i) => `variant${String(i + 1).padStart(2, "0")}`,
+  ),
+  beard: Array.from(
+    { length: 12 },
+    (_, i) => `variant${String(i + 1).padStart(2, "0")}`,
+  ),
+  glasses: Array.from(
+    { length: 11 },
     (_, i) => `variant${String(i + 1).padStart(2, "0")}`,
   ),
   brows: Array.from(
@@ -56,16 +77,23 @@ const featureOptions = {
     "waveOkLongArms",
     "wavePointLongArms",
   ],
-  hair: Array.from(
-    { length: 63 },
-    (_, i) => `variant${String(i + 1).padStart(2, "0")}`,
-  ),
+  hair: [
+    "hat",
+    ...Array.from(
+      { length: 63 },
+      (_, i) => `variant${String(i + 1).padStart(2, "0")}`,
+    ),
+  ],
   lips: Array.from(
     { length: 30 },
     (_, i) => `variant${String(i + 1).padStart(2, "0")}`,
   ),
   nose: Array.from(
-    { length: 13 },
+    { length: 20 },
+    (_, i) => `variant${String(i + 1).padStart(2, "0")}`,
+  ),
+  eyes: Array.from(
+    { length: 5 },
     (_, i) => `variant${String(i + 1).padStart(2, "0")}`,
   ),
 };
@@ -77,23 +105,48 @@ type Props = {
   setAvatarOptions: (options: AvatarOptions) => void;
 };
 
+const defaultAvatarOptions: AvatarOptions = {
+  seed: "",
+  flip: false,
+  rotate: 0,
+  scale: 100,
+  translateX: 0,
+  translateY: 0,
+  beardProbability: 100,
+  gestureProbability: 100,
+  glassesProbability: 100,
+  body: ["variant01"],
+  beard: [],
+  glasses: [],
+  brows: ["variant01"],
+  gesture: [],
+  hair: ["variant01"],
+  lips: ["variant01"],
+  nose: ["variant01"],
+  eyes: ["variant01"],
+};
+
 export default function AvatarEditor({
   className,
   user,
   avatarOptions,
   setAvatarOptions,
 }: Props) {
-  // const [options, setOptions] = useAtom(avatarOptionsAtom);
-  const [currentOptions, setCurrentOptions] = useState(avatarOptions);
-  const [currentFeature, setCurrentFeature] =
-    useState<keyof AvatarOptions>("body");
+  const [currentOptions, setCurrentOptions] = useState<AvatarOptions>({
+    ...defaultAvatarOptions,
+    ...avatarOptions,
+  });
+  const [currentFeature, setCurrentFeature] = useState<AvatarFeature>("body");
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
-    setCurrentOptions(avatarOptions);
-  }, [avatarOptions]);
+    if (!isDialogOpen) {
+      // Reset to original values from backend when dialog is closed
+      setCurrentOptions({ ...defaultAvatarOptions, ...avatarOptions });
+    }
+  }, [isDialogOpen, avatarOptions]);
 
   const updateOption = (
     key: keyof AvatarOptions,
@@ -110,6 +163,13 @@ export default function AvatarEditor({
     }));
   };
 
+  const hasChanges =
+    JSON.stringify(currentOptions) !==
+    JSON.stringify({
+      ...defaultAvatarOptions,
+      ...avatarOptions,
+    });
+
   const handleSave = async () => {
     startTransition(async () => {
       try {
@@ -120,7 +180,7 @@ export default function AvatarEditor({
           description: "Avatar options updated successfully!",
           variant: "default",
         });
-        setIsDialogOpen(false); // Close the dialog after saving
+        setIsDialogOpen(false);
       } catch (error) {
         console.error("Error updating avatar options:", error);
         toast({
@@ -132,144 +192,264 @@ export default function AvatarEditor({
     });
   };
 
-  const renderFeatureOptions = (feature: keyof AvatarOptions) => {
+  const handleDialogClose = (isOpen: boolean) => {
+    setIsDialogOpen(isOpen);
+    if (!isOpen) {
+      // Reset to original values when dialog is closed
+      setCurrentOptions({ ...defaultAvatarOptions, ...avatarOptions });
+    }
+  };
+
+  const renderFeatureOptions = (feature: AvatarFeature) => {
     return (
       <div className="grid grid-cols-3 gap-4 sm:grid-cols-4 md:grid-cols-6">
-        {featureOptions[feature as keyof typeof featureOptions].map(
-          (variant) => {
-            const variantAvatar = createAvatar(notionists, {
-              ...currentOptions,
-              [feature]: [
-                variant as
-                  | "variant25"
-                  | "variant24"
-                  | "variant23"
-                  | "variant22"
-                  | "variant21"
-                  | "variant20"
-                  | "variant19"
-                  | "variant18"
-                  | "variant17"
-                  | "variant16"
-                  | "variant15"
-                  | "variant14"
-                  | "variant13"
-                  | "variant12"
-                  | "variant11"
-                  | "variant10"
-                  | "variant09"
-                  | "variant08"
-                  | "variant07"
-                  | "variant06"
-                  | "variant05"
-                  | "variant04"
-                  | "variant03"
-                  | "variant02"
-                  | "variant01",
-              ],
-            } as Partial<Options & Options>);
-            return (
-              <Button
-                key={variant}
-                variant={
-                  Array.isArray(currentOptions[feature]) &&
-                  (currentOptions[feature] as any[])[0] === variant
-                    ? "default"
-                    : "secondary"
-                }
-                className="h-auto w-auto p-0"
-                onClick={() => updateOption(feature, [variant])}
-              >
-                <div
-                  className="aspect-square w-full"
-                  dangerouslySetInnerHTML={{ __html: variantAvatar.toString() }}
-                />
-              </Button>
-            );
-          },
-        )}
+        {featureOptions[feature].map((variant) => {
+          const variantAvatar = createAvatar(notionists, {
+            ...currentOptions,
+            [feature]: [variant],
+          } as Partial<Options>);
+
+          return (
+            <Button
+              key={variant}
+              variant={
+                currentOptions[feature][0] === variant ? "default" : "secondary"
+              }
+              className="h-auto w-auto p-0"
+              onClick={() => updateOption(feature, [variant])}
+            >
+              <div
+                className="aspect-square w-full"
+                dangerouslySetInnerHTML={{ __html: variantAvatar.toString() }}
+              />
+            </Button>
+          );
+        })}
       </div>
     );
   };
 
-  const avatar = createAvatar(
-    notionists,
-    currentOptions as Partial<Options & Options>,
-  );
+  const avatar = createAvatar(notionists, currentOptions as Partial<Options>);
   const svg = avatar.toString();
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
         <Button
-          size={"sm"}
+          size="sm"
           className={cn("hover:border-primary hover:bg-transparent", className)}
           variant="outline"
         >
-          {/* <FilePen size={16} className="mr-2" /> */}
-           Edit Avatar
+          Edit Avatar
         </Button>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[900px]">
-        <DialogHeader>
+        <DialogHeader className="">
           <DialogTitle>Edit your Avatar</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_300px]">
-          <div className="max-h-[60vh] space-y-4 overflow-y-auto px-1 pr-4">
-            <div>
-              <Label htmlFor="seed">Seed</Label>
-              <Input
-                id="seed"
-                value={currentOptions.seed}
-                onChange={(e) => updateOption("seed", e.target.value)}
-              />
-            </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="flip"
-                checked={currentOptions.flip}
-                onCheckedChange={(checked) => updateOption("flip", checked)}
-              />
-              <Label htmlFor="flip">Flip</Label>
-            </div>
-            <div>
-              <Label htmlFor="scale">Scale</Label>
-              <Slider
-                id="scale"
-                min={0}
-                max={200}
-                step={1}
-                value={[currentOptions.scale]}
-                onValueChange={(value) => updateOption("scale", value[0])}
-              />
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {Object.keys(featureOptions).map((feature) => (
-                <Button
-                  key={feature}
-                  className="capitalize"
-                  variant={currentFeature === feature ? "default" : "outline"}
-                  onClick={() =>
-                    setCurrentFeature(feature as keyof AvatarOptions)
-                  }
-                >
-                  {feature}
-                </Button>
-              ))}
-            </div>
-            {renderFeatureOptions(currentFeature)}
-            <Button onClick={handleSave} className="mt-4" variant="default">
-              {isPending ? "Saving..." : "Save Avatar"}
-            </Button>
-          </div>
-          <div className="flex flex-col items-center justify-center rounded-lg border bg-muted p-4">
-            <div
-              className="aspect-square w-full"
-              dangerouslySetInnerHTML={{ __html: svg }}
+          <div className="max-h-[60vh] space-y-4 overflow-y-auto rounded-md border p-2 pr-4">
+            <AvatarSeedInput
+              seed={currentOptions.seed}
+              updateOption={updateOption}
             />
+            <AvatarFlipSwitch
+              flip={currentOptions.flip}
+              updateOption={updateOption}
+            />
+            <AvatarRotateSlider
+              rotate={currentOptions.rotate}
+              updateOption={updateOption}
+            />
+            <AvatarScaleSlider
+              scale={currentOptions.scale}
+              updateOption={updateOption}
+            />
+            <AvatarProbabilitySlider
+              label="Beard Probability"
+              value={currentOptions.beardProbability}
+              updateOption={(value) => updateOption("beardProbability", value)}
+            />
+            <AvatarProbabilitySlider
+              label="Gesture Probability"
+              value={currentOptions.gestureProbability}
+              updateOption={(value) =>
+                updateOption("gestureProbability", value)
+              }
+            />
+            <AvatarProbabilitySlider
+              label="Glasses Probability"
+              value={currentOptions.glassesProbability}
+              updateOption={(value) =>
+                updateOption("glassesProbability", value)
+              }
+            />
+            <AvatarFeatureSelector
+              currentFeature={currentFeature}
+              setCurrentFeature={setCurrentFeature}
+            />
+            {renderFeatureOptions(currentFeature)}
           </div>
+          <AvatarPreview svg={svg} />
         </div>
+        <DialogFooter className="flex w-full justify-end">
+          <Button
+            onClick={() => setIsDialogOpen(false)}
+            className=""
+            variant="outline"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSave}
+            className=""
+            variant="default"
+            disabled={!hasChanges || isPending}
+          >
+            {isPending ? "Saving..." : "Save Avatar"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
+  );
+}
+
+function AvatarSeedInput({
+  seed,
+  updateOption,
+}: {
+  seed: string;
+  updateOption: (key: "seed", value: string) => void;
+}) {
+  return (
+    <div>
+      <Label htmlFor="seed">Seed</Label>
+      <Input
+        id="seed"
+        value={seed}
+        onChange={(e) => updateOption("seed", e.target.value)}
+      />
+    </div>
+  );
+}
+
+function AvatarFlipSwitch({
+  flip,
+  updateOption,
+}: {
+  flip: boolean;
+  updateOption: (key: "flip", value: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center space-x-2">
+      <Switch
+        id="flip"
+        checked={flip}
+        onCheckedChange={(checked) => updateOption("flip", checked)}
+      />
+      <Label htmlFor="flip">Flip</Label>
+    </div>
+  );
+}
+
+function AvatarRotateSlider({
+  rotate,
+  updateOption,
+}: {
+  rotate: number;
+  updateOption: (key: "rotate", value: number) => void;
+}) {
+  return (
+    <div>
+      <Label htmlFor="rotate">Rotate</Label>
+      <Slider
+        id="rotate"
+        min={0}
+        max={360}
+        step={1}
+        value={[rotate]}
+        onValueChange={(value) => updateOption("rotate", value[0])}
+      />
+    </div>
+  );
+}
+
+function AvatarScaleSlider({
+  scale,
+  updateOption,
+}: {
+  scale: number;
+  updateOption: (key: "scale", value: number) => void;
+}) {
+  return (
+    <div>
+      <Label htmlFor="scale">Scale</Label>
+      <Slider
+        id="scale"
+        min={0}
+        max={200}
+        step={1}
+        value={[scale]}
+        onValueChange={(value) => updateOption("scale", value[0])}
+      />
+    </div>
+  );
+}
+
+function AvatarProbabilitySlider({
+  label,
+  value,
+  updateOption,
+}: {
+  label: string;
+  value: number;
+  updateOption: (value: number) => void;
+}) {
+  return (
+    <div>
+      <Label htmlFor={label}>{label}</Label>
+      <Slider
+        id={label}
+        min={0}
+        max={100}
+        step={1}
+        value={[value]}
+        onValueChange={(value) => updateOption(value[0])}
+      />
+    </div>
+  );
+}
+
+function AvatarFeatureSelector({
+  currentFeature,
+  setCurrentFeature,
+}: {
+  currentFeature: AvatarFeature;
+  setCurrentFeature: (feature: AvatarFeature) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-2">
+      {(Object.keys(featureOptions) as AvatarFeature[]).map((feature) => (
+        <Button
+          key={feature}
+          className="capitalize"
+          variant={currentFeature === feature ? "default" : "outline"}
+          onClick={() => setCurrentFeature(feature)}
+        >
+          {feature}
+        </Button>
+      ))}
+    </div>
+  );
+}
+
+function AvatarPreview({ svg }: { svg: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center rounded-lg border bg-muted p-4">
+      <div
+        className="aspect-square w-full"
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
+    </div>
   );
 }
