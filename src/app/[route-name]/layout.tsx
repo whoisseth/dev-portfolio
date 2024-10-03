@@ -17,22 +17,28 @@ export async function generateMetadata(
   { params, searchParams }: Props,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
-  const routeName = params.id;
+  try {
+    const routeName = params.id;
+    const heroSection = await getHeroSectionData(routeName);
 
-  // Fetch hero section data using the route name
-  const heroSection = await getHeroSectionData(routeName);
+    if (!heroSection) {
+      return {
+        title: "Default Title",
+        description: "Default Description",
+      };
+    }
 
-  if (!heroSection) {
     return {
-      title: "Default Title",
-      description: "Default Description",
+      title: `${heroSection.hero_section.fullName} - ${heroSection.hero_section.title}`,
+      description: heroSection.hero_section.description,
+    };
+  } catch (error) {
+    console.error("Error fetching hero section data:", error);
+    return {
+      title: "Error",
+      description: "An error occurred while fetching metadata.",
     };
   }
-
-  return {
-    title: `${heroSection.hero_section.fullName} - ${heroSection.hero_section.title}`,
-    description: heroSection.hero_section.description,
-  };
 }
 
 const SHOW_NEW_FEATURE_NOTIFICATION = true;
