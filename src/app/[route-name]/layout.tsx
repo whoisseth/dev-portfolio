@@ -1,67 +1,72 @@
 import React, { ReactNode } from "react";
 import Navbar from "./_components/navbar";
 import { getCurrentUser } from "@/lib/session";
-import { getUserRoute } from "@/actions/create-portfolio-actions";
+import {
+  getUserRoute,
+  getHeroSectionData,
+} from "@/actions/create-portfolio-actions";
 import Notification from "@/components/notification";
-import { getHeroSectionData } from "@/actions/create-portfolio-actions";
 
 import type { Metadata, ResolvingMetadata } from "next";
 
 type Props = {
-  params: { id: string };
+  params: { "route-name": string };
   searchParams: { [key: string]: string | string[] | undefined };
 };
-// this is the reference for dynamic metadata
-// https://nextjs.org/docs/app/building-your-application/optimizing/metadata#dynamic-metadata
+
 export async function generateMetadata(
-  { params, searchParams }: Props,
+  { params }: Props,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   try {
-    const routeName = params.id;
+    const routeName = params["route-name"];
+    console.log("Generating metadata for route:", routeName);
+
     const heroSection = await getHeroSectionData(routeName);
 
     if (!heroSection) {
+      console.log(`No hero section found for route: ${routeName}`);
       return {
-        title: "Default Title",
-        description: "Default Description",
+        title: "Portfolio Not Found",
+        description: "The requested portfolio could not be found.",
       };
     }
 
-    return {
+    const metadata = {
       title: `${heroSection.hero_section.fullName} - ${heroSection.hero_section.title}`,
       description: heroSection.hero_section.description,
     };
+
+    console.log("Generated metadata:", metadata);
+
+    return metadata;
   } catch (error) {
-    console.error("Error fetching hero section data:", error);
+    console.error("Error generating metadata:", error);
+    // Log more details about the error
+    if (error instanceof Error) {
+      console.error("Error name:", error.name);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
     return {
       title: "Error",
-      description: "An error occurred while fetching metadata.",
+      description: "An error occurred while generating metadata.",
     };
   }
 }
 
 const SHOW_NEW_FEATURE_NOTIFICATION = true;
 
-// export const metadata: Metadata = {
-//   title: "Portly Dev Portfolio Builder",
-//   icons: [
-//     { rel: "icon", type: "image/png", sizes: "48x48", url: "/favicon.ico" },
-//   ],
-//   keywords: "Portfolio",
-//   description:
-//     "Portly is Dev Portfolio Builder: A simple, customizable tool to create and showcase professional developer portfolios with ease.",
-// };
-
 export default async function Layout({
   children,
-}: Readonly<{
-  children: ReactNode;
-}>) {
+  params,
+}: { children: ReactNode } & { params: { "route-name": string } }) {
   const user = await getCurrentUser();
   const userRoute = await getUserRoute(user?.id || null);
+
   return (
     <div>
+      {/*  */}
       {SHOW_NEW_FEATURE_NOTIFICATION && (
         <Notification message="New feature: Now you can now fully customize your avatar in your profile settings!" />
       )}
