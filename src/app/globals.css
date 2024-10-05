@@ -66,20 +66,15 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-libre_franklin), sans-serif;
+    font-family: var(--font-libre_franklin), sans-serif; /* Use CSS directly */
   }
 
   a {
     @apply text-foreground;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-archivo), sans-serif;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-archivo), sans-serif; /* Use CSS directly */
     @apply text-foreground;
   }
 }

@@ -27,9 +27,6 @@ export function UserTableSkeletonComponent() {
               <TableHead>
                 <Skeleton className="h-4 w-32" />
               </TableHead>
-              <TableHead className="hidden md:table-cell">
-                <Skeleton className="h-4 w-24" />
-              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -43,9 +40,6 @@ export function UserTableSkeletonComponent() {
                 </TableCell>
                 <TableCell>
                   <Skeleton className="h-4 w-40" />
-                </TableCell>
-                <TableCell className="hidden md:table-cell">
-                  <Skeleton className="h-4 w-24" />
                 </TableCell>
               </TableRow>
             ))}

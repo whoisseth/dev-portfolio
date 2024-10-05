@@ -20,6 +20,11 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { createAvatar, Options } from "@dicebear/core";
 import { notionists } from "@dicebear/collection";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface User {
   sno: number;
@@ -37,7 +42,7 @@ interface AvatarOptions extends Partial<Options> {}
 export function UserTableComponent({ users }: UserTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
   const totalPages = Math.ceil(users.length / itemsPerPage);
 
   const getCurrentPageData = () => {
@@ -56,35 +61,36 @@ export function UserTableComponent({ users }: UserTableProps) {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (!(event.target as Element).closest('.tooltip-trigger')) {
+      if (!(event.target as Element).closest(".tooltip-trigger")) {
         closeTooltip();
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [closeTooltip]);
 
   return (
-    <div className="w-full lg:max-w-3xl">
-      <h1 className="mb-4 pl-1 text-2xl font-bold">
-        <span className="text-blue-500">{users.length}</span> People Built
-        their Portfolio
+    <div className="flex w-full flex-col items-center justify-center lg:max-w-3xl">
+      <h1 className="mb-4 pl-1 font-semibold">
+        {/* <span className="text-blue-500">{users.length}</span> People Built their
+        Portfolio */}
       </h1>
-      <section style={{ zoom: "80%" }}>
+      {/* <section > */}
+      <section style={{ zoom: "90%" }} className="w-full max-w-md">
+        <h1 className="mb-4 ml-1 text-2xl font-semibold">
+          Latest portfolios were created by...
+        </h1>
         <div className="overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Sno.</TableHead>
+                <TableHead className="w-[20px]"> </TableHead>
                 <TableHead>Full Name</TableHead>
-                <TableHead>URL</TableHead>
-                <TableHead className="hidden sm:table-cell">
-                  Route Name
-                </TableHead>
+                <TableHead> Portfolio </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -92,14 +98,15 @@ export function UserTableComponent({ users }: UserTableProps) {
                 <TableRow key={i}>
                   <TableCell className="py-0">
                     <div className="flex items-center gap-2">
-                      <p className="whitespace-nowrap">{user.sno} -</p>
-                      {user.avatarOptions && (
-                        <AvatarComponent avatarOptions={user.avatarOptions} />
-                      )}
+                      <p className="whitespace-nowrap">{user.sno} </p>
                     </div>
                   </TableCell>
                   <TableCell className="relative whitespace-normal text-base">
-                    <div className="sm:max-w-full">
+                    <div className="flex items-center gap-2 sm:max-w-full">
+                      {user.avatarOptions && (
+                        <AvatarComponent avatarOptions={user.avatarOptions} />
+                      )}
+
                       <MobileTooltipTrigger
                         fullName={user.fullName}
                         routeName={user.routeName}
@@ -109,24 +116,19 @@ export function UserTableComponent({ users }: UserTableProps) {
                     </div>
                   </TableCell>
                   <TableCell>
-                    <div className="max-w-28 truncate sm:max-w-full">
-                      <Link
-                        href={`/${user.routeName}`}
-                        className="text-base text-blue-500 hover:underline"
-                      >
-                        portly.dev/{user.routeName}
-                      </Link>
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden text-base sm:table-cell">
-                    {user.routeName}
+                    <Link
+                      href={`/${user.routeName}`}
+                      className="text-base text-blue-500 hover:underline"
+                    >
+                      {user.routeName}
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
-        <Pagination className="mt-4">
+        <Pagination className="mt-4 hidden">
           <PaginationContent>
             <PaginationItem>
               <Button
@@ -181,15 +183,15 @@ function AvatarComponent({
   );
 }
 
-function MobileTooltipTrigger({ 
-  fullName, 
-  routeName, 
-  isOpen, 
-  onToggle 
-}: { 
-  fullName: string; 
-  routeName: string; 
-  isOpen: boolean; 
+function MobileTooltipTrigger({
+  fullName,
+  routeName,
+  isOpen,
+  onToggle,
+}: {
+  fullName: string;
+  routeName: string;
+  isOpen: boolean;
   onToggle: () => void;
 }) {
   const handleTouch = (e: React.TouchEvent) => {
@@ -199,9 +201,9 @@ function MobileTooltipTrigger({
   };
 
   return (
-    <div className="relative tooltip-trigger">
+    <div className="tooltip-trigger relative">
       <div
-        className="sm:hidden max-w-28 truncate"
+        className="max-w-28 truncate sm:hidden"
         onTouchStart={handleTouch}
         onTouchEnd={(e) => e.preventDefault()}
         aria-label={`View details for ${fullName}`}
