@@ -74,14 +74,14 @@ export function UserTableComponent({ users }: UserTableProps) {
   }, [closeTooltip]);
 
   return (
-    <div className="flex w-full flex-col items-center justify-center lg:max-w-3xl">
+    <div className="flex  flex-col items-center  justify-center lg:max-w-3xl">
       <h1 className="mb-4 pl-1 font-semibold">
         {/* <span className="text-blue-500">{users.length}</span> People Built their
         Portfolio */}
       </h1>
       {/* <section > */}
-      <section style={{ zoom: "100%" }} className="w-full max-w-md">
-        <h1 className="mb-4 ml-1 text-2xl font-semibold">
+      <section style={{ zoom: "95%" }} className="w-full max-w-md">
+        <h1 className="mb-4 ml-1 text-xl font-semibold">
           Latest portfolios were created by...
         </h1>
         <div className="overflow-x-auto rounded-md border">
