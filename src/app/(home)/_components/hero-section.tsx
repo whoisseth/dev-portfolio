@@ -5,10 +5,12 @@ import React, { Suspense } from "react";
 import { UserTableWrapper } from "./user-table-wrapper";
 import { UserTableSkeletonComponent } from "./user-table-skeleton";
 import { BackgroundLines } from "@/components/ui/background-lines";
+import { getAllUsers } from "@/actions/create-portfolio-actions";
 
 type Props = {};
 
-export default function HeroSection({}: Props) {
+export default async function HeroSection({}: Props) {
+  const allUsers = await getAllUsers();
   return (
     <>
       <BackgroundLines className="flex w-full flex-col items-center justify-center gap-2 px-4 md:flex-row">
@@ -31,8 +33,8 @@ export default function HeroSection({}: Props) {
               </Link>
             </Button>
             <p className="w-full text-center text-sm text-muted-foreground md:text-left">
-              <span className="font-bold text-primary">28</span> people have
-              created their portfolios.
+              <span className="font-bold text-primary">{allUsers.length}</span>{" "}
+              people have created their portfolios.
             </p>
           </section>
         </section>

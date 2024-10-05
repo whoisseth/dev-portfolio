@@ -21,13 +21,7 @@ export default function FeaturesSection() {
       icon: Zap,
       animate: true,
     },
-    {
-      title: "Customizable Designs",
-      description:
-        "Choose from a variety of themes and customize to your liking.",
-      icon: Palette,
-      comingSoon: true,
-    },
+
     {
       title: "Mobile Responsive",
       description:
@@ -41,6 +35,13 @@ export default function FeaturesSection() {
       icon: Search,
     },
     {
+      title: "Regular Updates",
+      description:
+        "Enjoy new features and improvements with our frequent updates.",
+      icon: RefreshCw,
+      animate: true,
+    },
+    {
       title: "Analytics Integration",
       description:
         "Track your portfolio's performance with built-in analytics.",
@@ -49,11 +50,11 @@ export default function FeaturesSection() {
       animate: true,
     },
     {
-      title: "Regular Updates",
+      title: "Customizable Designs",
       description:
-        "Enjoy new features and improvements with our frequent updates.",
-      icon: RefreshCw,
-      animate: true,
+        "Choose from a variety of themes and customize to your liking.",
+      icon: Palette,
+      comingSoon: true,
     },
   ];
 
@@ -108,7 +109,10 @@ export default function FeaturesSection() {
                       {feature.title}
                     </div>
                     {feature.comingSoon && (
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge
+                        variant="secondary"
+                        className="whitespace-nowrap text-xs"
+                      >
                         Coming Soon
                       </Badge>
                     )}

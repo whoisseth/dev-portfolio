@@ -80,7 +80,7 @@ export function UserTableComponent({ users }: UserTableProps) {
         Portfolio */}
       </h1>
       {/* <section > */}
-      <section style={{ zoom: "90%" }} className="w-full max-w-md">
+      <section style={{ zoom: "100%" }} className="w-full max-w-md">
         <h1 className="mb-4 ml-1 text-2xl font-semibold">
           Latest portfolios were created by...
         </h1>

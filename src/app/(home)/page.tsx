@@ -5,6 +5,7 @@ import HeroSection from "./_components/hero-section";
 import FeaturesSection from "./_components/features-section";
 import { getCurrentUser } from "@/lib/session";
 import { getProfile } from "@/data-access/profiles";
+import FAQSection from "./_components/faq-section";
 
 export default async function HomePage() {
   const user = await getCurrentUser();
@@ -16,6 +17,7 @@ export default async function HomePage() {
       <div className="container flex h-full flex-grow flex-col items-center justify-center gap-4 px-2 py-2 sm:py-4 md:px-4">
         <HeroSection />
         <FeaturesSection />
+        <FAQSection />
       </div>
     </>
   );
