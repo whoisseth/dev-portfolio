@@ -81,7 +81,7 @@ export function UserTableComponent({ users }: UserTableProps) {
       </h1>
       {/* <section > */}
       <section style={{ zoom: "95%" }} className="w-full max-w-md">
-        <h1 className="mb-4 ml-1 text-xl font-semibold">
+        <h1 className="mb-4 ml-1 text-xl ">
           Latest portfolios were created by...
         </h1>
         <div className="overflow-x-auto rounded-md border">

@@ -40,7 +40,7 @@ export default function HowToUse() {
   return (
     <section className="bg-background px-4 py-16 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <h2 className="mb-12 text-center text-3xl font-bold">
+        <h2 className="mb-12 text-center text-4xl font-bold">
           How to Use Portly
         </h2>
         <div className="space-y-16">

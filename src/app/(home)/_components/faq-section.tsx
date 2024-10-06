@@ -41,20 +41,28 @@ const faqData = [
 
 export default function FAQSection({}: Props) {
   return (
-    <section className="mx-auto flex w-full max-w-3xl flex-col items-center justify-center gap-4 px-2">
-      <h2 className="text-2xl font-bold">Frequently Asked Questions</h2>
-      <Accordion type="single" collapsible className="w-full">
-        {faqData.map((faq, index) => (
-          <AccordionItem value={`item-${index + 1}`} key={index}>
-            <AccordionTrigger className="text-lg">
-              {faq.question}
-            </AccordionTrigger>
-            <AccordionContent className="text-muted-foreground">
-              {faq.answer}
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+    <section className="relative w-full overflow-hidden py-16">
+      <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center justify-center gap-8 px-4 sm:px-6 lg:px-8">
+        <h2 className="text-center text-4xl font-bold text-primary">
+          Frequently Asked Questions
+        </h2>
+        <Accordion type="single" collapsible className="w-full space-y-4">
+          {faqData.map((faq, index) => (
+            <AccordionItem
+              value={`item-${index + 1}`}
+              key={index}
+              className="overflow-hidden rounded-lg border border-primary/20"
+            >
+              <AccordionTrigger className="bg-background/80 px-4 py-3 text-xl font-medium text-primary transition-colors hover:bg-muted/50 hover:text-primary/80">
+                {faq.question}
+              </AccordionTrigger>
+              <AccordionContent className="bg-background/80 px-4 py-3 text-lg text-primary/80">
+                {faq.answer}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </div>
     </section>
   );
 }

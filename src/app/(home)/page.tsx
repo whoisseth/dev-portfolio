@@ -19,8 +19,8 @@ export default async function HomePage() {
         <HeroSection />
         <FeaturesSection />
         <HowToUse />
-        <FAQSection />
       </div>
+      <FAQSection />
     </>
   );
 }
