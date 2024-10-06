@@ -7,7 +7,6 @@ import crypto from "crypto";
 import { UserId } from "@/use-cases/types";
 import { getAccountByUserId } from "@/data-access/accounts";
 
-
 const ITERATIONS = 10000;
 const MAGIC_LINK_TOKEN_TTL = 1000 * 60 * 5; // 5 min
 

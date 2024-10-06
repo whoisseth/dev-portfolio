@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/session";
 import { getProfile } from "@/data-access/profiles";
 import FAQSection from "./_components/faq-section";
 import HowToUse from "./_components/how-to-use";
+import SupportProject from "./_components/support-project";
 
 export default async function HomePage() {
   const user = await getCurrentUser();
@@ -19,6 +20,7 @@ export default async function HomePage() {
         <HeroSection />
         <FeaturesSection />
         <HowToUse />
+        <SupportProject />
       </div>
       <FAQSection />
     </>

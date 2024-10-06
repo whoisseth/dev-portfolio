@@ -65,6 +65,12 @@ export default function HomePageNavbar({ user, profile }: Props) {
           >
             FAQ
           </Link>
+          <Link
+            href="/support-us"
+            className="text-sm text-muted-foreground hover:text-primary"
+          >
+            Support Us
+          </Link>
 
           {user ? (
             <div className="flex items-center gap-2">
@@ -156,6 +162,12 @@ export default function HomePageNavbar({ user, profile }: Props) {
             className="text-sm text-muted-foreground hover:text-primary"
           >
             FAQ
+          </Link>
+          <Link
+            href="/support-us"
+            className="text-sm text-muted-foreground hover:text-primary"
+          >
+            Support Us
           </Link>
           <Button variant="default" asChild className="w-full">
             <Link href="/create-portfolio">Create Your Portfolio</Link>
