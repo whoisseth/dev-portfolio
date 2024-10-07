@@ -31,12 +31,6 @@ export function FooterComponent() {
               Terms & Conditions
             </Link>
             <Link
-              href="/cancellation-and-refund"
-              className="text-sm text-muted-foreground transition-colors hover:text-primary"
-            >
-              Cancellation & Refund
-            </Link>
-            <Link
               href="/shipping-and-delivery"
               className="text-sm text-muted-foreground transition-colors hover:text-primary"
             >
