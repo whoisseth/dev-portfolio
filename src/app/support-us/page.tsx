@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Card,
   CardContent,
@@ -11,10 +9,16 @@ import {
 import SupportUsNavbar from "./_components/navbar";
 import Link from "next/link";
 import Contribution from "./_components/contribution";
+import { getCurrentUser } from "@/lib/session";
+import { getUserEmailAndName } from "@/data-access/profiles";
 
-export default function SupportUsPage() {
+export default async function SupportUsPage() {
+  const user = await getCurrentUser();
+  const userNameAndEmail = await getUserEmailAndName(user?.id ?? 0);
+
   return (
     <>
+      {" "}
       <SupportUsNavbar />
       <div className="container mx-auto px-4 py-16">
         <h1 className="mb-8 text-center text-4xl font-bold">
@@ -49,7 +53,7 @@ export default function SupportUsPage() {
               </CardContent>
             </Card>
 
-            <Contribution />
+            <Contribution userNameAndEmail={userNameAndEmail} />
           </div>
         </div>
       </div>

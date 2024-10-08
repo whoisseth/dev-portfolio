@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Heart, Users, Zap } from "lucide-react";
+import Link from "next/link";
 
 export default function SupportProject() {
   return (
@@ -55,9 +57,15 @@ export default function SupportProject() {
           </Card>
         </div>
         <div className="flex justify-center">
-          <Button size="lg" className="px-8 py-3 text-lg font-semibold">
+          <Link
+            href="/support-us"
+            className={cn(
+              buttonVariants({ variant: "default" }),
+              "px-8 py-3 text-lg",
+            )}
+          >
             Contribute Now
-          </Button>
+          </Link>
         </div>
       </div>
     </section>
