@@ -56,7 +56,7 @@ export default function SupportProject() {
             </CardContent>
           </Card>
         </div>
-        <div className="flex justify-center">
+        <div className="flex flex-col justify-center gap-2 md:flex-row">
           <Link
             href="/support-us"
             className={cn(

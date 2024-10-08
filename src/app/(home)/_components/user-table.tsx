@@ -20,11 +20,6 @@ import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { createAvatar, Options } from "@dicebear/core";
 import { notionists } from "@dicebear/collection";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface User {
   sno: number;
@@ -41,7 +36,6 @@ interface AvatarOptions extends Partial<Options> {}
 
 export function UserTableComponent({ users }: UserTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
   const itemsPerPage = 6;
   const totalPages = Math.ceil(users.length / itemsPerPage);
 
@@ -51,74 +45,39 @@ export function UserTableComponent({ users }: UserTableProps) {
     return users.slice(startIndex, endIndex);
   };
 
-  const handleTooltipToggle = (index: number) => {
-    setOpenTooltipIndex(openTooltipIndex === index ? null : index);
-  };
-
-  const closeTooltip = useCallback(() => {
-    setOpenTooltipIndex(null);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!(event.target as Element).closest(".tooltip-trigger")) {
-        closeTooltip();
-      }
-    };
-
-    document.addEventListener("click", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, [closeTooltip]);
-
   return (
-    <div className="flex  flex-col items-center  justify-center lg:max-w-3xl">
-      <h1 className="mb-4 pl-1 font-semibold">
-        {/* <span className="text-blue-500">{users.length}</span> People Built their
-        Portfolio */}
-      </h1>
-      {/* <section > */}
-      <section style={{ zoom: "95%" }} className="w-full max-w-md">
-        <h1 className="mb-4 ml-1 text-xl ">
+    <div className="w-full max-w-full sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="mb-4 text-center text-xl font-semibold sm:text-left md:text-2xl">
           Latest portfolios were created by...
         </h1>
         <div className="overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[20px]"> </TableHead>
+                <TableHead className="w-[60px]">No.</TableHead>
                 <TableHead>Full Name</TableHead>
-                <TableHead> Portfolio </TableHead>
+                <TableHead>Portfolio</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {getCurrentPageData().map((user, i) => (
                 <TableRow key={i}>
-                  <TableCell className="py-0">
+                  <TableCell className="py-2 text-center">{user.sno}</TableCell>
+                  <TableCell className="py-2">
                     <div className="flex items-center gap-2">
-                      <p className="whitespace-nowrap">{user.sno} </p>
-                    </div>
-                  </TableCell>
-                  <TableCell className="relative whitespace-normal text-base">
-                    <div className="flex items-center gap-2 sm:max-w-full">
                       {user.avatarOptions && (
                         <AvatarComponent avatarOptions={user.avatarOptions} />
                       )}
-
-                      <MobileTooltipTrigger
-                        fullName={user.fullName}
-                        routeName={user.routeName}
-                        isOpen={openTooltipIndex === i}
-                        onToggle={() => handleTooltipToggle(i)}
-                      />
+                      <span className="text-sm font-medium md:text-base">
+                        {user.fullName}
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-2">
                     <Link
                       href={`/${user.routeName}`}
-                      className="text-base text-blue-500 hover:underline"
+                      className="text-sm text-primary hover:underline md:text-base"
                     >
                       {user.routeName}
                     </Link>
@@ -140,7 +99,7 @@ export function UserTableComponent({ users }: UserTableProps) {
               </Button>
             </PaginationItem>
             {[...Array(totalPages)].map((_, i) => (
-              <PaginationItem key={i}>
+              <PaginationItem key={i} className="hidden sm:inline-block">
                 <PaginationLink
                   className="cursor-pointer"
                   onClick={() => setCurrentPage(i + 1)}
@@ -163,7 +122,7 @@ export function UserTableComponent({ users }: UserTableProps) {
             </PaginationItem>
           </PaginationContent>
         </Pagination>
-      </section>
+      </div>
     </div>
   );
 }
@@ -177,48 +136,8 @@ function AvatarComponent({
   const svg = avatar.toString();
   return (
     <div
-      className="size-7 rounded-full border bg-muted"
+      className="size-6 min-h-6 min-w-6 rounded-full border bg-muted md:size-8 md:min-h-8 md:min-w-8"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
-  );
-}
-
-function MobileTooltipTrigger({
-  fullName,
-  routeName,
-  isOpen,
-  onToggle,
-}: {
-  fullName: string;
-  routeName: string;
-  isOpen: boolean;
-  onToggle: () => void;
-}) {
-  const handleTouch = (e: React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onToggle();
-  };
-
-  return (
-    <div className="tooltip-trigger relative">
-      <div
-        className="max-w-28 truncate sm:hidden"
-        onTouchStart={handleTouch}
-        onTouchEnd={(e) => e.preventDefault()}
-        aria-label={`View details for ${fullName}`}
-        role="button"
-        tabIndex={0}
-      >
-        {fullName}
-      </div>
-      <div className="hidden sm:block">{fullName}</div>
-      {isOpen && (
-        <div className="absolute left-0 z-50 mt-2 w-64 rounded-md bg-white p-2 text-sm text-gray-700 shadow-lg sm:hidden">
-          <p className="font-semibold">Full Name: {fullName}</p>
-          <p>Route Name: {routeName}</p>
-        </div>
-      )}
-    </div>
   );
 }

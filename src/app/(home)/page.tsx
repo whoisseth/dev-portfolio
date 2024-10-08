@@ -16,8 +16,8 @@ export default async function HomePage() {
   return (
     <>
       <HomePageNavbar user={user} profile={profile} />
+      <HeroSection />
       <div className="container flex h-full flex-grow flex-col items-center justify-center gap-4 px-2 py-2 sm:py-4 md:px-4">
-        <HeroSection />
         <FeaturesSection />
         <HowToUse />
         <SupportProject />

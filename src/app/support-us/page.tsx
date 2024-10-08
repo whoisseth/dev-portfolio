@@ -10,16 +10,16 @@ import SupportUsNavbar from "./_components/navbar";
 import Link from "next/link";
 import Contribution from "./_components/contribution";
 import { getCurrentUser } from "@/lib/session";
-import { getUserEmailAndName } from "@/data-access/profiles";
+import { getProfile, getUserEmailAndName } from "@/data-access/profiles";
 
 export default async function SupportUsPage() {
   const user = await getCurrentUser();
   const userNameAndEmail = await getUserEmailAndName(user?.id ?? 0);
-
+  const profile = await getProfile(user?.id ?? 0);
   return (
     <>
       {" "}
-      <SupportUsNavbar />
+      <SupportUsNavbar user={user} profile={profile} />
       <div className="container mx-auto px-4 py-16">
         <h1 className="mb-8 text-center text-4xl font-bold">
           Support{" "}
