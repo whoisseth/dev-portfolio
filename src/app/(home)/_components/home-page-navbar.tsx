@@ -161,22 +161,22 @@ export default function HomePageNavbar({ user, profile }: Props) {
                   {link.name}
                 </Link>
               ))}
-             
+
               <Button variant="default" asChild>
                 <Link href="/create-portfolio">Create Your Portfolio</Link>
               </Button>
               <Button
-                  variant="outline"
-                  className="group transition-colors duration-200"
-                  asChild
+                variant="outline"
+                className="group transition-colors duration-200"
+                asChild
+              >
+                <Link
+                  href={`/sign-in?returnTo=${encodeURIComponent("/create-portfolio")}`}
                 >
-                  <Link
-                    href={`/sign-in?returnTo=${encodeURIComponent("/create-portfolio")}`}
-                  >
-                    <Github className="h-5 w-5" />
-                    GitHub
-                  </Link>
-                </Button>
+                  <Github className="h-5 w-5" />
+                  GitHub
+                </Link>
+              </Button>
 
               {user ? (
                 <button onClick={singOut}>

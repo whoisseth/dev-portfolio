@@ -76,7 +76,10 @@ export default function FeaturesSection() {
   };
 
   return (
-    <section className="bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8 ">
+    <section
+      id="features"
+      className="bg-background px-4 py-16 text-foreground sm:px-6 lg:px-8"
+    >
       <div className="mx-auto max-w-7xl">
         <motion.h2
           initial={{ opacity: 0, y: -20 }}

@@ -41,7 +41,7 @@ const faqData = [
 
 export default function FAQSection({}: Props) {
   return (
-    <section className="relative w-full overflow-hidden py-16 ">
+    <section id="faq" className="relative w-full overflow-hidden py-16">
       <div className="relative mx-auto flex w-full max-w-3xl flex-col items-center justify-center gap-8 px-4 sm:px-6 lg:px-8">
         <h2 className="text-center text-4xl font-bold text-primary">
           Frequently Asked Questions

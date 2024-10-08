@@ -21,9 +21,9 @@ export default function HowToUse() {
     },
     // ... existing code ...
     {
-      title: "Add Your Hero Section Details ",
+      title: "Add Basic Information",
       description:
-        "Fill in the necessary details required for the hero section, including your name, title, and a brief introduction. Make sure to highlight your key skills and achievements.",
+        "Add your basic information such as your name, title,skills and a brief introduction. This will help you stand out from the crowd.",
       media: "video",
       video: "/videos/Hero-Section.mp4",
     },
@@ -44,7 +44,10 @@ export default function HowToUse() {
   ];
 
   return (
-    <section className="bg-background px-4 py-16 sm:px-6 lg:px-8">
+    <section
+      id="how-to-use"
+      className="bg-background px-4 py-16 sm:px-6 lg:px-8"
+    >
       <div className="mx-auto max-w-7xl">
         <h2 className="mb-12 text-center text-4xl font-bold">
           How to Use Portly
@@ -107,8 +110,8 @@ export default function HowToUse() {
           ))}
         </div>
 
-        <div className="flex flex-col justify-center gap-2 md:flex-row pt-5">
-          <Button  className="px-8 py-3 text-lg" asChild>
+        <div className="flex flex-col justify-center gap-2 pt-5 md:flex-row">
+          <Button className="px-8 py-3 text-lg" asChild>
             <Link href="/create-portfolio">Create Your Portfolio</Link>
           </Button>
         </div>
