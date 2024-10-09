@@ -24,7 +24,7 @@ export default async function SupportUsPage() {
         <h1 className="mb-8 text-center text-4xl font-bold">
           Support{" "}
           <Link href="/" className="text-blue-500 hover:text-blue-600">
-            portly.dev
+            Portly.dev
           </Link>
         </h1>
         <div className="mx-auto max-w-7xl">
