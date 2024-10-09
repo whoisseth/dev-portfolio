@@ -248,6 +248,23 @@ export const images = sqliteTable("images", {
     })
     .notNull(),
 });
+export const donations = sqliteTable("donations", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+
+  userName: text("user_name").notNull(),
+  phoneNo: text("phone_no").notNull(),
+  email: text("email").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  amount: integer("amount").notNull(),
+  status: text("status").notNull(),
+  paymentId: text("payment_id"),
+  paymentMethod: text("payment_method").notNull(),
+});
+
+export type Donation = typeof donations.$inferSelect;
+export type NewDonation = typeof donations.$inferInsert;
 
 export type Image = typeof images.$inferSelect;
 export type NewImage = typeof images.$inferInsert;

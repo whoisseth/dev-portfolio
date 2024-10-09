@@ -1,3 +1,5 @@
+"use server";
+
 import { db } from "@/db";
 import { User, accounts, users } from "@/db/schema";
 import { eq } from "drizzle-orm";
@@ -9,6 +11,7 @@ const ITERATIONS = 10000;
 const MAGIC_LINK_TOKEN_TTL = 1000 * 60 * 5; // 5 min
 
 export async function deleteUser(userId: UserId) {
+  // Delete user from the database
   await db.delete(users).where(eq(users.id, userId));
 }
 

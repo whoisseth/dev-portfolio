@@ -41,38 +41,33 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { RouteFormSchema } from "@/app/create-portfolio/_components/create-portfolio";
 import { z } from "zod";
-import { SetStateAction, useTransition } from "react";
+import { SetStateAction, useState, useTransition } from "react";
 import { updateRouteName } from "@/actions/create-portfolio-actions";
 import { useToast } from "@/components/ui/use-toast";
 
 import { useRouter } from "next/navigation";
+import { DeleteAccountDialog } from "./DeleteAccountDialog";
+import { User } from "lucia";
 
 export function SettingsSheet({
-  isPortfolioActive,
-  setIsPortfolioActive,
   isSettingsOpen,
   setIsSettingsOpen,
   routeName,
-  setIsDeactivateDialogOpen,
-  isDeleteDialogOpen,
-  setIsDeleteDialogOpen,
   setRouteName,
+  user,
 }: {
-  isPortfolioActive: boolean;
-  setIsPortfolioActive: (active: boolean) => void;
   isSettingsOpen: boolean;
   setIsSettingsOpen: (open: boolean) => void;
   routeName: string | undefined;
-  isDeleteDialogOpen: boolean;
-  setIsDeleteDialogOpen: (open: boolean) => void;
-  setIsDeactivateDialogOpen: (open: boolean) => void;
   setRouteName: React.Dispatch<SetStateAction<string | undefined | null>>;
+  user: User;
 }) {
   const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const { toast } = useToast();
   const params = useParams();
   const currentRoute = params["route-name"] as string;
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const routeForm = useForm<z.infer<typeof RouteFormSchema>>({
     resolver: zodResolver(RouteFormSchema),
@@ -170,23 +165,8 @@ export function SettingsSheet({
                   />
                 </form>
               </Form>
-              {/*  */}
-              {/*  */}
             </div>
-            {/* <div className="flex items-center justify-between">
-              <Label htmlFor="portfolio-active">Portfolio Active</Label>
-              <Switch
-                id="portfolio-active"
-                checked={isPortfolioActive}
-                onCheckedChange={(checked) => {
-                  if (!checked) {
-                    setIsDeactivateDialogOpen(true);
-                  } else {
-                    setIsPortfolioActive(checked);
-                  }
-                }}
-              />
-            </div> */}
+
             {/* Add current route and user information */}
             <div className="space-y-2">
               <p className="text-sm font-medium">Current Route:</p>
@@ -209,58 +189,38 @@ export function SettingsSheet({
               </Link>
             </div>
           </div>
-          <SheetClose asChild>
-            <Dialog
-              open={isDeleteDialogOpen}
-              onOpenChange={setIsDeleteDialogOpen}
-            >
-              <DialogTrigger asChild>
-                {/* <Button variant="destructive" className="mt-4 w-full">
-                  Delete Portfolio
-                </Button> */}
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Are you sure?</DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your portfolio.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsDeleteDialogOpen(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={() => {
-                      // Add delete logic here
-                      console.log("Portfolio deleted");
-                      setIsDeleteDialogOpen(false);
-                      setIsSettingsOpen(false);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </SheetClose>
+
           {/* Add the logout button here */}
-          <Link
-            prefetch={false}
-            className={cn(
-              buttonVariants({ variant: "outline" }),
-              "mt-4 w-full",
-            )}
-            href={"/api/sign-out"}
-          >
-            <LogOut className="mr-2 h-4 w-4" />
-            Log Out
-          </Link>
+          <div className="flex flex-col gap-4">
+            <Link
+              prefetch={false}
+              className={cn(
+                buttonVariants({ variant: "outline" }),
+                "mt-4 w-full",
+              )}
+              href={"/api/sign-out"}
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              Log Out
+            </Link>
+
+            <Button
+              onClick={() => setIsDeleteDialogOpen(true)}
+              variant="destructive"
+              className="w-full"
+            >
+              Delete Account
+            </Button>
+            <SheetClose asChild>
+              <DeleteAccountDialog
+                {...{
+                  user,
+                  isOpen: isDeleteDialogOpen,
+                  setIsOpen: setIsDeleteDialogOpen,
+                }}
+              />
+            </SheetClose>
+          </div>
         </SheetContent>
       </Sheet>
     </>

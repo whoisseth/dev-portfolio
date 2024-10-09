@@ -36,8 +36,7 @@ interface AvatarOptions extends Partial<Options> {}
 
 export function UserTableComponent({ users }: UserTableProps) {
   const [currentPage, setCurrentPage] = useState(1);
-  const [openTooltipIndex, setOpenTooltipIndex] = useState<number | null>(null);
-  const itemsPerPage = 10;
+  const itemsPerPage = 6;
   const totalPages = Math.ceil(users.length / itemsPerPage);
 
   const getCurrentPageData = () => {
@@ -46,87 +45,49 @@ export function UserTableComponent({ users }: UserTableProps) {
     return users.slice(startIndex, endIndex);
   };
 
-  const handleTooltipToggle = (index: number) => {
-    setOpenTooltipIndex(openTooltipIndex === index ? null : index);
-  };
-
-  const closeTooltip = useCallback(() => {
-    setOpenTooltipIndex(null);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (!(event.target as Element).closest('.tooltip-trigger')) {
-        closeTooltip();
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, [closeTooltip]);
-
   return (
-    <div className="w-full lg:max-w-3xl">
-      <h1 className="mb-4 pl-1 text-2xl font-bold">
-        <span className="text-blue-500">{users.length}</span> People Built
-        their Portfolio
-      </h1>
-      <section style={{ zoom: "80%" }}>
+    <div className="w-full max-w-full sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
+        <h1 className="mb-4 text-center text-xl font-semibold sm:text-left md:text-2xl">
+          Latest portfolios were created by...
+        </h1>
         <div className="overflow-x-auto rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[100px]">Sno.</TableHead>
+                <TableHead className="w-[60px]">No.</TableHead>
                 <TableHead>Full Name</TableHead>
-                <TableHead>URL</TableHead>
-                <TableHead className="hidden sm:table-cell">
-                  Route Name
-                </TableHead>
+                <TableHead>Portfolio</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {getCurrentPageData().map((user, i) => (
                 <TableRow key={i}>
-                  <TableCell className="py-0">
+                  <TableCell className="py-2 text-center">{user.sno}</TableCell>
+                  <TableCell className="py-2">
                     <div className="flex items-center gap-2">
-                      <p className="whitespace-nowrap">{user.sno} -</p>
                       {user.avatarOptions && (
                         <AvatarComponent avatarOptions={user.avatarOptions} />
                       )}
+                      <span className="text-sm font-medium md:text-base">
+                        {user.fullName}
+                      </span>
                     </div>
                   </TableCell>
-                  <TableCell className="relative whitespace-normal text-base">
-                    <div className="sm:max-w-full">
-                      <MobileTooltipTrigger
-                        fullName={user.fullName}
-                        routeName={user.routeName}
-                        isOpen={openTooltipIndex === i}
-                        onToggle={() => handleTooltipToggle(i)}
-                      />
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="max-w-28 truncate sm:max-w-full">
-                      <Link
-                        href={`/${user.routeName}`}
-                        className="text-base text-blue-500 hover:underline"
-                      >
-                        portly.dev/{user.routeName}
-                      </Link>
-                    </div>
-                  </TableCell>
-                  <TableCell className="hidden text-base sm:table-cell">
-                    {user.routeName}
+                  <TableCell className="py-2">
+                    <Link
+                      href={`/${user.routeName}`}
+                      className="text-sm text-primary hover:underline md:text-base"
+                    >
+                      {user.routeName}
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
-        <Pagination className="mt-4">
+        <Pagination className="mt-4 hidden">
           <PaginationContent>
             <PaginationItem>
               <Button
@@ -138,7 +99,7 @@ export function UserTableComponent({ users }: UserTableProps) {
               </Button>
             </PaginationItem>
             {[...Array(totalPages)].map((_, i) => (
-              <PaginationItem key={i}>
+              <PaginationItem key={i} className="hidden sm:inline-block">
                 <PaginationLink
                   className="cursor-pointer"
                   onClick={() => setCurrentPage(i + 1)}
@@ -161,7 +122,7 @@ export function UserTableComponent({ users }: UserTableProps) {
             </PaginationItem>
           </PaginationContent>
         </Pagination>
-      </section>
+      </div>
     </div>
   );
 }
@@ -175,48 +136,8 @@ function AvatarComponent({
   const svg = avatar.toString();
   return (
     <div
-      className="size-7 rounded-full border bg-muted"
+      className="size-6 min-h-6 min-w-6 rounded-full border bg-muted md:size-8 md:min-h-8 md:min-w-8"
       dangerouslySetInnerHTML={{ __html: svg }}
     />
-  );
-}
-
-function MobileTooltipTrigger({ 
-  fullName, 
-  routeName, 
-  isOpen, 
-  onToggle 
-}: { 
-  fullName: string; 
-  routeName: string; 
-  isOpen: boolean; 
-  onToggle: () => void;
-}) {
-  const handleTouch = (e: React.TouchEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onToggle();
-  };
-
-  return (
-    <div className="relative tooltip-trigger">
-      <div
-        className="sm:hidden max-w-28 truncate"
-        onTouchStart={handleTouch}
-        onTouchEnd={(e) => e.preventDefault()}
-        aria-label={`View details for ${fullName}`}
-        role="button"
-        tabIndex={0}
-      >
-        {fullName}
-      </div>
-      <div className="hidden sm:block">{fullName}</div>
-      {isOpen && (
-        <div className="absolute left-0 z-50 mt-2 w-64 rounded-md bg-white p-2 text-sm text-gray-700 shadow-lg sm:hidden">
-          <p className="font-semibold">Full Name: {fullName}</p>
-          <p>Route Name: {routeName}</p>
-        </div>
-      )}
-    </div>
   );
 }

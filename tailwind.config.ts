@@ -12,7 +12,7 @@ const config = {
   prefix: "",
   theme: {
     container: {
-      center: true,
+      center: "true",
       padding: "2rem",
       screens: {
         "2xl": "1400px",
@@ -20,9 +20,9 @@ const config = {
     },
     extend: {
       backgroundImage: {
-        paper: "url('/so-white.png')",
-        space: "url('/so-black.png')",
-        plus: "url('/plus.svg')",
+        paper: 'url("/so-white.png")',
+        space: 'url("/so-black.png")',
+        plus: 'url("/plus.svg")',
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
@@ -73,17 +73,34 @@ const config = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
+        },
+        "gradient-fade": {
+          "0%, 100%": {
+            opacity: "1",
+          },
+          "50%": {
+            opacity: "0.5",
+          },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "gradient-fade": "gradient-fade 8s ease-in-out infinite",
       },
     },
   },

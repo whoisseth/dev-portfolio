@@ -3,9 +3,12 @@
 import { AvatarOptions } from "@/app/[route-name]/_components/hero/_components/avatar-editor";
 import { db } from "@/db";
 import {
+  Donation,
+  donations,
   heroSection,
   HeroSection,
   images,
+  NewDonation,
   Project,
   projects,
   reservedRoutes,
@@ -313,7 +316,8 @@ export const deleteProject = async (projectId: number) => {
 export const getAllUsers = async () => {
   const allUsers = await db
     .select({
-      sno: sql<number>`ROW_NUMBER() OVER (ORDER BY ${routes.createdAt} DESC)`,
+      // sno: sql<number>`ROW_NUMBER() OVER (ORDER BY ${routes.createdAt} DESC)`,
+      sno: sql<number>`ROW_NUMBER() OVER (ORDER BY ${routes.createdAt} ASC)`,
       fullName: heroSection.fullName,
       routeName: routes.routeName,
       avatarOptions: heroSection.avatarOptions,
@@ -455,5 +459,11 @@ export const deleteWorkExperience = async (workExperienceId: number) => {
   await db
     .delete(workExperiences)
     .where(eq(workExperiences.id, workExperienceId));
+  revalidatePath("/");
+};
+
+// create a fuction add donation to the database don't check for authentication
+export const addDonation = async (donationData: NewDonation) => {
+  await db.insert(donations).values(donationData);
   revalidatePath("/");
 };
