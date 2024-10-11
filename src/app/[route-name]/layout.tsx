@@ -97,9 +97,7 @@ export default async function Layout({
   return (
     <div>
       {/*  */}
-      {SHOW_NEW_FEATURE_NOTIFICATION && (
-        <Notification message="New feature: Now you can now fully customize your avatar in your profile settings!" />
-      )}
+      <Notification message="New: Customize your work experience layout! (Added on Oct 11, 2024)" />
       <Navbar user={user} userRoute={userRoute} />
       <div className="container mx-auto w-full px-4 sm:px-8">{children}</div>
     </div>
