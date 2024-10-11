@@ -21,6 +21,7 @@ import { desc, eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { workExperiences } from "@/db/schema";
 import { projectImages, NewProjectImage } from "@/db/schema";
+import { LayoutStyle } from "@/app/[route-name]/_components/work-experience-section";
 
 export const addHeroSection = async (d: HeroSection) => {
   const user = await getCurrentUser();
@@ -358,6 +359,8 @@ export const updateAvatarOptions = async (
 
 // work experience section
 
+// get work experience data in descending order of start date
+
 export const getWorkExperiences = async (routeName: string) => {
   const userWorkExperiences = await db
     .select({
@@ -371,10 +374,12 @@ export const getWorkExperiences = async (routeName: string) => {
       endDate: workExperiences.endDate,
       isPresent: workExperiences.isPresent,
       jobDescription: workExperiences.jobDescription,
+      layoutStyle: workExperiences.layoutStyle,
     })
     .from(workExperiences)
     .innerJoin(routes, eq(workExperiences.routeId, routes.id))
-    .where(eq(routes.routeName, routeName));
+    .where(eq(routes.routeName, routeName))
+    .orderBy(desc(workExperiences.startDate));
 
   return userWorkExperiences;
 };
@@ -465,5 +470,17 @@ export const deleteWorkExperience = async (workExperienceId: number) => {
 // create a fuction add donation to the database don't check for authentication
 export const addDonation = async (donationData: NewDonation) => {
   await db.insert(donations).values(donationData);
+  revalidatePath("/");
+};
+
+// update work experience layout style
+export const updateWorkExperienceLayoutStyle = async (
+  workExperienceId: number,
+  layoutStyle: LayoutStyle,
+) => {
+  await db
+    .update(workExperiences)
+    .set({ layoutStyle })
+    .where(eq(workExperiences.id, workExperienceId));
   revalidatePath("/");
 };

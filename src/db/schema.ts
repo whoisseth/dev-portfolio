@@ -189,6 +189,9 @@ export const workExperiences = sqliteTable("work_experiences", {
   endDate: text("end_date"),
   isPresent: integer("is_present", { mode: "boolean" }).notNull(),
   jobDescription: text("job_description").notNull(),
+  layoutStyle: text("layout_style", {
+    enum: ["cards", "list", "grid"],
+  }).default("cards"),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`CURRENT_TIMESTAMP`,
   ),
