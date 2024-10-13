@@ -123,14 +123,24 @@ export const heroSection = sqliteTable("hero_section", {
   avatarOptions: text("avatar_options", { mode: "json" })
     .$type<AvatarOptions>()
     .default(sql`(json_object())`),
-  // avatarOptions: text("avatar_options", { mode: "json" })
-  //   .$type<AvatarOptions>()
-  //   .default(sql`(json_object('seed', fullName, 'flip', true))`),
+
   routeId: integer("route_id", { mode: "number" })
     .references(() => routes.id, {
       onDelete: "cascade",
     })
     .notNull(),
+  layoutStyle: text("layout_style", {
+    enum: [
+      "classic",
+      "spotlight",
+      "sidekick",
+      "minimalist",
+      "banner",
+      "modern",
+      "dynamic",
+      "elegant",
+    ],
+  }).default("classic"),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`CURRENT_TIMESTAMP`,
   ),

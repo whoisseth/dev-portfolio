@@ -22,6 +22,7 @@ import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
 import { cn } from "@/lib/utils";
 import { Options } from "@dicebear/core";
+import { Edit } from "lucide-react";
 
 export type AvatarFeature =
   | "body"
@@ -236,10 +237,11 @@ export default function AvatarEditor({
     <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
       <DialogTrigger asChild>
         <Button
-          size="sm"
+          // size="sm"
           className={cn("hover:border-primary hover:bg-transparent", className)}
           variant="outline"
         >
+          <Edit className="mr-2 size-4" />
           Edit Avatar
         </Button>
       </DialogTrigger>
@@ -248,7 +250,7 @@ export default function AvatarEditor({
           <DialogTitle>Edit your Avatar</DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_300px]">
-          <div className="max-h-[60vh] space-y-4 overflow-y-auto rounded-md border p-2 pr-4">
+          <div className="order-2 max-h-[60vh] space-y-4 overflow-y-auto rounded-md border p-2 pr-4 md:order-1">
             <AvatarSeedInput
               seed={currentOptions.seed}
               updateOption={updateOption}
@@ -290,9 +292,9 @@ export default function AvatarEditor({
             />
             {renderFeatureOptions(currentFeature)}
           </div>
-          <AvatarPreview svg={svg} />
+          <AvatarPreview className="order-1 md:order-2" svg={svg} />
         </div>
-        <DialogFooter className="flex w-full justify-end">
+        <DialogFooter className="flex flex-col gap-2">
           <Button
             onClick={() => setIsDialogOpen(false)}
             className=""
@@ -443,9 +445,20 @@ function AvatarFeatureSelector({
   );
 }
 
-function AvatarPreview({ svg }: { svg: string }) {
+function AvatarPreview({
+  className,
+  svg,
+}: {
+  className?: string;
+  svg: string;
+}) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border bg-muted p-4">
+    <div
+      className={cn(
+        "flex flex-col items-center justify-center rounded-lg border bg-muted p-4",
+        className,
+      )}
+    >
       <div
         className="aspect-square w-full"
         dangerouslySetInnerHTML={{ __html: svg }}

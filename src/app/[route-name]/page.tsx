@@ -24,7 +24,8 @@ export default async function UserPage({ params }: Props) {
   const workExperiences = await getWorkExperiences(routeName);
 
   return (
-    <div className="relative py-2">
+    <div className="relative">
+      {/* container px-4 sm:px-8 */}
       {heroSection ? (
         <Hero
           user={user}

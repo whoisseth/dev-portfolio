@@ -97,9 +97,9 @@ export default async function Layout({
   return (
     <div>
       {/*  */}
-      <Notification message="New: Customize your work experience layout! (Added on Oct 11, 2024)" />
+      <Notification message="New: Customize your hero section layout! (Added on Oct 13, 2024)" />
       <Navbar user={user} userRoute={userRoute} />
-      <div className="container mx-auto w-full px-4 sm:px-8">{children}</div>
+      <div className="mx-auto w-full">{children}</div>
     </div>
   );
 }

@@ -82,6 +82,18 @@ export const FormSchema = z.object({
     .url({ message: "Invalid YouTube URL." })
     .or(z.literal(""))
     .optional(),
+  layoutStyle: z
+    .enum([
+      "classic",
+      "spotlight",
+      "sidekick",
+      "minimalist",
+      "banner",
+      "modern",
+      "dynamic",
+      "elegant",
+    ])
+    .default("classic"),
 });
 
 type Props = {
@@ -113,7 +125,7 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
     },
   });
 
-  const { isDirty: isRouteNameDirty } = routeForm.formState; // Add this line
+  const { isDirty: isRouteNameDirty } = routeForm.formState;
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -125,7 +137,7 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
     },
   });
 
-  const { isDirty: isFormDirty } = form.formState; // Add this line
+  const { isDirty: isFormDirty } = form.formState;
 
   const handleRouteAvailability = async (
     data: z.infer<typeof RouteFormSchema>,
