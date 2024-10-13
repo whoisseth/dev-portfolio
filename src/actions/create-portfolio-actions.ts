@@ -22,6 +22,7 @@ import { revalidatePath } from "next/cache";
 import { workExperiences } from "@/db/schema";
 import { projectImages, NewProjectImage } from "@/db/schema";
 import { LayoutStyle } from "@/app/[route-name]/_components/work-experience-section";
+import { HeroLayoutStyle } from "@/app/[route-name]/_components/hero";
 
 export const addHeroSection = async (d: HeroSection) => {
   const user = await getCurrentUser();
@@ -30,6 +31,7 @@ export const addHeroSection = async (d: HeroSection) => {
   }
   await db.insert(heroSection).values({
     ...d,
+    layoutStyle: d.layoutStyle || "classic",
   });
   revalidatePath("/");
 };
@@ -482,5 +484,16 @@ export const updateWorkExperienceLayoutStyle = async (
     .update(workExperiences)
     .set({ layoutStyle })
     .where(eq(workExperiences.id, workExperienceId));
+  revalidatePath("/");
+};
+// update hero section layout style
+export const updateHeroSectionLayoutStyle = async (
+  heroSectionId: number,
+  layoutStyle: HeroLayoutStyle,
+) => {
+  await db
+    .update(heroSection)
+    .set({ layoutStyle })
+    .where(eq(heroSection.id, heroSectionId));
   revalidatePath("/");
 };

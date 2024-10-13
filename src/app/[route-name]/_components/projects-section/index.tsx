@@ -35,7 +35,8 @@ export function ProjectsSection({
   const [animationParent] = useAutoAnimate();
 
   return (
-    <section id="projects" className="mx-auto  ">
+    <div className='py-4'>
+    <section id="projects" className="mx-auto  container px-4 sm:px-8   ">
       {(projects.length > 0 || canEdit) && (
         <section className="mb-4 flex items-center justify-between">
           <h2 className="text-2xl font-bold">My Projects</h2>
@@ -60,5 +61,7 @@ export function ProjectsSection({
         </div>
       )}
     </section>
+    </div>
+
   );
 }

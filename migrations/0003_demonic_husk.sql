@@ -1,0 +1,1 @@
+ALTER TABLE hero_section ADD COLUMN layout_style TEXT DEFAULT 'classic';

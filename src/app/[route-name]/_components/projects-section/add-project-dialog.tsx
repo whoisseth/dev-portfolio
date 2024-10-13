@@ -501,7 +501,7 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
             </div>
           </form>
         </Form>
-        <DialogFooter className="mt-6">
+        <DialogFooter className='flex flex-col gap-2 mt-6'>
           <Button
             type="button"
             variant="outline"

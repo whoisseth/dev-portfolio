@@ -82,6 +82,18 @@ export const FormSchema = z.object({
     .url({ message: "Invalid YouTube URL." })
     .or(z.literal(""))
     .optional(),
+  layoutStyle: z
+    .enum([
+      "classic",
+      "spotlight",
+      "sidekick",
+      "minimalist",
+      "banner",
+      "modern",
+      "dynamic",
+      "elegant",
+    ])
+    .default("classic"),
 });
 
 type Props = {

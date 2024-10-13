@@ -43,7 +43,7 @@ export function WorkExperienceSection({
     workExperiences[0]?.layoutStyle || "cards",
   );
 
-  console.log('workExperiences',workExperiences);
+  console.log("workExperiences", workExperiences);
 
   // updateWorkExperienceLayoutStyle
   async function handleLayoutStyleChange(layoutStyle: LayoutStyle) {
@@ -172,49 +172,50 @@ export function WorkExperienceSection({
   };
 
   return (
-    <div id="work-experience" className="mx-auto">
-      {(workExperiences.length > 0 || canEdit) && (
-        <section className="mb-4 flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Work Experience</h2>
-          <div className="flex items-center space-x-2 ">
-            {canEdit && (
-              <Select
-              
-                value={layoutStyle}
-                onValueChange={handleLayoutStyleChange}
-              >
-                <SelectTrigger className="w-[180px] hidden md:flex">
-                  <SelectValue placeholder="Select a layout" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cards">
-                    <div className="flex items-center">
-                      <Layout className="mr-2 h-4 w-4" />
-                      Cards
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="list">
-                    <div className="flex items-center">
-                      <List className="mr-2 h-4 w-4" />
-                      List
-                    </div>
-                  </SelectItem>
-                  <SelectItem value="grid">
-                    <div className="flex items-center">
-                      <Grid className="mr-2 h-4 w-4" />
-                      Grid
-                    </div>
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            )}
-            {userRoute && canEdit && (
-              <AddWorkExperienceDialogComponent userRoute={userRoute} />
-            )}
-          </div>
-        </section>
-      )}
-      {renderWorkExperience()}
+    <div className="py-4">
+      <section id="work-experience" className="container mx-auto px-4 sm:px-8">
+        {(workExperiences.length > 0 || canEdit) && (
+          <section className="mb-4 flex items-center justify-between">
+            <h2 className="text-2xl font-bold">Work Experience</h2>
+            <div className="flex items-center space-x-2">
+              {canEdit && (
+                <Select
+                  value={layoutStyle}
+                  onValueChange={handleLayoutStyleChange}
+                >
+                  <SelectTrigger className="hidden w-[180px] md:flex">
+                    <SelectValue placeholder="Select a layout" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="cards">
+                      <div className="flex items-center">
+                        <Layout className="mr-2 h-4 w-4" />
+                        Cards
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="list">
+                      <div className="flex items-center">
+                        <List className="mr-2 h-4 w-4" />
+                        List
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="grid">
+                      <div className="flex items-center">
+                        <Grid className="mr-2 h-4 w-4" />
+                        Grid
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              )}
+              {userRoute && canEdit && (
+                <AddWorkExperienceDialogComponent userRoute={userRoute} />
+              )}
+            </div>
+          </section>
+        )}
+        {renderWorkExperience()}
+      </section>
     </div>
   );
 }

@@ -18,19 +18,27 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
 import { User } from "lucia";
-import { Loader2, X } from "lucide-react";
+import { Loader2, X, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { updateHeroSection } from "@/actions/create-portfolio-actions";
 import { HeroSection } from "@/db/schema";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import AvatarEditor, { AvatarOptions } from "./avatar-editor";
 
 type Props = {
   user: User | undefined;
   routeId: number;
   heroSection: HeroSection;
   className?: string;
+  avatarOptions: AvatarOptions;
+  setAvatarOptions: (options: AvatarOptions) => void;
 };
 
 export default function EditHeroSectionDialog({
@@ -38,6 +46,8 @@ export default function EditHeroSectionDialog({
   routeId,
   heroSection,
   className,
+  avatarOptions,
+  setAvatarOptions,
 }: Props) {
   const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [isGeneratingTagline, setIsGeneratingTagline] = useState(false);
@@ -57,6 +67,7 @@ export default function EditHeroSectionDialog({
       github: heroSection.github ?? "",
       youtube: heroSection.youtube ?? "",
       phoneNumber: heroSection.phoneNumber ?? "",
+      layoutStyle: heroSection.layoutStyle || "classic",
     },
   });
 
@@ -202,8 +213,6 @@ export default function EditHeroSectionDialog({
     });
   }, [heroSection, form]);
 
-  const handleOpenChange = (newOpen: boolean) => {};
-
   const handleDialogClose = (isOpen: boolean) => {
     setIsDialogOpen(isOpen);
     if (!isOpen) {
@@ -214,16 +223,36 @@ export default function EditHeroSectionDialog({
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={handleDialogClose}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className={cn(className)}>
-          Edit Hero Section
-        </Button>
+      <DialogTrigger>
+        <>
+          <Button
+            variant="outline"
+            size="icon"
+            className={cn("md:hidden", className)}
+          >
+            <Edit className="h-4 w-4" />
+            {/* <SquarePen /> */}
+          </Button>
+          <Button variant="outline" className={cn("hidden md:flex", className)}>
+            <Edit className="mr-2 h-4 w-4" />{" "}
+            <p className="hidden md:flex"> Edit Hero Section</p>
+          </Button>
+        </>
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] max-w-4xl p-0 sm:max-h-[95vh]">
         <ScrollArea className="h-full max-h-[90vh] w-full">
           <div className="flex h-full flex-col md:flex-row">
             <div className="flex-1 overflow-y-auto p-6">
-              <h1 className="mb-6 text-2xl font-bold">Update Hero Section</h1>
+              <div className="mt-3 flex justify-between gap-2">
+                <h1 className="mb-6 text-2xl font-bold">Update Hero Section</h1>
+                {user && (
+                  <AvatarEditor
+                    avatarOptions={avatarOptions}
+                    setAvatarOptions={setAvatarOptions}
+                    user={user}
+                  />
+                )}
+              </div>
               <Form {...form}>
                 <form
                   onSubmit={form.handleSubmit(onSubmit)}
@@ -527,20 +556,30 @@ export default function EditHeroSectionDialog({
                     )}
                   />
 
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    disabled={isPending || !isFormDirty}
-                  >
-                    {isPending ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Updating...
-                      </>
-                    ) : (
-                      "Update Hero Section"
-                    )}
-                  </Button>
+                  <DialogFooter className="flex flex-col gap-2">
+                    <Button
+                      type="button"
+                      onClick={() => handleDialogClose(false)}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      disabled={isPending || !isFormDirty}
+                    >
+                      {isPending ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        "Update Hero Section"
+                      )}
+                    </Button>
+                  </DialogFooter>
                 </form>
               </Form>
             </div>
