@@ -47,7 +47,7 @@ import { useToast } from "@/components/ui/use-toast";
 
 import { useRouter } from "next/navigation";
 import { DeleteAccountDialog } from "./DeleteAccountDialog";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 
 export function SettingsSheet({
   isSettingsOpen,

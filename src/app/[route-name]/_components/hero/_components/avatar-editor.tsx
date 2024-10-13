@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { updateAvatarOptions } from "@/actions/create-portfolio-actions";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 import {
   Dialog,
   DialogContent,
@@ -174,14 +174,16 @@ export default function AvatarEditor({
   const handleSave = async () => {
     startTransition(async () => {
       try {
-        await updateAvatarOptions(user.id, currentOptions);
-        setAvatarOptions(currentOptions);
-        toast({
-          title: "Success",
-          description: "Avatar options updated successfully!",
-          variant: "default",
-        });
-        setIsDialogOpen(false);
+        if (user) {
+          await updateAvatarOptions(user?.id, currentOptions);
+          setAvatarOptions(currentOptions);
+          toast({
+            title: "Success",
+            description: "Avatar options updated successfully!",
+            variant: "default",
+          });
+          setIsDialogOpen(false);
+        }
       } catch (error) {
         console.error("Error updating avatar options:", error);
         toast({

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Dialog, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useTransition } from "react";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 import { useRouter } from "next/navigation";
 import { deleteUser } from "@/data-access/users";
 import { toast } from "sonner";
@@ -33,11 +33,13 @@ export function DeleteAccountDialog({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ userId: user.id }),
+        body: JSON.stringify({ userId: user?.id }),
       });
 
       // Delete the user
-      await deleteUser(user.id);
+      if (user) {
+        await deleteUser(user.id);
+      }
       router.push("/");
       setIsOpen(false);
       //   also added a toast messge

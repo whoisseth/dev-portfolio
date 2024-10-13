@@ -8,7 +8,7 @@ import { ProjectCard } from "./ProjectCard";
 // import { projects } from "./data";
 import { AddProjectDialogComponent } from "./add-project-dialog";
 import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
-import { User as UserType } from "lucia";
+import { User as UserType } from "@/lib/session";
 import { Suspense } from "react";
 import { Project } from "@/db/schema";
 import { useAutoAnimate } from "@formkit/auto-animate/react";

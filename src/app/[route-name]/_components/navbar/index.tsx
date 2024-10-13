@@ -2,7 +2,7 @@
 
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
-import { User as UserType } from "lucia";
+import { User as UserType } from "@/lib/session";
 import { BriefcaseBusiness, FileText, Folder, User } from "lucide-react";
 import { NavItems, NavLink } from "./NavItems";
 import Link from "next/link";

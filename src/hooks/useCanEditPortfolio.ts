@@ -1,8 +1,8 @@
-'use client'
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { canEditPortfolio } from '@/actions/create-portfolio-actions';
-import { User } from 'lucia';
+"use client";
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
+import { canEditPortfolio } from "@/actions/create-portfolio-actions";
+import { User } from "@/lib/session";
 
 export function useCanEditPortfolio(user: User | undefined) {
   const [canEdit, setCanEdit] = useState(false);
@@ -11,7 +11,7 @@ export function useCanEditPortfolio(user: User | undefined) {
   useEffect(() => {
     const checkEditPermission = async () => {
       if (user) {
-        const routeName = params['route-name'] as string;
+        const routeName = params["route-name"] as string;
         const canEditResult = await canEditPortfolio(routeName);
         setCanEdit(canEditResult);
       }

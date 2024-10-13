@@ -4,7 +4,7 @@ import React from "react";
 import { buttonVariants } from "@/components/ui/button";
 import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
 import { cn } from "@/lib/utils";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 import Link from "next/link";
 import Notification from "@/components/notification";
 

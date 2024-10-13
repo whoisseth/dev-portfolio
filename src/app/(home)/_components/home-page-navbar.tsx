@@ -12,7 +12,7 @@ import {
   Github,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 import { Profile } from "@/db/schema";
 import {
   DropdownMenu,
