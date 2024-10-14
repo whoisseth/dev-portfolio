@@ -17,7 +17,7 @@ import React, { useCallback, useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 import { Loader2, X, Edit } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {

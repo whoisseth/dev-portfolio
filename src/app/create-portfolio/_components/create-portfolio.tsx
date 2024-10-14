@@ -24,7 +24,7 @@ import {
   addRoute,
   checkRouteAvailability,
 } from "@/actions/create-portfolio-actions";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";

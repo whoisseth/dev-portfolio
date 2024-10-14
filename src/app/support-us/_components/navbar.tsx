@@ -15,7 +15,7 @@ import { ChevronDown, Github, LogIn, LogOut, UserIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 import { useState } from "react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet"; // Assuming you have a Sheet component
 import { Menu } from "lucide-react"; // Importing the Menu icon

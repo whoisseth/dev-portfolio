@@ -295,3 +295,4 @@ export type WorkExperience = typeof workExperiences.$inferInsert;
 //
 export type ProjectImage = typeof projectImages.$inferSelect;
 export type NewProjectImage = typeof projectImages.$inferInsert;
+export type Session = typeof sessions.$inferSelect;

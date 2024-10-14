@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { HeroSection, workExperiences } from "@/db/schema";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
 import AvatarEditor, { AvatarOptions } from "./_components/avatar-editor";
 import { createAvatar, Options } from "@dicebear/core";

@@ -1,5 +1,5 @@
 
-import { User } from "lucia";
+import { User } from "@/lib/session";
 import Link from "next/link";
 import React from "react";
 import Buttons from "./buttons";

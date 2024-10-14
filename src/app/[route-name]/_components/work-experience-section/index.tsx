@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { User, WorkExperience } from "@/db/schema";
 import { UpdateWorkExperienceDialogComponent } from "./_components/update-work-experience-dialog";
-import { User as UserType } from "lucia";
+import { User as UserType } from "@/lib/session";
 import { DeleteWorkExperienceDialog } from "./_components/delete-work-experience-dialog";
 import { AddWorkExperienceDialogComponent } from "./_components/add-work-experience-dialog";
 import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";

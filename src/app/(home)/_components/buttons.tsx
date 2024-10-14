@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Cog, FilePlus, LogIn, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { User } from "lucia";
+import { User } from "@/lib/session";
 
 interface AnimatedPortfolioButtonsProps {
   user: User | undefined;
