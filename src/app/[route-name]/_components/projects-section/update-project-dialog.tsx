@@ -33,6 +33,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { X, Upload, Trash2, Link } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Project } from "@/db/schema";
+import { optimizeImage } from "@/lib/utils";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
@@ -72,6 +73,7 @@ type Props = {
 export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [isOptimizing, startOptimizing] = useTransition();
   const { toast } = useToast();
   const tagInputRef = useRef<HTMLInputElement>(null);
   const [previewImage, setPreviewImage] = useState<string | null | undefined>(
@@ -201,7 +203,57 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
     }
   };
 
-  const handleImageChange = (file: File) => {
+  const handleImageChange = async (file: File) => {
+    startOptimizing(async () => {
+      if (file) {
+        try {
+          let optimizedFile = file;
+          if (file.size > MAX_FILE_SIZE) {
+            optimizedFile = await optimizeImage(file, MAX_FILE_SIZE);
+          }
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            setPreviewImage(reader.result as string);
+          };
+          reader.readAsDataURL(optimizedFile);
+          form.setValue("imageFile", optimizedFile);
+          setIsImageUpdated(true);
+        } catch (error) {
+          console.error("Error optimizing image:", error);
+          toast({
+            title: "Error",
+            description:
+              "Failed to optimize image. Please try a different image.",
+            variant: "destructive",
+          });
+        }
+      }
+    });
+  };
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      await handleImageChange(file);
+    }
+  };
+
+  const handleImagePaste = useCallback(async (e: React.ClipboardEvent) => {
+    const items = e.clipboardData?.items;
+    if (items) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            await handleImageChange(file);
+          }
+          break;
+        }
+      }
+    }
+  }, []);
+
+  const handleImageChange_old = (file: File) => {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -213,14 +265,14 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
     }
   };
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect_old = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       handleImageChange(file);
     }
   };
 
-  const handleImagePaste = useCallback((e: React.ClipboardEvent) => {
+  const handleImagePaste_old = useCallback((e: React.ClipboardEvent) => {
     const items = e.clipboardData?.items;
     if (items) {
       for (let i = 0; i < items.length; i++) {
@@ -541,19 +593,21 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
             </div>
           </form>
         </Form>
-        <DialogFooter className='flex flex-col gap-2 mt-6'>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-          >
+        <DialogFooter className="mt-6 flex flex-col gap-2">
+          <Button type="button" variant="outline" onClick={handleCancel}>
             Cancel
           </Button>
           <Button
             disabled={isPending || (!isDirty && !isImageUpdated)}
             onClick={form.handleSubmit(onSubmit)}
           >
-            {isPending ? "Updating..." : "Update Project"}
+            {isOptimizing ? (
+              <p>Optimizing image...</p>
+            ) : isPending ? (
+              "Updating..."
+            ) : (
+              "Update Project"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
