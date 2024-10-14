@@ -4,7 +4,7 @@ This is a Next.js template which includes the following technology
 
 - next.js (app router)
 - drizzle orm
-- lucia auth
+- Authentication (Artic and Oslo)
 - sqlite (or turso)
 - shadcn
 - react hook form
