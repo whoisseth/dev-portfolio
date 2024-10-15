@@ -18,9 +18,13 @@ import { toast } from "sonner";
 
 interface DeleteProjectDialogProps {
   project: Project;
+  children?: React.ReactNode;
 }
 
-export function DeleteProjectDialog({ project }: DeleteProjectDialogProps) {
+export function DeleteProjectDialog({
+  project,
+  children,
+}: DeleteProjectDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
@@ -53,9 +57,13 @@ export function DeleteProjectDialog({ project }: DeleteProjectDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" className="flex-1" size="sm">
-          <Trash size={14} className="mr-1 h-3 w-3" /> Delete
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button variant="destructive" className="flex-1" size="sm">
+            <Trash size={14} className="mr-1 h-3 w-3" /> Delete
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>

@@ -63,6 +63,7 @@ export type ProjectFormValues = z.infer<typeof projectSchema>;
 
 type Props = {
   project: Project & { id: number };
+  children?: React.ReactNode;
   userRoute: {
     routeName: string;
     routeId: number;
@@ -70,7 +71,11 @@ type Props = {
   };
 };
 
-export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
+export function UpdateProjectDialogComponent({
+  userRoute,
+  project,
+  children,
+}: Props) {
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [isOptimizing, startOptimizing] = useTransition();
@@ -322,9 +327,13 @@ export function UpdateProjectDialogComponent({ userRoute, project }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="flex-1">
-          Edit
-        </Button>
+        {children ? (
+          children
+        ) : (
+          <Button variant="outline" size="sm" className="flex-1">
+            Edit
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[90vw] md:max-w-[900px]">
         <DialogHeader>
