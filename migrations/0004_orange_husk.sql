@@ -1,0 +1,1 @@
+-- ALTER TABLE projects ADD COLUMN layout_style TEXT DEFAULT 'grid';

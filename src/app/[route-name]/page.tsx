@@ -3,6 +3,7 @@ import { Hero } from "./_components/hero";
 import { ProjectsSection } from "./_components/projects-section";
 import {
   getHeroSectionData,
+  getLayoutStyle,
   getProjects,
   getUserRoute,
 } from "@/actions/create-portfolio-actions";
@@ -22,6 +23,7 @@ export default async function UserPage({ params }: Props) {
   const heroSection = await getHeroSectionData(routeName);
   const projects = await getProjects(routeName);
   const workExperiences = await getWorkExperiences(routeName);
+  const layoutStyle = await getLayoutStyle(routeName);
 
   return (
     <div className="relative">
@@ -29,16 +31,23 @@ export default async function UserPage({ params }: Props) {
       {heroSection ? (
         <Hero
           user={user}
+          layoutStyle={layoutStyle?.layout?.heroSectionLayoutStyle}
           isProjectsEmpty={projects.length === 0}
           heroSection={heroSection.hero_section}
-          routeName={routeName}
+          userRoute={userRoute}
         />
       ) : (
         <AddHeroSection user={user} />
       )}
 
-      <ProjectsSection projects={projects} user={user} userRoute={userRoute} />
+      <ProjectsSection
+        layoutStyle={layoutStyle?.layout?.projectLayoutStyle}
+        projects={projects}
+        user={user}
+        userRoute={userRoute}
+      />
       <WorkExperienceSection
+        layoutStyle={layoutStyle?.layout?.workExperienceLayoutStyle}
         user={user}
         userRoute={userRoute}
         workExperiences={workExperiences}

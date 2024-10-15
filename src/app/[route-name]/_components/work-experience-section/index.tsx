@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Layout, Grid, List } from "lucide-react";
-import { updateWorkExperienceLayoutStyle } from "@/actions/create-portfolio-actions";
+import { updateLayoutStyle } from "@/actions/create-portfolio-actions";
 
 type WorkExperienceSectionProps = {
   userRoute:
@@ -29,6 +29,7 @@ type WorkExperienceSectionProps = {
     | undefined;
   workExperiences: WorkExperience[];
   user: UserType | undefined;
+  layoutStyle: LayoutStyle | undefined | null;
 };
 
 export type LayoutStyle = "cards" | "list" | "grid";
@@ -37,21 +38,21 @@ export function WorkExperienceSection({
   userRoute,
   workExperiences,
   user,
+  layoutStyle: workExperienceLayoutStyle,
 }: WorkExperienceSectionProps) {
   const canEdit = useCanEditPortfolio(user);
   const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>(
-    workExperiences[0]?.layoutStyle || "cards",
+    workExperienceLayoutStyle || "cards",
   );
 
-  console.log("workExperiences", workExperiences);
+  // console.log("workExperiences", workExperiences);
 
   // updateWorkExperienceLayoutStyle
   async function handleLayoutStyleChange(layoutStyle: LayoutStyle) {
     setLayoutStyle(layoutStyle);
-    await updateWorkExperienceLayoutStyle(
-      workExperiences[0]?.id || 0,
-      layoutStyle,
-    );
+    await updateLayoutStyle(userRoute?.routeId || 0, {
+      workExperienceLayoutStyle: layoutStyle,
+    });
   }
 
   const renderWorkExperience = () => {

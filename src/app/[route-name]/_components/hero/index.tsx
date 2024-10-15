@@ -19,10 +19,10 @@ import {
   Sparkles,
 } from "lucide-react";
 import Link from "next/link";
-import { HeroSection, workExperiences } from "@/db/schema";
+import { HeroSection } from "@/db/schema";
 import { User } from "@/lib/session";
 import { useCanEditPortfolio } from "@/hooks/useCanEditPortfolio";
-import AvatarEditor, { AvatarOptions } from "./_components/avatar-editor";
+import { AvatarOptions } from "./_components/avatar-editor";
 import { createAvatar, Options } from "@dicebear/core";
 import { notionists } from "@dicebear/collection";
 import { cn } from "@/lib/utils";
@@ -41,13 +41,21 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Card, CardContent } from "@/components/ui/card";
-import { updateHeroSectionLayoutStyle } from "@/actions/create-portfolio-actions";
+import { updateLayoutStyle } from "@/actions/create-portfolio-actions";
 
 type HeroProps = {
-  routeName: string;
+  userRoute:
+    | {
+        routeName: string;
+        routeId: number;
+        userId: number;
+      }
+    | null
+    | undefined;
   heroSection: HeroSection;
   user: User | undefined;
   isProjectsEmpty?: boolean;
+  layoutStyle: HeroLayoutStyle | undefined | null;
 };
 
 export type HeroLayoutStyle =
@@ -60,13 +68,19 @@ export type HeroLayoutStyle =
   | "dynamic"
   | "elegant";
 
-export function Hero({ heroSection, user, isProjectsEmpty }: HeroProps) {
+export function Hero({
+  userRoute,
+  heroSection,
+  user,
+  isProjectsEmpty,
+  layoutStyle: heroLayoutStyle,
+}: HeroProps) {
   const canEdit = useCanEditPortfolio(user);
   const [avatarOptions, setAvatarOptions] = useState<AvatarOptions>(
     heroSection.avatarOptions as AvatarOptions,
   );
   const [layoutStyle, setLayoutStyle] = useState<HeroLayoutStyle>(
-    heroSection.layoutStyle || "classic",
+    heroLayoutStyle || "classic",
   );
 
   const avatar = createAvatar(
@@ -77,7 +91,9 @@ export function Hero({ heroSection, user, isProjectsEmpty }: HeroProps) {
 
   async function handleLayoutStyleChange(layoutStyle: HeroLayoutStyle) {
     setLayoutStyle(layoutStyle);
-    await updateHeroSectionLayoutStyle(heroSection.id || 0, layoutStyle);
+    await updateLayoutStyle(userRoute?.routeId || 0, {
+      heroSectionLayoutStyle: layoutStyle,
+    });
   }
 
   const renderContent = () => {

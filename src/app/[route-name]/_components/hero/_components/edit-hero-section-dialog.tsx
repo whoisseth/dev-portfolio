@@ -67,7 +67,6 @@ export default function EditHeroSectionDialog({
       github: heroSection.github ?? "",
       youtube: heroSection.youtube ?? "",
       phoneNumber: heroSection.phoneNumber ?? "",
-      layoutStyle: heroSection.layoutStyle || "classic",
     },
   });
 

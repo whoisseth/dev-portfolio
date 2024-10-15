@@ -8,6 +8,8 @@ import {
   heroSection,
   HeroSection,
   images,
+  Layout,
+  layout,
   NewDonation,
   Project,
   projects,
@@ -23,6 +25,7 @@ import { workExperiences } from "@/db/schema";
 import { projectImages, NewProjectImage } from "@/db/schema";
 import { LayoutStyle } from "@/app/[route-name]/_components/work-experience-section";
 import { HeroLayoutStyle } from "@/app/[route-name]/_components/hero";
+import { ProjectLayoutStyle } from "@/app/[route-name]/_components/projects-section";
 
 export const addHeroSection = async (d: HeroSection) => {
   const user = await getCurrentUser();
@@ -31,7 +34,6 @@ export const addHeroSection = async (d: HeroSection) => {
   }
   await db.insert(heroSection).values({
     ...d,
-    layoutStyle: d.layoutStyle || "classic",
   });
   revalidatePath("/");
 };
@@ -376,7 +378,6 @@ export const getWorkExperiences = async (routeName: string) => {
       endDate: workExperiences.endDate,
       isPresent: workExperiences.isPresent,
       jobDescription: workExperiences.jobDescription,
-      layoutStyle: workExperiences.layoutStyle,
     })
     .from(workExperiences)
     .innerJoin(routes, eq(workExperiences.routeId, routes.id))
@@ -469,31 +470,60 @@ export const deleteWorkExperience = async (workExperienceId: number) => {
   revalidatePath("/");
 };
 
-// create a fuction add donation to the database don't check for authentication
 export const addDonation = async (donationData: NewDonation) => {
   await db.insert(donations).values(donationData);
   revalidatePath("/");
 };
 
-// update work experience layout style
-export const updateWorkExperienceLayoutStyle = async (
-  workExperienceId: number,
-  layoutStyle: LayoutStyle,
-) => {
-  await db
-    .update(workExperiences)
-    .set({ layoutStyle })
-    .where(eq(workExperiences.id, workExperienceId));
-  revalidatePath("/");
+//  get and update layout
+type LayoutStyleUpdate = {
+  heroSectionLayoutStyle?: Layout["heroSectionLayoutStyle"];
+  projectLayoutStyle?: Layout["projectLayoutStyle"];
+  workExperienceLayoutStyle?: Layout["workExperienceLayoutStyle"];
 };
-// update hero section layout style
-export const updateHeroSectionLayoutStyle = async (
-  heroSectionId: number,
-  layoutStyle: HeroLayoutStyle,
+
+export const getLayoutStyle = async (routeName: string) => {
+  const layoutStyle = await db
+    .select()
+    .from(layout)
+    .innerJoin(routes, eq(layout.routeId, routes.id))
+    .where(eq(routes.routeName, routeName))
+    .get();
+  return layoutStyle;
+};
+
+export const updateLayoutStyle = async (
+  routeId: number,
+  styleUpdate: LayoutStyleUpdate,
 ) => {
-  await db
-    .update(heroSection)
-    .set({ layoutStyle })
-    .where(eq(heroSection.id, heroSectionId));
+  const user = await getCurrentUser();
+  if (!user) {
+    throw new Error("User not authenticated");
+  }
+
+  // Check if a layout entry exists for this route
+  let existingLayout = await db
+    .select()
+    .from(layout)
+    .where(eq(layout.routeId, routeId))
+    .get();
+
+  if (!existingLayout) {
+    // If no layout exists, create a new one with the provided style(s)
+    existingLayout = await db
+      .insert(layout)
+      .values({
+        routeId,
+        userId: user.id,
+        ...styleUpdate,
+      })
+      .returning()
+      .get();
+  } else {
+    // If layout exists, update only the provided style(s)
+    await db.update(layout).set(styleUpdate).where(eq(layout.routeId, routeId));
+  }
+
   revalidatePath("/");
+  return existingLayout;
 };
