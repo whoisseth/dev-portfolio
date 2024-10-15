@@ -45,7 +45,7 @@ export function WorkExperienceSection({
     workExperienceLayoutStyle || "cards",
   );
 
-  console.log("workExperiences", workExperiences);
+  // console.log("workExperiences", workExperiences);
 
   // updateWorkExperienceLayoutStyle
   async function handleLayoutStyleChange(layoutStyle: LayoutStyle) {

@@ -129,18 +129,6 @@ export const heroSection = sqliteTable("hero_section", {
       onDelete: "cascade",
     })
     .notNull(),
-  layoutStyle: text("layout_style", {
-    enum: [
-      "classic",
-      "spotlight",
-      "sidekick",
-      "minimalist",
-      "banner",
-      "modern",
-      "dynamic",
-      "elegant",
-    ],
-  }).default("classic"),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`CURRENT_TIMESTAMP`,
   ),
@@ -171,19 +159,6 @@ export const projects = sqliteTable("projects", {
     .default(sql`(json_array())`),
   liveLink: text("live_link"),
   codeLink: text("code_link"),
-  // layoutStyle: text("layout_style", {
-  //   enum: [
-  //     "grid",
-  //     "masonry",
-  //     "showcase",
-  //     "alternating",
-  //     "compact",
-  //     "carousel",
-  //     "interactiveGrid",
-  //     "timeline",
-  //   ],
-  // }).default("grid"),
-
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`CURRENT_TIMESTAMP`,
   ),
@@ -212,9 +187,6 @@ export const workExperiences = sqliteTable("work_experiences", {
   endDate: text("end_date"),
   isPresent: integer("is_present", { mode: "boolean" }).notNull(),
   jobDescription: text("job_description").notNull(),
-  layoutStyle: text("layout_style", {
-    enum: ["cards", "list", "grid"],
-  }).default("cards"),
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`CURRENT_TIMESTAMP`,
   ),

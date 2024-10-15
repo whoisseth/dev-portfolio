@@ -34,7 +34,6 @@ export const addHeroSection = async (d: HeroSection) => {
   }
   await db.insert(heroSection).values({
     ...d,
-    layoutStyle: d.layoutStyle || "classic",
   });
   revalidatePath("/");
 };
@@ -379,7 +378,6 @@ export const getWorkExperiences = async (routeName: string) => {
       endDate: workExperiences.endDate,
       isPresent: workExperiences.isPresent,
       jobDescription: workExperiences.jobDescription,
-      layoutStyle: workExperiences.layoutStyle,
     })
     .from(workExperiences)
     .innerJoin(routes, eq(workExperiences.routeId, routes.id))
