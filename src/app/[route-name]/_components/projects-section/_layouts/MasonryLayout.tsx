@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { Project } from "@/db/schema";
 import { LayoutProps } from "..";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,7 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function MasonryLayout({
   projects,
@@ -37,28 +39,55 @@ export function MasonryLayout({
           </CardHeader>
           <CardContent className="p-4">
             <CardTitle className="mb-2 text-xl">{project.title}</CardTitle>
-            <p
-              className={`text-sm text-muted-foreground ${expandedDescriptions[project.id!] ? "" : "line-clamp-3"}`}
-            >
-              {project.description}
-            </p>
+            <div className="relative">
+              <motion.div
+                initial={false}
+                animate={{ height: expandedDescriptions[project.id!] ? "auto" : "4.5em" }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <p className="text-sm text-muted-foreground">
+                  {project.description}
+                </p>
+              </motion.div>
+              {!expandedDescriptions[project.id!] && (
+                <div 
+                  className="absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none"
+                  style={{ transform: 'translateY(8px)' }}
+                />
+              )}
+            </div>
             {project.description && project.description.length > 150 && (
               <Button
                 variant="link"
                 onClick={() => toggleDescription(project.id!)}
-                className="h-auto p-0 text-sm font-normal"
+                className="mt-2 h-auto p-0 text-sm font-normal"
               >
-                {expandedDescriptions[project.id!] ? (
-                  <>
-                    <ChevronUp className="mr-1 h-3 w-3" />
-                    Show less
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="mr-1 h-3 w-3" />
-                    Show more
-                  </>
-                )}
+                <AnimatePresence mode="wait" initial={false}>
+                  {expandedDescriptions[project.id!] ? (
+                    <motion.div
+                      key="less"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronUp className="mr-1 inline-block h-4 w-4" />
+                      Show less
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="more"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="mr-1 inline-block h-4 w-4" />
+                      Show more
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </Button>
             )}
             <div className="mt-2 flex flex-wrap gap-1">

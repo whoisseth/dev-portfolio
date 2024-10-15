@@ -1,21 +1,23 @@
-"use client";
-
+import React from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Project } from "@/db/schema";
 import { LayoutProps } from "..";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, Pencil, Trash } from "lucide-react";
+import {
+  ExternalLink,
+  Github,
+  Pencil,
+  Trash,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { UpdateProjectDialogComponent } from "../update-project-dialog";
 import { DeleteProjectDialog } from "../delete-project-dialog";
 import Link from "next/link";
-import { Card } from "@/components/ui/card";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import {
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+
+const MotionCard = motion(Card);
 
 export function GridLayout({
   projects,
@@ -25,52 +27,95 @@ export function GridLayout({
   canEdit,
 }: LayoutProps) {
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {projects?.map((project: Project) => (
-        <Card key={project.id} className="flex h-full flex-col">
-          <CardHeader className="p-4">
-            <img
+    <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+      {projects?.map((project: Project, index: number) => (
+        <MotionCard
+          key={project.id}
+          className="group relative overflow-hidden rounded-lg shadow-md transition-all duration-300 ease-in-out hover:shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: index * 0.1 }}
+        >
+          <div className="relative h-48 overflow-hidden">
+            <motion.img
               src={project.imageUrl || "/images/placeholder.svg"}
               alt={project.title}
-              className="h-48 w-full rounded-md object-cover"
+              className="h-full w-full object-cover transition-transform duration-300 ease-in-out group-hover:scale-105"
+              initial={{ scale: 1 }}
+              whileHover={{ scale: 1.05 }}
             />
-          </CardHeader>
-          <CardContent className="flex-grow p-4">
-            <CardTitle className="mb-2 text-xl">{project.title}</CardTitle>
-            <p
-              className={`text-sm text-muted-foreground ${expandedDescriptions[project.id!] ? "" : "line-clamp-2"}`}
-            >
-              {project.description}
-            </p>
+            <div className="absolute inset-0 bg-gradient-to-t from-secondary/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          </div>
+
+          <CardContent className="relative z-10 p-6">
+            <h3 className="mb-2 text-xl font-bold">{project.title}</h3>
+
+            <div className="relative">
+              <motion.div
+                initial={false}
+                animate={{ height: expandedDescriptions[project.id!] ? "auto" : "4.5em" }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <p className="text-sm text-muted-foreground">
+                  {project.description}
+                </p>
+              </motion.div>
+              {!expandedDescriptions[project.id!] && (
+                <div 
+                  className="absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none"
+                  style={{ transform: 'translateY(8px)' }}
+                />
+              )}
+            </div>
+
             {project.description && project.description.length > 100 && (
               <Button
                 variant="link"
                 onClick={() => toggleDescription(project.id!)}
-                className="h-auto p-0 text-sm font-normal"
+                className="mt-2 h-auto text-sm font-medium p-0"
               >
-                {expandedDescriptions[project.id!] ? (
-                  <>
-                    <ChevronUp className="mr-1 h-3 w-3" />
-                    Show less
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="mr-1 h-3 w-3" />
-                    Show more
-                  </>
-                )}
+                <AnimatePresence mode="wait" initial={false}>
+                  {expandedDescriptions[project.id!] ? (
+                    <motion.div
+                      key="less"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronUp className="mr-1 inline-block h-4 w-4" />
+                      Show less
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="more"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="mr-1 inline-block h-4 w-4" />
+                      Show more
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </Button>
             )}
-            <div className="mt-2 flex flex-wrap gap-1">
+
+            <div className="mt-4 flex flex-wrap gap-2">
               {project?.tags?.map((tech) => (
-                <Badge key={tech} variant="secondary" className="text-xs">
+                <Badge
+                  key={tech}
+                  variant="secondary"
+                  className="px-2 py-1 text-xs font-medium"
+                >
                   {tech}
                 </Badge>
               ))}
             </div>
-          </CardContent>
-          <CardFooter className="p-4 pt-0">
-            <div className="flex w-full space-x-2">
+
+            <div className="mt-6 flex space-x-3">
               {project.liveLink && (
                 <Button variant="outline" size="sm" asChild className="flex-1">
                   <Link
@@ -78,7 +123,7 @@ export function GridLayout({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <ExternalLink className="mr-1 h-3 w-3" /> Live
+                    <ExternalLink className="mr-2 h-4 w-4" /> Live Demo
                   </Link>
                 </Button>
               )}
@@ -89,33 +134,34 @@ export function GridLayout({
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    <Github className="mr-1 h-3 w-3" /> Code
+                    <Github className="mr-2 h-4 w-4" /> View Code
                   </Link>
                 </Button>
               )}
             </div>
-          </CardFooter>
-          {userRoute && canEdit && (
-            <CardFooter className="p-4 pt-0">
-              <div className="flex w-full gap-2">
+
+            {userRoute && canEdit && (
+              <div className="mt-4 flex space-x-3">
                 <UpdateProjectDialogComponent
                   userRoute={userRoute}
                   project={{ ...project, id: project.id! }}
                 >
                   <Button variant="outline" size="sm" className="flex-1">
-                    <Pencil className="mr-1 h-3 w-3" /> Edit
+                    <Pencil className="mr-2 h-4 w-4" /> Edit
                   </Button>
                 </UpdateProjectDialogComponent>
                 <DeleteProjectDialog project={project}>
                   <Button variant="destructive" size="sm" className="flex-1">
-                    <Trash className="mr-1 h-3 w-3" /> Delete
+                    <Trash className="mr-2 h-4 w-4" /> Delete
                   </Button>
                 </DeleteProjectDialog>
               </div>
-            </CardFooter>
-          )}
-        </Card>
+            )}
+          </CardContent>
+        </MotionCard>
       ))}
     </div>
   );
 }
+
+export default GridLayout;

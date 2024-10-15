@@ -3,13 +3,13 @@
 import { LayoutProps } from "..";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, Pencil, Trash } from "lucide-react";
+import { ExternalLink, Github, Pencil, Trash, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import { UpdateProjectDialogComponent } from "../update-project-dialog";
 import { DeleteProjectDialog } from "../delete-project-dialog";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function CarouselLayout({
   projects,
@@ -97,25 +97,59 @@ export function CarouselLayout({
           </div>
           <CardContent className="w-full space-y-4 p-6 md:w-1/2">
             <h3 className="text-2xl font-bold">{activeProject.title}</h3>
-            <p
-              className={`text-muted-foreground ${expandedDescriptions[activeProject.id!] ? "" : "line-clamp-3"}`}
-            >
-              {activeProject.description}
-            </p>
-            {activeProject.description &&
-              activeProject.description.length > 150 && (
-                <Button
-                  variant="link"
-                  onClick={() => toggleDescription(activeProject.id!)}
-                  className="h-auto p-0 text-sm font-normal"
-                >
-                  {expandedDescriptions[activeProject.id!]
-                    ? "Show less"
-                    : "Show more"}
-                </Button>
+            <div className="relative">
+              <motion.div
+                initial={false}
+                animate={{ height: expandedDescriptions[activeProject.id!] ? "auto" : "4.5em" }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <p className="text-sm text-muted-foreground">
+                  {activeProject.description}
+                </p>
+              </motion.div>
+              {!expandedDescriptions[activeProject.id!] && (
+                <div 
+                  className="absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none"
+                  style={{ transform: 'translateY(8px)' }}
+                />
               )}
+            </div>
+            {activeProject.description && activeProject.description.length > 150 && (
+              <Button
+                variant="link"
+                onClick={() => toggleDescription(activeProject.id!)}
+                className="mt-2 h-auto p-0 text-sm font-normal"
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  {expandedDescriptions[activeProject.id!] ? (
+                    <motion.div
+                      key="less"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronUp className="mr-1 inline-block h-4 w-4" />
+                      Show less
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                      key="more"
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 10 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <ChevronDown className="mr-1 inline-block h-4 w-4" />
+                      Show more
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Button>
+            )}
             <div className="flex flex-wrap gap-2">
-              {activeProject?.tags?.map((tech) => (
+              {activeProject.tags?.map((tech) => (
                 <Badge key={tech} variant="secondary">
                   {tech}
                 </Badge>
