@@ -3,7 +3,16 @@
 import { LayoutProps } from "..";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, Pencil, Trash, ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ExternalLink,
+  Github,
+  Pencil,
+  Trash,
+  ChevronLeft,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { UpdateProjectDialogComponent } from "../update-project-dialog";
 import { DeleteProjectDialog } from "../delete-project-dialog";
 import Link from "next/link";
@@ -100,7 +109,11 @@ export function CarouselLayout({
             <div className="relative">
               <motion.div
                 initial={false}
-                animate={{ height: expandedDescriptions[activeProject.id!] ? "auto" : "4.5em" }}
+                animate={{
+                  height: expandedDescriptions[activeProject.id!]
+                    ? "auto"
+                    : "4.5em",
+                }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
@@ -109,45 +122,46 @@ export function CarouselLayout({
                 </p>
               </motion.div>
               {!expandedDescriptions[activeProject.id!] && (
-                <div 
-                  className="absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none"
-                  style={{ transform: 'translateY(8px)' }}
+                <div
+                  className="pointer-events-none absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-background via-background/90 to-transparent"
+                  style={{ transform: "translateY(8px)" }}
                 />
               )}
             </div>
-            {activeProject.description && activeProject.description.length > 150 && (
-              <Button
-                variant="link"
-                onClick={() => toggleDescription(activeProject.id!)}
-                className="mt-2 h-auto p-0 text-sm font-normal"
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  {expandedDescriptions[activeProject.id!] ? (
-                    <motion.div
-                      key="less"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ChevronUp className="mr-1 inline-block h-4 w-4" />
-                      Show less
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="more"
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ChevronDown className="mr-1 inline-block h-4 w-4" />
-                      Show more
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </Button>
-            )}
+            {activeProject.description &&
+              activeProject.description.length > 150 && (
+                <Button
+                  variant="link"
+                  onClick={() => toggleDescription(activeProject.id!)}
+                  className="mt-2 h-auto p-0 text-sm font-normal"
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    {expandedDescriptions[activeProject.id!] ? (
+                      <motion.div
+                        key="less"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <ChevronUp className="mr-1 inline-block h-4 w-4" />
+                        Show less
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="more"
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 10 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <ChevronDown className="mr-1 inline-block h-4 w-4" />
+                        Show more
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </Button>
+              )}
             <div className="flex flex-wrap gap-2">
               {activeProject.tags?.map((tech) => (
                 <Badge key={tech} variant="secondary">

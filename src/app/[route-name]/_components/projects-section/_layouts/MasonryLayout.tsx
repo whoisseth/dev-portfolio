@@ -42,7 +42,9 @@ export function MasonryLayout({
             <div className="relative">
               <motion.div
                 initial={false}
-                animate={{ height: expandedDescriptions[project.id!] ? "auto" : "4.5em" }}
+                animate={{
+                  height: expandedDescriptions[project.id!] ? "auto" : "4.5em",
+                }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
@@ -51,9 +53,9 @@ export function MasonryLayout({
                 </p>
               </motion.div>
               {!expandedDescriptions[project.id!] && (
-                <div 
-                  className="absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none"
-                  style={{ transform: 'translateY(8px)' }}
+                <div
+                  className="pointer-events-none absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-background via-background/90 to-transparent"
+                  style={{ transform: "translateY(8px)" }}
                 />
               )}
             </div>

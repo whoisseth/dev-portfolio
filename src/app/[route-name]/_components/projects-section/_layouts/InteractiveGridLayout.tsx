@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useState } from "react";
 import { LayoutProps } from "..";
@@ -10,9 +10,7 @@ import {
   ExternalLink,
   Github,
   Maximize,
-  Maximize2,
   Minimize,
-  Minimize2,
   Pencil,
   Trash,
   X,

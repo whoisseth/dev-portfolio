@@ -4,7 +4,15 @@ import React from "react";
 import { LayoutProps } from "..";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Github, Pencil, Trash, ChevronDown, ChevronUp, Calendar } from "lucide-react";
+import {
+  ExternalLink,
+  Github,
+  Pencil,
+  Trash,
+  ChevronDown,
+  ChevronUp,
+  Calendar,
+} from "lucide-react";
 import { UpdateProjectDialogComponent } from "../update-project-dialog";
 import { DeleteProjectDialog } from "../delete-project-dialog";
 import Link from "next/link";
@@ -34,7 +42,9 @@ export function TimelineLayout({
           }`}
         >
           <div className="flex items-center sm:w-1/2">
-            <div className={`relative w-full ${index % 2 === 0 ? "sm:pr-8" : "sm:pl-8"}`}>
+            <div
+              className={`relative w-full ${index % 2 === 0 ? "sm:pr-8" : "sm:pl-8"}`}
+            >
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -68,41 +78,48 @@ export function TimelineLayout({
                         exit="collapsed"
                         variants={{
                           open: { opacity: 1, height: "auto" },
-                          collapsed: { opacity: 0, height: 0 }
+                          collapsed: { opacity: 0, height: 0 },
                         }}
                         transition={{ duration: 0.3 }}
                       >
-                        <p className={`text-muted-foreground ${
-                          expandedDescriptions[project.id!] || activeIndex === index
-                            ? ""
-                            : "line-clamp-3"
-                        }`}>
+                        <p
+                          className={`text-muted-foreground ${
+                            expandedDescriptions[project.id!] ||
+                            activeIndex === index
+                              ? ""
+                              : "line-clamp-3"
+                          }`}
+                        >
                           {project.description}
                         </p>
                       </motion.div>
                     </AnimatePresence>
-                    {project.description && project.description.length > 150 && (
-                      <Button
-                        variant="link"
-                        onClick={() => {
-                          toggleDescription(project.id!);
-                          setActiveIndex(activeIndex === index ? null : index);
-                        }}
-                        className="mt-2 h-auto p-0 text-sm font-normal text-secondary-foreground"
-                      >
-                        {expandedDescriptions[project.id!] || activeIndex === index ? (
-                          <>
-                            <ChevronUp className="mr-1 h-3 w-3" />
-                            Show less
-                          </>
-                        ) : (
-                          <>
-                            <ChevronDown className="mr-1 h-3 w-3" />
-                            Show more
-                          </>
-                        )}
-                      </Button>
-                    )}
+                    {project.description &&
+                      project.description.length > 150 && (
+                        <Button
+                          variant="link"
+                          onClick={() => {
+                            toggleDescription(project.id!);
+                            setActiveIndex(
+                              activeIndex === index ? null : index,
+                            );
+                          }}
+                          className="mt-2 h-auto p-0 text-sm font-normal text-secondary-foreground"
+                        >
+                          {expandedDescriptions[project.id!] ||
+                          activeIndex === index ? (
+                            <>
+                              <ChevronUp className="mr-1 h-3 w-3" />
+                              Show less
+                            </>
+                          ) : (
+                            <>
+                              <ChevronDown className="mr-1 h-3 w-3" />
+                              Show more
+                            </>
+                          )}
+                        </Button>
+                      )}
                     <div className="flex flex-wrap gap-2">
                       {project.tags?.map((tech) => (
                         <Badge

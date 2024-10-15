@@ -22,10 +22,13 @@ import { CarouselLayout } from "./_layouts/CarouselLayout";
 import { InteractiveGridLayout } from "./_layouts/InteractiveGridLayout";
 import { TimelineLayout } from "./_layouts/TimelineLayout";
 import { useState } from "react";
+import { HeroLayoutStyle } from "../hero";
+import { updateLayoutStyle } from "@/actions/create-portfolio-actions";
 
 type ProjectSectionType = {
   user: UserType | undefined;
   projects: Project[];
+  layoutStyle: ProjectLayoutStyle | undefined | null;
   userRoute:
     | {
         routeName: string;
@@ -36,7 +39,7 @@ type ProjectSectionType = {
     | undefined;
 };
 
-export type LayoutStyle =
+export type ProjectLayoutStyle =
   | "grid"
   | "masonry"
   | "showcase"
@@ -62,13 +65,16 @@ export type LayoutProps = {
 };
 
 export function ProjectsSection({
+  layoutStyle: projectLayoutStyle,
   user,
   userRoute,
   projects,
 }: ProjectSectionType) {
   const canEdit = useCanEditPortfolio(user);
   const [animationParent] = useAutoAnimate();
-  const [layoutStyle, setLayoutStyle] = useState<LayoutStyle>("grid");
+  const [layoutStyle, setLayoutStyle] = useState<ProjectLayoutStyle>(
+    projectLayoutStyle || "grid",
+  );
   const [expandedDescriptions, setExpandedDescriptions] = useState<{
     [key: number]: boolean;
   }>({});
@@ -79,6 +85,15 @@ export function ProjectsSection({
       [projectId]: !prev[projectId],
     }));
   };
+
+  // from that function i just only wanted to  pass the projectLayoutStyle to the updateLayoutStyle function
+  async function handleLayoutStyleChange(layoutStyle: ProjectLayoutStyle) {
+    setLayoutStyle(layoutStyle);
+    //
+    await updateLayoutStyle(userRoute?.routeId || 0, {
+      projectLayoutStyle: layoutStyle,
+    });
+  }
 
   const renderProjects = () => {
     const props = {
@@ -119,7 +134,7 @@ export function ProjectsSection({
             {canEdit && (
               <Select
                 value={layoutStyle}
-                onValueChange={(value: LayoutStyle) => setLayoutStyle(value)}
+                onValueChange={handleLayoutStyleChange}
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Select a layout" />

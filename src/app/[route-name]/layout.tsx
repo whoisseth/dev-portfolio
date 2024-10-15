@@ -23,7 +23,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   try {
     const routeName = params["route-name"];
-    console.log("Generating metadata for route:", routeName);
+    // console.log("Generating metadata for route:", routeName);
 
     const heroSection = await getHeroSectionData(routeName);
 
@@ -67,7 +67,7 @@ export async function generateMetadata(
       ],
     };
 
-    console.log("Generated metadata:", metadata);
+    // console.log("Generated metadata:", metadata);
 
     return metadata;
   } catch (error) {

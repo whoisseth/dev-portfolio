@@ -171,6 +171,19 @@ export const projects = sqliteTable("projects", {
     .default(sql`(json_array())`),
   liveLink: text("live_link"),
   codeLink: text("code_link"),
+  // layoutStyle: text("layout_style", {
+  //   enum: [
+  //     "grid",
+  //     "masonry",
+  //     "showcase",
+  //     "alternating",
+  //     "compact",
+  //     "carousel",
+  //     "interactiveGrid",
+  //     "timeline",
+  //   ],
+  // }).default("grid"),
+
   createdAt: integer("created_at", { mode: "timestamp" }).default(
     sql`CURRENT_TIMESTAMP`,
   ),
@@ -276,6 +289,51 @@ export const donations = sqliteTable("donations", {
   paymentMethod: text("payment_method").notNull(),
 });
 
+// layouts
+export const layout = sqliteTable("layout", {
+  id: integer("id", { mode: "number" }).primaryKey({ autoIncrement: true }),
+  userId: integer("user_id", { mode: "number" })
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  routeId: integer("route_id", { mode: "number" })
+    .references(() => routes.id, { onDelete: "cascade" })
+    .notNull(),
+  heroSectionLayoutStyle: text("hero_section_layout_style", {
+    enum: [
+      "classic",
+      "spotlight",
+      "sidekick",
+      "minimalist",
+      "banner",
+      "modern",
+      "dynamic",
+      "elegant",
+    ],
+  }).default("classic"),
+  projectLayoutStyle: text("project_layout_style", {
+    enum: [
+      "grid",
+      "masonry",
+      "showcase",
+      "alternating",
+      "compact",
+      "carousel",
+      "interactiveGrid",
+      "timeline",
+    ],
+  }).default("grid"),
+  workExperienceLayoutStyle: text("work_experience_layout_style", {
+    enum: ["cards", "list", "grid"],
+  }).default("cards"),
+
+  createdAt: integer("created_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).default(
+    sql`CURRENT_TIMESTAMP`,
+  ),
+});
+
 export type Donation = typeof donations.$inferSelect;
 export type NewDonation = typeof donations.$inferInsert;
 
@@ -296,3 +354,6 @@ export type WorkExperience = typeof workExperiences.$inferInsert;
 export type ProjectImage = typeof projectImages.$inferSelect;
 export type NewProjectImage = typeof projectImages.$inferInsert;
 export type Session = typeof sessions.$inferSelect;
+
+export type Layout = typeof layout.$inferSelect;
+export type NewLayout = typeof layout.$inferInsert;
