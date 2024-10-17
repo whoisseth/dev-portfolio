@@ -4,12 +4,13 @@ import { db } from "@/db";
 import { reservedRoutes, routes } from "@/db/schema";
 import { getCurrentUser } from "@/lib/session";
 import { invalidateCache } from "@/utils/redis/cacheUtils";
-import { redis } from "@/utils/redis/redis-config";
 import { multiTierFetch } from "@/utils/redis/redisFetch";
 import { eq, sql } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 
 const ROUTES_CACHE_KEY = "routes";
+
+const CAN_EDIT_PORTFOLIO_CACHE_KEY = "can_edit_portfolio";
 
 // GET
 export const getUserRoute = async (userId: number | null) => {
@@ -78,26 +79,32 @@ export const canEditPortfolio = async (routeName: string): Promise<boolean> => {
       return false;
     }
 
-    console.log(
-      `canEditPortfolio: Checking for route "${routeName}" for user ${user.id}`,
-    );
+    // console.log(
+    //   `canEditPortfolio: Checking for route "${routeName}" for user ${user.id}`,
+    // );
 
-    const portfolio = await db
-      .select()
-      .from(routes)
-      .where(eq(routes.routeName, routeName))
-      .get();
+    const cacheKey = `${CAN_EDIT_PORTFOLIO_CACHE_KEY}:${routeName}:${user.id}`;
 
-    if (!portfolio) {
-      console.log(`canEditPortfolio: Route "${routeName}" not found`);
-      return false;
-    }
+    const canEdit = await multiTierFetch(cacheKey, async () => {
+      const portfolio = await db
+        .select()
+        .from(routes)
+        .where(eq(routes.routeName, routeName))
+        .get();
 
-    const result = portfolio.userId === user.id;
-    console.log(
-      `canEditPortfolio: Route "${routeName}" belongs to user ${portfolio.userId}, current user ${user.id}, can edit: ${result}`,
-    );
-    return result;
+      if (!portfolio) {
+        console.log(`canEditPortfolio: Route "${routeName}" not found`);
+        return false;
+      }
+
+      const result = portfolio.userId === user.id;
+      console.log(
+        `canEditPortfolio: Route "${routeName}" belongs to user ${portfolio.userId}, current user ${user.id}, can edit: ${result}`,
+      );
+      return result;
+    });
+
+    return canEdit;
   } catch (error) {
     console.error(`Error in canEditPortfolio for route "${routeName}":`, error);
     return false;
@@ -187,6 +194,8 @@ export const updateRouteName = async (
   // Invalidate the cache
   const cacheKey = `${ROUTES_CACHE_KEY}:${user.id}`;
   await invalidateCache(cacheKey);
+  const cacheKey2 = `${CAN_EDIT_PORTFOLIO_CACHE_KEY}:${oldRouteName}:${user.id}`;
+  await invalidateCache(cacheKey2);
   revalidatePath("/");
 
   return updatedRoute[0];
@@ -211,7 +220,8 @@ export const deleteRoute = async (routeName: string) => {
   // Invalidate the cache
   const cacheKey = `${ROUTES_CACHE_KEY}:${user.id}`;
   await invalidateCache(cacheKey);
-  revalidatePath("/");
+  const cacheKey2 = `${CAN_EDIT_PORTFOLIO_CACHE_KEY}:${routeName}:${user.id}`;
+  await invalidateCache(cacheKey2);
 
   revalidatePath("/");
   return deletedRoute[0];
