@@ -71,26 +71,37 @@ export const checkRouteAvailability = async (routeName: string) => {
 // check if user can edit portfolio
 // GET
 export const canEditPortfolio = async (routeName: string): Promise<boolean> => {
-  const user = await getCurrentUser();
-  if (!user) {
-    return false; // User is not logged in
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      console.log("canEditPortfolio: User not logged in");
+      return false;
+    }
+
+    console.log(
+      `canEditPortfolio: Checking for route "${routeName}" for user ${user.id}`,
+    );
+
+    const portfolio = await db
+      .select()
+      .from(routes)
+      .where(eq(routes.routeName, routeName))
+      .get();
+
+    if (!portfolio) {
+      console.log(`canEditPortfolio: Route "${routeName}" not found`);
+      return false;
+    }
+
+    const result = portfolio.userId === user.id;
+    console.log(
+      `canEditPortfolio: Route "${routeName}" belongs to user ${portfolio.userId}, current user ${user.id}, can edit: ${result}`,
+    );
+    return result;
+  } catch (error) {
+    console.error(`Error in canEditPortfolio for route "${routeName}":`, error);
+    return false;
   }
-
-  const canEdit = await multiTierFetch(
-    `${ROUTES_CACHE_KEY}:${user.id}`,
-    async () => {
-      const portfolio = await db
-        .select()
-        .from(routes)
-        .where(eq(routes.routeName, routeName))
-        .get();
-
-      // Check if portfolio exists and belongs to the current user
-      return !!portfolio && portfolio.userId === user.id;
-    },
-  );
-
-  return canEdit;
 };
 
 // POST
