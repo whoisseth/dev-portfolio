@@ -7,7 +7,7 @@ import { DarkModeToggle } from "./dark-mode-toggle";
 export function FooterComponent() {
   return (
     <footer className="bg-background px-4 py-6 md:py-8">
-      <div className="mx-auto flex container flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
+      <div className="container mx-auto flex flex-col items-center justify-between space-y-4 md:flex-row md:space-y-0">
         <div className="flex flex-col items-center md:items-start">
           <Link href="/" className="text-xl font-bold text-primary">
             Portly
@@ -17,24 +17,30 @@ export function FooterComponent() {
           </p>
         </div>
         <div className="flex flex-col items-center space-y-4 md:flex-row md:space-x-6 md:space-y-0">
-          <nav className="flex space-x-4">
+          <nav className="flex flex-wrap justify-center gap-4">
             <Link
-              href="#about"
+              href="/privacy-policy"
               className="text-sm text-muted-foreground transition-colors hover:text-primary"
             >
-              About
+              Privacy Policy
             </Link>
             <Link
-              href="#services"
+              href="/terms-and-conditions"
               className="text-sm text-muted-foreground transition-colors hover:text-primary"
             >
-              Services
+              Terms & Conditions
             </Link>
             <Link
-              href="#contact"
+              href="/shipping-and-delivery"
               className="text-sm text-muted-foreground transition-colors hover:text-primary"
             >
-              Contact
+              Shipping & Delivery
+            </Link>
+            <Link
+              href="/contact-us"
+              className="text-sm text-muted-foreground transition-colors hover:text-primary"
+            >
+              Contact Us
             </Link>
           </nav>
           <div className="flex space-x-4">
