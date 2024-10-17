@@ -203,7 +203,10 @@ export function CarouselLayout({
                     <Pencil className="mr-2 h-4 w-4" /> Edit
                   </Button>
                 </UpdateProjectDialogComponent>
-                <DeleteProjectDialog project={activeProject}>
+                <DeleteProjectDialog
+                  project={activeProject}
+                  routeName={userRoute.routeName}
+                >
                   <Button variant="destructive" size="sm">
                     <Trash className="mr-2 h-4 w-4" /> Delete
                   </Button>

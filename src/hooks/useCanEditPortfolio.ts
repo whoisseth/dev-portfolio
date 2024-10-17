@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { canEditPortfolio } from "@/actions/create-portfolio-actions";
+import { canEditPortfolio } from "@/actions/route_actions";
 import { User } from "@/lib/session";
 
 export function useCanEditPortfolio(user: User | undefined) {

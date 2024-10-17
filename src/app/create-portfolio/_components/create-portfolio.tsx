@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useTransition, useRef } from "react";
+import { useState, useTransition, useRef } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,22 +13,17 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
-  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-// import { toast } from "@/components/ui/use-toast";
 
-import {
-  addHeroSection,
-  addRoute,
-  checkRouteAvailability,
-} from "@/actions/create-portfolio-actions";
 import { User } from "@/lib/session";
 import { Textarea } from "@/components/ui/textarea";
 import { Loader2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
+import { addRoute, checkRouteAvailability } from "@/actions/route_actions";
+import { addHeroSection } from "@/actions/hero_actions";
 
 export const RouteFormSchema = z.object({
   routeName: z
@@ -318,7 +313,7 @@ export function CreatePortfolio({ user, existingRoute }: Props) {
 
         console.log("heroSectionData", heroSectionData);
         // await addHeroSection(heroSectionData);
-        await addHeroSection(heroSectionData);
+        await addHeroSection(heroSectionData, existingRoute?.routeName || "");
 
         toast.success("Portfolio created successfully.");
       });

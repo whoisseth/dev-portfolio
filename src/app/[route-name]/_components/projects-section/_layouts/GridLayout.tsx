@@ -53,7 +53,9 @@ export function GridLayout({
             <div className="relative">
               <motion.div
                 initial={false}
-                animate={{ height: expandedDescriptions[project.id!] ? "auto" : "4.5em" }}
+                animate={{
+                  height: expandedDescriptions[project.id!] ? "auto" : "4.5em",
+                }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
                 className="overflow-hidden"
               >
@@ -62,9 +64,9 @@ export function GridLayout({
                 </p>
               </motion.div>
               {!expandedDescriptions[project.id!] && (
-                <div 
-                  className="absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-background via-background/90 to-transparent pointer-events-none"
-                  style={{ transform: 'translateY(8px)' }}
+                <div
+                  className="pointer-events-none absolute bottom-0 left-0 h-16 w-full bg-gradient-to-t from-background via-background/90 to-transparent"
+                  style={{ transform: "translateY(8px)" }}
                 />
               )}
             </div>
@@ -73,7 +75,7 @@ export function GridLayout({
               <Button
                 variant="link"
                 onClick={() => toggleDescription(project.id!)}
-                className="mt-2 h-auto text-sm font-medium p-0"
+                className="mt-2 h-auto p-0 text-sm font-medium"
               >
                 <AnimatePresence mode="wait" initial={false}>
                   {expandedDescriptions[project.id!] ? (
@@ -150,7 +152,10 @@ export function GridLayout({
                     <Pencil className="mr-2 h-4 w-4" /> Edit
                   </Button>
                 </UpdateProjectDialogComponent>
-                <DeleteProjectDialog project={project}>
+                <DeleteProjectDialog
+                  project={project}
+                  routeName={userRoute!.routeName!}
+                >
                   <Button variant="destructive" size="sm" className="flex-1">
                     <Trash className="mr-2 h-4 w-4" /> Delete
                   </Button>

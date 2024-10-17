@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { addProject } from "@/actions/create-portfolio-actions";
+import { addProject } from "@/actions/project_actions";
 import { useToast } from "@/components/ui/use-toast";
 import { X, Upload, Trash2, Link } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -121,7 +121,7 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
           routeId: userRoute.routeId,
         };
 
-        const result = await addProject(projectData);
+        const result = await addProject(projectData, userRoute.routeName);
 
         toast({
           title: "Success",
@@ -492,7 +492,8 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
                       />
                     </FormControl>
                     <FormDescription>
-                      Type a new tag and press Enter or click "Add Tag" to add it. Maximum of 8 tags allowed.
+                      Type a new tag and press Enter or click "Add Tag" to add
+                      it. Maximum of 8 tags allowed.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -501,7 +502,7 @@ export function AddProjectDialogComponent({ userRoute }: Props) {
             </div>
           </form>
         </Form>
-        <DialogFooter className='flex flex-col gap-2 mt-6'>
+        <DialogFooter className="mt-6 flex flex-col gap-2">
           <Button
             type="button"
             variant="outline"

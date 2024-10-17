@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { updateProject } from "@/actions/create-portfolio-actions";
+import { updateProject } from "@/actions/project_actions";
 import { useToast } from "@/components/ui/use-toast";
 import { X, Upload, Trash2, Link } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -176,7 +176,7 @@ export function UpdateProjectDialogComponent({
           id: project.id,
         };
 
-        await updateProject(project.id, projectData);
+        await updateProject(project.id, projectData, userRoute.routeName);
 
         toast({
           title: "Success",

@@ -141,7 +141,10 @@ export function CompactLayout({
                             <Pencil className="mr-1.5 h-3.5 w-3.5" /> Edit
                           </Button>
                         </UpdateProjectDialogComponent>
-                        <DeleteProjectDialog project={project}>
+                        <DeleteProjectDialog
+                          project={project}
+                          routeName={userRoute!.routeName!}
+                        >
                           <Button variant="destructive" size="sm">
                             <Trash className="mr-1.5 h-3.5 w-3.5" /> Delete
                           </Button>

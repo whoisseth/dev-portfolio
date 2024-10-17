@@ -170,7 +170,10 @@ export function TimelineLayout({
                             <Pencil className="mr-2 h-4 w-4" /> Edit
                           </Button>
                         </UpdateProjectDialogComponent>
-                        <DeleteProjectDialog project={project}>
+                        <DeleteProjectDialog
+                          project={project}
+                          routeName={userRoute!.routeName!}
+                        >
                           <Button variant="destructive" size="sm">
                             <Trash className="mr-2 h-4 w-4" /> Delete
                           </Button>

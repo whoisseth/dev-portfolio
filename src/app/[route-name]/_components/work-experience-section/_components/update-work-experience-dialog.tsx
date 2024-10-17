@@ -25,7 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { updateWorkExperience } from "@/actions/create-portfolio-actions";
+import { updateWorkExperience } from "@/actions/workExperience-actions";
 import { useToast } from "@/components/ui/use-toast";
 import { WorkExperience } from "@/db/schema";
 
@@ -77,12 +77,15 @@ export function UpdateWorkExperienceDialogComponent({
   async function onSubmit(data: WorkExperienceFormValues) {
     startTransition(async () => {
       try {
-        await updateWorkExperience({
-          ...data,
-          userId: userRoute.userId,
-          routeId: userRoute.routeId,
-          id: workExperience.id,
-        });
+        await updateWorkExperience(
+          {
+            ...data,
+            userId: userRoute.userId,
+            routeId: userRoute.routeId,
+            id: workExperience.id,
+          },
+          userRoute.routeName,
+        );
 
         toast({
           title: "Success",
@@ -254,7 +257,7 @@ export function UpdateWorkExperienceDialogComponent({
             </div>
           </form>
         </Form>
-        <DialogFooter className='flex flex-col gap-2 mt-6'>
+        <DialogFooter className="mt-6 flex flex-col gap-2">
           <Button
             type="button"
             variant="outline"

@@ -88,7 +88,10 @@ export function ShowcaseLayout({ projects, userRoute, canEdit }: LayoutProps) {
                     Edit
                   </Button>
                 </UpdateProjectDialogComponent>
-                <DeleteProjectDialog project={project}>
+                <DeleteProjectDialog
+                  project={project}
+                  routeName={userRoute!.routeName!}
+                >
                   <Button variant="destructive" size="sm" className="group">
                     <Trash className="mr-1 h-3 w-3 transition-transform duration-300 group-hover:rotate-12" />{" "}
                     Delete

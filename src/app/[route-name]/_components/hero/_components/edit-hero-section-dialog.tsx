@@ -26,7 +26,7 @@ import {
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { updateHeroSection } from "@/actions/create-portfolio-actions";
+import { updateHeroSection } from "@/actions/hero_actions";
 import { HeroSection } from "@/db/schema";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -38,6 +38,7 @@ type Props = {
   heroSection: HeroSection;
   className?: string;
   avatarOptions: AvatarOptions;
+  routeName: string;
   setAvatarOptions: (options: AvatarOptions) => void;
 };
 
@@ -46,6 +47,7 @@ export default function EditHeroSectionDialog({
   routeId,
   heroSection,
   className,
+  routeName,
   avatarOptions,
   setAvatarOptions,
 }: Props) {
@@ -178,13 +180,16 @@ export default function EditHeroSectionDialog({
       try {
         console.log("Form submitted with data:", data);
         console.log("inside startTransition");
-        await updateHeroSection({
-          ...data,
-          linkedIn: data.linkedin || "",
-          userId: user?.id || 0,
-          routeId: routeId || 0,
-          id: heroSection.id,
-        });
+        await updateHeroSection(
+          {
+            ...data,
+            linkedIn: data.linkedin || "",
+            userId: user?.id || 0,
+            routeId: routeId || 0,
+            id: heroSection.id,
+          },
+          routeName,
+        );
         toast.success("Your information has been updated successfully.");
         console.log("inside startTransition - Form updated");
         console.log("after startTransition");
@@ -249,6 +254,7 @@ export default function EditHeroSectionDialog({
                     avatarOptions={avatarOptions}
                     setAvatarOptions={setAvatarOptions}
                     user={user}
+                    routeName={routeName}
                   />
                 )}
               </div>

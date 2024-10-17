@@ -1,15 +1,9 @@
-import { LogOut } from "lucide-react";
-import Link from "next/link";
 import React from "react";
 import { CreatePortfolio } from "./_components/create-portfolio";
 import { getCurrentUser } from "@/lib/session";
 import { redirect } from "next/navigation";
-import { db } from "@/db";
-import {
-  checkRouteAvailability,
-  getHeroSectionData,
-  getUserRoute,
-} from "@/actions/create-portfolio-actions";
+import { getUserRoute } from "@/actions/route_actions";
+import { getHeroSectionData } from "@/actions/hero_actions";
 
 type Props = {};
 

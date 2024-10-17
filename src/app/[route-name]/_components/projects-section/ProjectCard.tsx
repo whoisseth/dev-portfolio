@@ -49,7 +49,10 @@ export const ProjectCard = ({ project, userRoute, canEdit }: props) => {
             userRoute={userRoute}
             project={{ ...project, id: project.id! }}
           />
-          <DeleteProjectDialog project={project} />
+          <DeleteProjectDialog
+            project={project}
+            routeName={userRoute.routeName}
+          />
         </div>
       )}
       <CardContent className="flex-grow p-4 pt-2">

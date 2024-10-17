@@ -6,7 +6,7 @@ import { notionists } from "@dicebear/collection";
 import { Button } from "@/components/ui/button";
 import { useTransition } from "react";
 import { useToast } from "@/components/ui/use-toast";
-import { updateAvatarOptions } from "@/actions/create-portfolio-actions";
+import { updateAvatarOptions } from "@/actions/hero_actions";
 import { User } from "@/lib/session";
 import {
   Dialog,
@@ -104,6 +104,7 @@ type Props = {
   user: User;
   avatarOptions: AvatarOptions;
   setAvatarOptions: (options: AvatarOptions) => void;
+  routeName: string;
 };
 
 const defaultAvatarOptions: AvatarOptions = {
@@ -132,6 +133,7 @@ export default function AvatarEditor({
   user,
   avatarOptions,
   setAvatarOptions,
+  routeName,
 }: Props) {
   const [currentOptions, setCurrentOptions] = useState<AvatarOptions>({
     ...defaultAvatarOptions,
@@ -175,7 +177,7 @@ export default function AvatarEditor({
     startTransition(async () => {
       try {
         if (user) {
-          await updateAvatarOptions(user?.id, currentOptions);
+          await updateAvatarOptions(user?.id, currentOptions, routeName);
           setAvatarOptions(currentOptions);
           toast({
             title: "Success",

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,7 +11,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CreditCard, Landmark, Smartphone } from "lucide-react";
@@ -26,7 +24,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -45,9 +42,8 @@ import {
 } from "@/components/ui/form";
 import { PhoneInput } from "@/components/ui/phone-input";
 import { isValidPhoneNumber } from "react-phone-number-input";
-import { addDonation } from "@/actions/create-portfolio-actions";
 import { cn } from "@/lib/utils";
-
+import { addDonation } from "@/actions/donation-actions";
 const formSchema = z.object({
   fullName: z.string().min(2, {
     message: "Full name must be at least 2 characters.",
@@ -90,8 +86,6 @@ export default function Contribution({
     | undefined;
 }) {
   const { toast } = useToast();
-  const [customAmount, setCustomAmount] = useState("");
-  const [selectedAmount, setSelectedAmount] = useState("25");
   const [isPending, startTransition] = useTransition();
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("upi");
   const [isDialogOpen, setIsDialogOpen] = useState(false);

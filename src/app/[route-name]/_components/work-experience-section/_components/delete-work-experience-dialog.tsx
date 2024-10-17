@@ -12,18 +12,22 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Trash } from "lucide-react";
-import { deleteWorkExperience } from "@/actions/create-portfolio-actions";
-// import { toast, useToast } from "@/components/ui/use-toast";
-// import { toast, useToast } from "@/components/ui/use-toast";
-import { WorkExperience } from "@/db/schema";
+import { deleteWorkExperience } from "@/actions/workExperience-actions";
+import { UserRoute, WorkExperience } from "@/db/schema";
 import { toast } from "sonner";
 
 interface DeleteWorkExperienceDialogProps {
   workExperience: WorkExperience;
+  userRoute: {
+    routeName: string;
+    routeId: number;
+    userId: number;
+  };
 }
 
 export function DeleteWorkExperienceDialog({
   workExperience,
+  userRoute,
 }: DeleteWorkExperienceDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -35,7 +39,7 @@ export function DeleteWorkExperienceDialog({
     }
     setIsDeleting(true);
     try {
-      await deleteWorkExperience(workExperience.id);
+      await deleteWorkExperience(workExperience.id, userRoute.routeName);
       toast.success("Work experience deleted successfully");
       setIsOpen(false);
     } catch (error) {

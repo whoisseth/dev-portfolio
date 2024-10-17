@@ -13,17 +13,19 @@ import {
 } from "@/components/ui/dialog";
 import { Trash } from "lucide-react";
 import { Project } from "@/db/schema";
-import { deleteProject } from "@/actions/create-portfolio-actions";
+import { deleteProject } from "@/actions/project_actions";
 import { toast } from "sonner";
 
 interface DeleteProjectDialogProps {
   project: Project;
   children?: React.ReactNode;
+  routeName: string;
 }
 
 export function DeleteProjectDialog({
   project,
   children,
+  routeName,
 }: DeleteProjectDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -34,7 +36,7 @@ export function DeleteProjectDialog({
         if (!project.id) {
           throw new Error("Project ID is undefined");
         }
-        await deleteProject(project.id);
+        await deleteProject(project.id, routeName);
         if (project.imageUrl) {
           await fetch("/api/delete-image", {
             method: "POST",

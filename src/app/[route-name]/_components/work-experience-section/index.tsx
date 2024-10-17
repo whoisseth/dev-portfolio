@@ -16,7 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Layout, Grid, List } from "lucide-react";
-import { updateLayoutStyle } from "@/actions/create-portfolio-actions";
+import { updateLayoutStyle } from "@/actions/layout-actions";
 
 type WorkExperienceSectionProps = {
   userRoute:
@@ -50,9 +50,13 @@ export function WorkExperienceSection({
   // updateWorkExperienceLayoutStyle
   async function handleLayoutStyleChange(layoutStyle: LayoutStyle) {
     setLayoutStyle(layoutStyle);
-    await updateLayoutStyle(userRoute?.routeId || 0, {
-      workExperienceLayoutStyle: layoutStyle,
-    });
+    await updateLayoutStyle(
+      userRoute?.routeId || 0,
+      {
+        workExperienceLayoutStyle: layoutStyle,
+      },
+      userRoute?.routeName || "",
+    );
   }
 
   const renderWorkExperience = () => {
@@ -108,7 +112,10 @@ export function WorkExperienceSection({
                         userRoute={userRoute}
                         workExperience={experience}
                       />
-                      <DeleteWorkExperienceDialog workExperience={experience} />
+                      <DeleteWorkExperienceDialog
+                        workExperience={experience}
+                        userRoute={userRoute}
+                      />
                     </div>
                   )}
                 </CardContent>
@@ -161,7 +168,10 @@ export function WorkExperienceSection({
                         userRoute={userRoute}
                         workExperience={experience}
                       />
-                      <DeleteWorkExperienceDialog workExperience={experience} />
+                      <DeleteWorkExperienceDialog
+                        workExperience={experience}
+                        userRoute={userRoute}
+                      />
                     </div>
                   )}
                 </CardContent>

@@ -1,15 +1,13 @@
 import React, { ReactNode } from "react";
 import Navbar from "./_components/navbar";
 import { getCurrentUser } from "@/lib/session";
-import {
-  getUserRoute,
-  getHeroSectionData,
-} from "@/actions/create-portfolio-actions";
+import { getHeroSectionData } from "@/actions/hero_actions";
 import Notification from "@/components/notification";
 import { createAvatar, Options } from "@dicebear/core";
 import { notionists } from "@dicebear/collection";
 
 import type { Metadata, ResolvingMetadata } from "next";
+import { getUserRoute } from "@/actions/route_actions";
 
 type Props = {
   params: { "route-name": string };

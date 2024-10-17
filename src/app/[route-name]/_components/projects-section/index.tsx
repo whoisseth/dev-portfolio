@@ -22,8 +22,7 @@ import { CarouselLayout } from "./_layouts/CarouselLayout";
 import { InteractiveGridLayout } from "./_layouts/InteractiveGridLayout";
 import { TimelineLayout } from "./_layouts/TimelineLayout";
 import { useState } from "react";
-import { HeroLayoutStyle } from "../hero";
-import { updateLayoutStyle } from "@/actions/create-portfolio-actions";
+import { updateLayoutStyle } from "@/actions/layout-actions";
 
 type ProjectSectionType = {
   user: UserType | undefined;
@@ -90,9 +89,13 @@ export function ProjectsSection({
   async function handleLayoutStyleChange(layoutStyle: ProjectLayoutStyle) {
     setLayoutStyle(layoutStyle);
     //
-    await updateLayoutStyle(userRoute?.routeId || 0, {
-      projectLayoutStyle: layoutStyle,
-    });
+    await updateLayoutStyle(
+      userRoute?.routeId || 0,
+      {
+        projectLayoutStyle: layoutStyle,
+      },
+      userRoute?.routeName || "",
+    );
   }
 
   const renderProjects = () => {

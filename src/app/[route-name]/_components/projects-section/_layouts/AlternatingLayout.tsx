@@ -108,7 +108,10 @@ export function AlternatingLayout({
                       <Pencil className="mr-2 h-3 w-3" /> Edit
                     </Button>
                   </UpdateProjectDialogComponent>
-                  <DeleteProjectDialog project={project}>
+                  <DeleteProjectDialog
+                    project={project}
+                    routeName={userRoute.routeName}
+                  >
                     <Button
                       variant="destructive"
                       size="sm"

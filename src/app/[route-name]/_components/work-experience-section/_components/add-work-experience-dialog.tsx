@@ -17,7 +17,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -26,8 +25,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
-import { addWorkExperience } from "@/actions/create-portfolio-actions";
 import { useToast } from "@/components/ui/use-toast";
+import { addWorkExperience } from "@/actions/workExperience-actions";
 
 const workExperienceSchema = z.object({
   jobTitle: z.string().min(3, "Job title is required"),
@@ -73,11 +72,14 @@ export function AddWorkExperienceDialogComponent({ userRoute }: Props) {
   async function onSubmit(data: WorkExperienceFormValues) {
     startTransition(async () => {
       try {
-        await addWorkExperience({
-          ...data,
-          userId: userRoute.userId,
-          routeId: userRoute.routeId,
-        });
+        await addWorkExperience(
+          {
+            ...data,
+            userId: userRoute.userId,
+            routeId: userRoute.routeId,
+          },
+          userRoute.routeName,
+        );
 
         toast({
           title: "Success",
@@ -123,7 +125,10 @@ export function AddWorkExperienceDialogComponent({ userRoute }: Props) {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 md:space-y-0 md:flex md:gap-6">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 md:flex md:gap-6 md:space-y-0"
+          >
             <div className="space-y-4 md:w-1/2">
               <FormField
                 control={form.control}
@@ -164,7 +169,7 @@ export function AddWorkExperienceDialogComponent({ userRoute }: Props) {
                   </FormItem>
                 )}
               />
-              <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
+              <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
                 <FormField
                   control={form.control}
                   name="startDate"
@@ -218,10 +223,10 @@ export function AddWorkExperienceDialogComponent({ userRoute }: Props) {
                   <FormItem>
                     <FormLabel>Job Description</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Describe your responsibilities and achievements" 
-                        className="h-[200px]" 
-                        {...field} 
+                      <Textarea
+                        placeholder="Describe your responsibilities and achievements"
+                        className="h-[200px]"
+                        {...field}
                       />
                     </FormControl>
                     <FormMessage />
@@ -231,8 +236,8 @@ export function AddWorkExperienceDialogComponent({ userRoute }: Props) {
             </div>
           </form>
         </Form>
-        <DialogFooter className='flex flex-col gap-2 mt-6'>
-        <Button
+        <DialogFooter className="mt-6 flex flex-col gap-2">
+          <Button
             type="button"
             variant="outline"
             onClick={() => setOpen(false)}

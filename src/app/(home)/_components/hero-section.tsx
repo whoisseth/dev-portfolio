@@ -5,7 +5,7 @@ import React, { Suspense } from "react";
 import { UserTableWrapper } from "./user-table-wrapper";
 import { UserTableSkeletonComponent } from "./user-table-skeleton";
 import { BackgroundLines } from "@/components/ui/background-lines";
-import { getAllUsers } from "@/actions/create-portfolio-actions";
+import { getAllUsers } from "@/actions/user-actions";
 
 type Props = {};
 
@@ -14,7 +14,7 @@ export default async function HeroSection({}: Props) {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="animate-gradient-fade absolute inset-0 bg-gradient-to-br from-background via-background to-primary/10"></div>
+      <div className="absolute inset-0 animate-gradient-fade bg-gradient-to-br from-background via-background to-primary/10"></div>
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background"></div>
       <BackgroundLines>
         <div className="relative">

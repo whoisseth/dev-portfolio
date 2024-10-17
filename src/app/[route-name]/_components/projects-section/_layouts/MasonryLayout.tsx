@@ -137,7 +137,10 @@ export function MasonryLayout({
                     <Pencil className="mr-1 h-3 w-3" /> Edit
                   </Button>
                 </UpdateProjectDialogComponent>
-                <DeleteProjectDialog project={project}>
+                <DeleteProjectDialog
+                  project={project}
+                  routeName={userRoute!.routeName!}
+                >
                   <Button variant="destructive" size="sm" className="flex-1">
                     <Trash className="mr-1 h-3 w-3" /> Delete
                   </Button>

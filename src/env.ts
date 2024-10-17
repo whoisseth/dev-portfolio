@@ -22,6 +22,7 @@ export const env = createEnv({
     CLOUDINARY_API_KEY: z.string().min(1),
     CLOUDINARY_API_SECRET: z.string().min(1),
     CLOUDINARY_URL: z.string().min(1),
+    REDIS_URL: z.string().min(1),
   },
   client: {},
   runtimeEnv: {
@@ -44,5 +45,6 @@ export const env = createEnv({
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
     CLOUDINARY_URL: process.env.CLOUDINARY_URL,
+    REDIS_URL: process.env.REDIS_URL,
   },
 });

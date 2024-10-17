@@ -41,7 +41,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Card, CardContent } from "@/components/ui/card";
-import { updateLayoutStyle } from "@/actions/create-portfolio-actions";
+import { updateLayoutStyle } from "@/actions/layout-actions";
 
 type HeroProps = {
   userRoute:
@@ -91,9 +91,13 @@ export function Hero({
 
   async function handleLayoutStyleChange(layoutStyle: HeroLayoutStyle) {
     setLayoutStyle(layoutStyle);
-    await updateLayoutStyle(userRoute?.routeId || 0, {
-      heroSectionLayoutStyle: layoutStyle,
-    });
+    await updateLayoutStyle(
+      userRoute?.routeId || 0,
+      {
+        heroSectionLayoutStyle: layoutStyle,
+      },
+      userRoute?.routeName || "",
+    );
   }
 
   const renderContent = () => {
@@ -573,6 +577,7 @@ export function Hero({
                 routeId={heroSection.routeId}
                 heroSection={heroSection}
                 user={user}
+                routeName={userRoute?.routeName || ""}
               />
             )}
           </section>
